@@ -1,70 +1,69 @@
-import React, { useEffect, useRef, useCallback } from 'react';
-import styles from '../styles/magazineStyles.module.css';
+import React, { useEffect, useRef, useCallback, useState } from 'react';
 
-function Canvas({ template, uploadedImage, onImageUpload }) {
+function Canvas({ template, onImageUpload }) {
   const canvasRef = useRef(null);
-  const fileInputRef = useRef(null);
+  const [uploadedImages, setUploadedImages] = useState({});
 
   useEffect(() => {
-    if (canvasRef.current && uploadedImage) {
-      console.log('Updating image for template:', template.uniqueId);
-      const img = canvasRef.current.querySelector('[data-upload-target="true"]');
-      if (img) {
-        img.src = uploadedImage;
-        console.log('Image updated successfully');
-      } else {
-        console.error('Image element not found');
-      }
+    if (canvasRef.current) {
+      const uploadTargets = canvasRef.current.querySelectorAll('[data-upload-target="true"]');
+      uploadTargets.forEach(target => {
+        const imageId = target.id;
+        if (uploadedImages[imageId]) {
+          target.src = uploadedImages[imageId];
+        }
+      });
     }
-  }, [template.uniqueId, uploadedImage]);
+  }, [template.uniqueId, uploadedImages]);
 
-  const handleImageUpload = useCallback((event) => {
+  const handleImageUpload = useCallback((event, imageId) => {
     const file = event.target.files[0];
     if (file) {
-      console.log('Image upload initiated:', { templateUniqueId: template.uniqueId, fileName: file.name });
-      onImageUpload(template.uniqueId, 'coverImage', file);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setUploadedImages(prev => ({
+          ...prev,
+          [imageId]: e.target.result
+        }));
+        onImageUpload(template.uniqueId, imageId, file);
+      };
+      reader.readAsDataURL(file);
     }
   }, [template.uniqueId, onImageUpload]);
-
-  const handleUploadClick = useCallback(() => {
-    fileInputRef.current.click();
-  }, []);
 
   const handleAddItem = useCallback(() => {
     const tocContainer = canvasRef.current.querySelector('#tocContainer');
     if (tocContainer) {
       const newItem = document.createElement('div');
-      newItem.className = styles['toc-item'];
+      newItem.className = 'toc-item';
       newItem.innerHTML = `
-        <span class="${styles['toc-title']} ${styles.editable}" contenteditable="true">New Section</span>
-        <span class="${styles['toc-page']} ${styles.editable}" contenteditable="true">00</span>
+        <span class="toc-title editable" contenteditable="true">New Section</span>
+        <span class="toc-page editable" contenteditable="true">00</span>
       `;
       tocContainer.appendChild(newItem);
     }
   }, []);
 
   return (
-    <div className={styles['canvas-container']} style={{ position: 'relative' }}>
-      <div ref={canvasRef} dangerouslySetInnerHTML={{ __html: template.content }} />
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*"
-        onChange={handleImageUpload}
-        style={{ display: 'none' }}
+    <div style={{ position: 'relative' }}>
+      <div 
+        ref={canvasRef} 
+        dangerouslySetInnerHTML={{ __html: template.content }} 
+        onClick={(e) => {
+          const target = e.target.closest('[data-upload-target="true"]');
+          if (target) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = (event) => handleImageUpload(event, target.id);
+            input.click();
+          }
+        }}
       />
-      {template.id === 'cover' && (
-        <button
-          onClick={handleUploadClick}
-          className={styles['upload-button']}
-        >
-          Upload Image
-        </button>
-      )}
       {template.id === 'contents' && (
         <button
           onClick={handleAddItem}
-          className={styles['add-item-button']}
+          style={{ position: 'absolute', bottom: '20px', left: '20px', padding: '5px 10px' }}
         >
           Add Item
         </button>

@@ -48,7 +48,7 @@ function Editor({ templates = [] }) {
         <Canvas
           key={template.uniqueId}
           template={template}
-          uploadedImage={uploadedImages[template.uniqueId]?.coverImage}
+          uploadedImages={uploadedImages[template.uniqueId] || {}}
           onImageUpload={handleImageUpload}
         />
       ))}
