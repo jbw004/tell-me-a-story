@@ -1,18 +1,12 @@
 import React from 'react';
 
-const templates = [
-  { id: 1, name: 'Template 1' },
-  { id: 2, name: 'Template 2' },
-  { id: 3, name: 'Template 3' },
-];
-
-function TemplateSelector({ onSelect }) {
+function TemplateSelector({ magazines, onSelect }) {
   return (
     <div>
-      <h2>Select a Template</h2>
-      {templates.map(template => (
-        <button key={template.id} onClick={() => onSelect(template)}>
-          {template.name}
+      <h2>Select a Magazine Style</h2>
+      {magazines.map(magazine => (
+        <button key={magazine.id} onClick={() => onSelect(magazine.id)}>
+          {magazine.name}
         </button>
       ))}
     </div>

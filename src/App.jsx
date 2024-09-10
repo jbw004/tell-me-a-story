@@ -1,15 +1,28 @@
 import React, { useState } from 'react';
-import Editor from './components/Editor';
 import TemplateSelector from './components/TemplateSelector';
+import Editor from './components/Editor';
+import { magazineTemplates } from './templates.js';
 
 function App() {
-  const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [selectedMagazine, setSelectedMagazine] = useState(null);
+
+  const handleMagazineSelect = (magazineId) => {
+    const selected = magazineTemplates.find(mag => mag.id === magazineId);
+    setSelectedMagazine(selected);
+  };
 
   return (
     <div className="App">
       <h1>Magazine Layout Editor</h1>
-      <TemplateSelector onSelect={setSelectedTemplate} />
-      {selectedTemplate && <Editor template={selectedTemplate} />}
+      <TemplateSelector 
+        magazines={magazineTemplates} 
+        onSelect={handleMagazineSelect} 
+      />
+      {selectedMagazine ? (
+        <Editor templates={selectedMagazine.templates} />
+      ) : (
+        <p>Please select a magazine style to start editing.</p>
+      )}
     </div>
   );
 }

@@ -1,30 +1,58 @@
-import React, { useEffect, useRef } from 'react';
-import { fabric } from 'fabric';
-import Toolbar from './Toolbar';
+import React, { useState, useCallback, useEffect } from 'react';
 import Canvas from './Canvas';
 
-function Editor({ template }) {
-  const canvasRef = useRef(null);
-  const fabricCanvasRef = useRef(null);
+function Editor({ templates = [] }) {
+  const [selectedTemplates, setSelectedTemplates] = useState([]);
+  const [uploadedImages, setUploadedImages] = useState({});
+
+  const addTemplate = useCallback((template) => {
+    const newTemplateId = `${template.id}-${Date.now()}`;
+    const newTemplate = { ...template, uniqueId: newTemplateId };
+    setSelectedTemplates(prev => [...prev, newTemplate]);
+  }, []);
+
+  const handleImageUpload = useCallback((templateUniqueId, imageId, file) => {
+    console.log('Image upload triggered:', { templateUniqueId, imageId, fileName: file.name });
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      console.log('Image loaded, updating state for template:', templateUniqueId);
+      setUploadedImages(prev => ({
+        ...prev,
+        [templateUniqueId]: {
+          ...prev[templateUniqueId],
+          [imageId]: e.target.result
+        }
+      }));
+    };
+    reader.onerror = (error) => {
+      console.error('Error reading file:', error);
+    };
+    reader.readAsDataURL(file);
+  }, []);
 
   useEffect(() => {
-    fabricCanvasRef.current = new fabric.Canvas(canvasRef.current, {
-      width: 800,
-      height: 600,
-    });
-
-    // Load template elements here
-    // This is a placeholder for where you'd parse your template JSON and create Fabric.js objects
-
-    return () => {
-      fabricCanvasRef.current.dispose();
-    };
-  }, [template]);
+    console.log('Current uploadedImages state:', uploadedImages);
+  }, [uploadedImages]);
 
   return (
     <div>
-      <Toolbar canvas={fabricCanvasRef.current} />
-      <Canvas canvasRef={canvasRef} />
+      <div>
+        <h3>Available Templates</h3>
+        {templates.map(template => (
+          <button key={template.id} onClick={() => addTemplate(template)}>
+            Add {template.name}
+          </button>
+        ))}
+      </div>
+      {selectedTemplates.map((template) => (
+        <Canvas
+          key={template.uniqueId}
+          template={template}
+          uploadedImage={uploadedImages[template.uniqueId]?.coverImage}
+          onImageUpload={handleImageUpload}
+        />
+      ))}
+      <button>Download Magazine</button>
     </div>
   );
 }

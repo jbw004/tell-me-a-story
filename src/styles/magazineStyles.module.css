@@ -1,0 +1,66 @@
+.magazine-page {
+    width: 210mm;
+    height: 297mm;
+    margin: 20px auto;
+    background-color: #fff;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+    padding: 20mm;
+    box-sizing: border-box;
+}
+.page-number {
+    position: absolute;
+    bottom: 10mm;
+    right: 10mm;
+    font-size: 14px;
+    color: #999;
+}
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10mm;
+}
+.section-title {
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 10mm;
+    text-transform: uppercase;
+}
+.toc-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5mm;
+    font-size: 18px;
+}
+.toc-title {
+    font-weight: bold;
+}
+.toc-page {
+    color: #999;
+}
+.editable:hover {
+    outline: 2px dashed #007bff;
+    cursor: text;
+}
+.canvas-container {
+    position: relative;
+  }
+  
+  .upload-button,
+  .add-item-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+    padding: 5px 10px;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .add-item-button {
+    top: auto;
+    bottom: 10px;
+  }
