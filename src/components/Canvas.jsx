@@ -1,8 +1,25 @@
 import React, { useEffect, useRef, useCallback, useState } from 'react';
 
-function Canvas({ template, onImageUpload }) {
+function Canvas({ template, onImageUpload, onHeightChange, style }) {
   const canvasRef = useRef(null);
   const [uploadedImages, setUploadedImages] = useState({});
+
+  useEffect(() => {
+    if (canvasRef.current) {
+      const updateHeight = () => {
+        const height = canvasRef.current.scrollHeight;
+        onHeightChange(template.uniqueId, height);
+      };
+
+      updateHeight(); // Initial height update
+
+      // Set up a ResizeObserver to detect content changes
+      const resizeObserver = new ResizeObserver(updateHeight);
+      resizeObserver.observe(canvasRef.current);
+
+      return () => resizeObserver.disconnect();
+    }
+  }, [template.uniqueId, onHeightChange]);
 
   useEffect(() => {
     if (canvasRef.current) {
@@ -14,7 +31,7 @@ function Canvas({ template, onImageUpload }) {
         }
       });
     }
-  }, [template.uniqueId, uploadedImages]);
+  }, [uploadedImages]);
 
   const handleImageUpload = useCallback((event, imageId) => {
     const file = event.target.files[0];
@@ -32,7 +49,7 @@ function Canvas({ template, onImageUpload }) {
   }, [template.uniqueId, onImageUpload]);
 
   return (
-    <div className="canvas-item">
+    <div className="canvas-item" style={style}>
       <div 
         ref={canvasRef} 
         dangerouslySetInnerHTML={{ __html: template.content }} 

@@ -2,7 +2,14 @@ import React, { useState, useCallback } from 'react';
 import Canvas from './Canvas';
 
 function Editor({ templates, onImageUpload }) {
-  const [uploadedImages, setUploadedImages] = useState({});
+  const [templateHeights, setTemplateHeights] = useState({});
+
+  const handleTemplateHeightChange = useCallback((templateId, height) => {
+    setTemplateHeights(prev => ({
+      ...prev,
+      [templateId]: height
+    }));
+  }, []);
 
   const handleImageUpload = useCallback((templateUniqueId, imageId, file) => {
     const reader = new FileReader();
@@ -22,12 +29,17 @@ function Editor({ templates, onImageUpload }) {
   return (
     <div className="editor-container">
       {templates.length > 0 ? (
-        templates.map((template) => (
+        templates.map((template, index) => (
           <Canvas
             key={template.uniqueId}
             template={template}
             onImageUpload={handleImageUpload}
-            uploadedImages={uploadedImages[template.uniqueId] || {}}
+            onHeightChange={handleTemplateHeightChange}
+            style={{
+              marginTop: index > 0 ? '20px' : '0', // Add space between templates
+              minHeight: '812px', // Minimum height
+              height: templateHeights[template.uniqueId] || 'auto'
+            }}
           />
         ))
       ) : (

@@ -127,11 +127,13 @@
 
   .canvas-item {
     background-color: white;
-    margin-bottom: 20px;
     border-radius: 5px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
     padding: 20px;
     position: relative;
+    min-height: 406px; /* Ensures the minimum height */
+    transition: height 0.3s ease; /* Smooth transition for height changes */
+    overflow: hidden; /* Prevents content from spilling out */
   }
   
   .add-toc-item-button {
@@ -164,10 +166,15 @@
     cursor: text;
   }
 
+  
+.editable:not(h1):not(h2) {
+  overflow: visible; /* Allow text to expand beyond original boundaries */
+  min-height: 1em; /* Ensure a minimum height for empty containers */
+}
+
   .editor-container {
     display: flex;
     flex-direction: column;
-    height: 100%;
     padding: 20px;
   }
   
