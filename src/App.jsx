@@ -24,8 +24,6 @@ function App() {
 
   const handleImageUpload = useCallback((templateUniqueId, imageId, file) => {
     console.log('Image uploaded:', templateUniqueId, imageId, file);
-    // Here you can implement any additional logic for image upload,
-    // such as sending the file to a server
     const reader = new FileReader();
     reader.onload = (e) => {
       setUploadedImages(prev => ({
@@ -37,6 +35,10 @@ function App() {
       }));
     };
     reader.readAsDataURL(file);
+  }, []);
+
+  const handleReorderTemplates = useCallback((reorderedTemplates) => {
+    setSelectedTemplates(reorderedTemplates);
   }, []);
 
   return (
@@ -52,6 +54,7 @@ function App() {
           templates={selectedTemplates}
           onImageUpload={handleImageUpload}
           uploadedImages={uploadedImages}
+          onReorderTemplates={handleReorderTemplates}
         />
       </div>
       <div className="right-panel">

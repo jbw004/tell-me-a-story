@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import Canvas from './Canvas';
 
-function Editor({ templates, onImageUpload }) {
+function Editor({ templates, onImageUpload, uploadedImages, onReorderTemplates }) {
   const [templateHeights, setTemplateHeights] = useState({});
 
   const handleTemplateHeightChange = useCallback((templateId, height) => {
@@ -11,20 +11,22 @@ function Editor({ templates, onImageUpload }) {
     }));
   }, []);
 
-  const handleImageUpload = useCallback((templateUniqueId, imageId, file) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      setUploadedImages(prev => ({
-        ...prev,
-        [templateUniqueId]: {
-          ...prev[templateUniqueId],
-          [imageId]: e.target.result
-        }
-      }));
-      onImageUpload(templateUniqueId, imageId, file);
-    };
-    reader.readAsDataURL(file);
-  }, [onImageUpload]);
+  const handleReorder = useCallback((templateId, direction) => {
+    const currentIndex = templates.findIndex(t => t.uniqueId === templateId);
+    const newTemplates = [...templates];
+    let newIndex;
+
+    if (direction === 'up') {
+      newIndex = currentIndex === 0 ? newTemplates.length - 1 : currentIndex - 1;
+    } else {
+      newIndex = currentIndex === newTemplates.length - 1 ? 0 : currentIndex + 1;
+    }
+
+    const [reorderedTemplate] = newTemplates.splice(currentIndex, 1);
+    newTemplates.splice(newIndex, 0, reorderedTemplate);
+
+    onReorderTemplates(newTemplates);
+  }, [templates, onReorderTemplates]);
 
   return (
     <div className="editor-container">
@@ -33,11 +35,13 @@ function Editor({ templates, onImageUpload }) {
           <Canvas
             key={template.uniqueId}
             template={template}
-            onImageUpload={handleImageUpload}
+            onImageUpload={onImageUpload}
             onHeightChange={handleTemplateHeightChange}
+            onReorder={handleReorder}
+            uploadedImages={uploadedImages[template.uniqueId] || {}}
             style={{
-              marginTop: index > 0 ? '20px' : '0', // Add space between templates
-              minHeight: '812px', // Minimum height
+              marginTop: index > 0 ? '20px' : '0',
+              minHeight: '812px',
               height: templateHeights[template.uniqueId] || 'auto'
             }}
           />

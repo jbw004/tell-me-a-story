@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useCallback, useState } from 'react';
 
-function Canvas({ template, onImageUpload, onHeightChange, style }) {
+function Canvas({ template, onImageUpload, onHeightChange, onReorder, style }) {
   const canvasRef = useRef(null);
   const [uploadedImages, setUploadedImages] = useState({});
 
@@ -11,9 +11,7 @@ function Canvas({ template, onImageUpload, onHeightChange, style }) {
         onHeightChange(template.uniqueId, height);
       };
 
-      updateHeight(); // Initial height update
-
-      // Set up a ResizeObserver to detect content changes
+      updateHeight();
       const resizeObserver = new ResizeObserver(updateHeight);
       resizeObserver.observe(canvasRef.current);
 
@@ -50,6 +48,10 @@ function Canvas({ template, onImageUpload, onHeightChange, style }) {
 
   return (
     <div className="canvas-item" style={style}>
+      <div className="reorder-controls">
+        <button onClick={() => onReorder(template.uniqueId, 'up')}>↑</button>
+        <button onClick={() => onReorder(template.uniqueId, 'down')}>↓</button>
+      </div>
       <div 
         ref={canvasRef} 
         dangerouslySetInnerHTML={{ __html: template.content }} 
