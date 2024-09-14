@@ -41,6 +41,15 @@ function App() {
     setSelectedTemplates(reorderedTemplates);
   }, []);
 
+  const handleDeleteTemplate = useCallback((templateId) => {
+    setSelectedTemplates(prev => prev.filter(template => template.uniqueId !== templateId));
+    setUploadedImages(prev => {
+      const newUploadedImages = { ...prev };
+      delete newUploadedImages[templateId];
+      return newUploadedImages;
+    });
+  }, []);
+
   return (
     <div className="App">
       <LeftPanel 
@@ -55,6 +64,7 @@ function App() {
           onImageUpload={handleImageUpload}
           uploadedImages={uploadedImages}
           onReorderTemplates={handleReorderTemplates}
+          onDeleteTemplate={handleDeleteTemplate}
         />
       </div>
       <div className="right-panel">

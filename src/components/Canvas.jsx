@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useCallback, useState } from 'react';
+import ConfirmationModal from './ConfirmationModal';
 
-function Canvas({ template, onImageUpload, onHeightChange, onReorder, style }) {
+function Canvas({ template, onImageUpload, onHeightChange, onReorder, onDelete, uploadedImages, style }) {
   const canvasRef = useRef(null);
-  const [uploadedImages, setUploadedImages] = useState({});
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   useEffect(() => {
     if (canvasRef.current) {
@@ -36,35 +37,49 @@ function Canvas({ template, onImageUpload, onHeightChange, onReorder, style }) {
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        setUploadedImages(prev => ({
-          ...prev,
-          [imageId]: e.target.result
-        }));
         onImageUpload(template.uniqueId, imageId, file);
       };
       reader.readAsDataURL(file);
     }
   }, [template.uniqueId, onImageUpload]);
 
+  const handleDeleteClick = () => {
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    onDelete(template.uniqueId);
+    setIsDeleteModalOpen(false);
+  };
+
   return (
-    <div className="canvas-item" style={style}>
-      <div className="reorder-controls">
+    <div className="canvas-wrapper" style={style}>
+      <div className="canvas-controls">
         <button onClick={() => onReorder(template.uniqueId, 'up')}>↑</button>
         <button onClick={() => onReorder(template.uniqueId, 'down')}>↓</button>
+        <button onClick={handleDeleteClick}>🗑️</button>
       </div>
-      <div 
-        ref={canvasRef} 
-        dangerouslySetInnerHTML={{ __html: template.content }} 
-        onClick={(e) => {
-          const target = e.target.closest('[data-upload-target="true"]');
-          if (target) {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.onchange = (event) => handleImageUpload(event, target.id);
-            input.click();
-          }
-        }}
+      <div className="canvas-item">
+        <div 
+          ref={canvasRef} 
+          dangerouslySetInnerHTML={{ __html: template.content }} 
+          onClick={(e) => {
+            const target = e.target.closest('[data-upload-target="true"]');
+            if (target) {
+              const input = document.createElement('input');
+              input.type = 'file';
+              input.accept = 'image/*';
+              input.onchange = (event) => handleImageUpload(event, target.id);
+              input.click();
+            }
+          }}
+        />
+      </div>
+      <ConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDeleteConfirm}
+        message="Are you sure you want to delete this page?"
       />
     </div>
   );

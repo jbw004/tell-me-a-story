@@ -130,7 +130,6 @@
     border-radius: 5px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
     padding: 20px;
-    position: relative;
     min-height: 406px; /* Ensures the minimum height */
     transition: height 0.3s ease; /* Smooth transition for height changes */
     overflow: hidden; /* Prevents content from spilling out */
@@ -250,3 +249,67 @@
   .reorder-controls button:hover {
     background-color: rgba(220, 220, 220, 0.8);
   }
+
+  .canvas-wrapper {
+    position: relative;
+    margin-bottom: 20px;
+  }
+  
+  .canvas-controls {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 5px;
+    z-index: 10;
+  }
+  
+  .canvas-controls button {
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s;
+  }
+  
+  .canvas-controls button:hover {
+    background-color: rgba(220, 220, 220, 0.8);
+  }
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.modal-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.modal-actions button {
+  padding: 5px 15px;
+  cursor: pointer;
+}
