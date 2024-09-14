@@ -31,21 +31,8 @@ function Canvas({ template, onImageUpload }) {
     }
   }, [template.uniqueId, onImageUpload]);
 
-  const handleAddItem = useCallback(() => {
-    const tocContainer = canvasRef.current.querySelector('#tocContainer');
-    if (tocContainer) {
-      const newItem = document.createElement('div');
-      newItem.className = 'toc-item';
-      newItem.innerHTML = `
-        <span class="toc-title editable" contenteditable="true">New Section</span>
-        <span class="toc-page editable" contenteditable="true">00</span>
-      `;
-      tocContainer.appendChild(newItem);
-    }
-  }, []);
-
   return (
-    <div style={{ position: 'relative' }}>
+    <div className="canvas-item">
       <div 
         ref={canvasRef} 
         dangerouslySetInnerHTML={{ __html: template.content }} 
@@ -60,14 +47,6 @@ function Canvas({ template, onImageUpload }) {
           }
         }}
       />
-      {template.id === 'contents' && (
-        <button
-          onClick={handleAddItem}
-          style={{ position: 'absolute', bottom: '20px', left: '20px', padding: '5px 10px' }}
-        >
-          Add Item
-        </button>
-      )}
     </div>
   );
 }
