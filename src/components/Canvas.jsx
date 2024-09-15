@@ -1,12 +1,14 @@
 import React, { useEffect, useRef, useCallback, useState } from 'react';
 import ConfirmationModal from './ConfirmationModal';
 
-function Canvas({ template, onImageUpload, onHeightChange, onReorder, onDelete, uploadedImages, style }) {
+function Canvas({ template, onImageUpload, onHeightChange, onReorder, onDelete, uploadedImages, style, registerRef }) {
   const canvasRef = useRef(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   useEffect(() => {
     if (canvasRef.current) {
+      registerRef(template.uniqueId, canvasRef.current);
+
       const updateHeight = () => {
         const height = canvasRef.current.scrollHeight;
         onHeightChange(template.uniqueId, height);
@@ -18,7 +20,7 @@ function Canvas({ template, onImageUpload, onHeightChange, onReorder, onDelete, 
 
       return () => resizeObserver.disconnect();
     }
-  }, [template.uniqueId, onHeightChange]);
+  }, [template.uniqueId, onHeightChange, registerRef]);
 
   useEffect(() => {
     if (canvasRef.current) {
@@ -53,7 +55,7 @@ function Canvas({ template, onImageUpload, onHeightChange, onReorder, onDelete, 
   };
 
   return (
-    <div className="canvas-wrapper" style={style}>
+    <div className="canvas-wrapper" style={style} ref={canvasRef}>
       <div className="canvas-controls">
         <button onClick={() => onReorder(template.uniqueId, 'up')}>↑</button>
         <button onClick={() => onReorder(template.uniqueId, 'down')}>↓</button>
@@ -61,7 +63,6 @@ function Canvas({ template, onImageUpload, onHeightChange, onReorder, onDelete, 
       </div>
       <div className="canvas-item">
         <div 
-          ref={canvasRef} 
           dangerouslySetInnerHTML={{ __html: template.content }} 
           onClick={(e) => {
             const target = e.target.closest('[data-upload-target="true"]');

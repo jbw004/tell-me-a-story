@@ -313,3 +313,30 @@
   padding: 5px 15px;
   cursor: pointer;
 }
+
+.layout-section {
+  margin-top: 20px;
+}
+
+.template-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.template-item {
+  margin-bottom: 10px;
+}
+
+.template-item button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  padding: 5px;
+  transition: background-color 0.3s;
+}
+
+.template-item button:hover {
+  background-color: #f0f0f0;
+}

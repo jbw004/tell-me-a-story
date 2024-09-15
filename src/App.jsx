@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import LeftPanel from './components/LeftPanel';
 import RightPanel from './components/RightPanel';
 import Editor from './components/Editor';
@@ -10,6 +10,7 @@ function App() {
   const [selectedMagazine, setSelectedMagazine] = useState(null);
   const [selectedTemplates, setSelectedTemplates] = useState([]);
   const [uploadedImages, setUploadedImages] = useState({});
+  const templateRefs = useRef({});
 
   const handleMagazineSelect = (magazineId) => {
     const selected = magazineTemplates.find(mag => mag.id === magazineId);
@@ -17,10 +18,26 @@ function App() {
   };
 
   const handleTemplateSelect = (template) => {
-    const newTemplateId = `${template.id}-${Date.now()}`;
-    const newTemplate = { ...template, uniqueId: newTemplateId };
-    setSelectedTemplates(prev => [...prev, newTemplate]);
+    const existingTemplate = selectedTemplates.find(t => t.id === template.id);
+    if (existingTemplate) {
+      scrollToTemplate(existingTemplate.uniqueId);
+    } else {
+      const newTemplateId = `${template.id}-${Date.now()}`;
+      const newTemplate = { ...template, uniqueId: newTemplateId };
+      setSelectedTemplates(prev => [...prev, newTemplate]);
+    }
   };
+
+  const scrollToTemplate = (templateId) => {
+    const ref = templateRefs.current[templateId];
+    if (ref) {
+      ref.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  const registerTemplateRef = useCallback((id, ref) => {
+    templateRefs.current[id] = ref;
+  }, []);
 
   const handleImageUpload = useCallback((templateUniqueId, imageId, file) => {
     console.log('Image uploaded:', templateUniqueId, imageId, file);
@@ -57,6 +74,7 @@ function App() {
         onMagazineSelect={handleMagazineSelect}
         selectedMagazine={selectedMagazine}
         onTemplateSelect={handleTemplateSelect}
+        selectedTemplates={selectedTemplates}
       />
       <div className="main-content">
         <Editor 
@@ -65,6 +83,7 @@ function App() {
           uploadedImages={uploadedImages}
           onReorderTemplates={handleReorderTemplates}
           onDeleteTemplate={handleDeleteTemplate}
+          registerTemplateRef={registerTemplateRef}
         />
       </div>
       <div className="right-panel">
