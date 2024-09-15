@@ -41,11 +41,6 @@ function Editor({ templates, onImageUpload, uploadedImages, onReorderTemplates, 
             onDelete={onDeleteTemplate}
             uploadedImages={uploadedImages[template.uniqueId] || {}}
             registerRef={registerTemplateRef}
-            style={{
-              marginTop: index > 0 ? '20px' : '0',
-              minHeight: '812px',
-              height: templateHeights[template.uniqueId] || 'auto'
-            }}
           />
         ))
       ) : (

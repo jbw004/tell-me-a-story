@@ -54,7 +54,7 @@
     right: 290px; /* Adjust based on right-panel width + padding */
     top: 20px;
     bottom: 60px;
-    background-color: white;
+    background-color: #FAF9F6;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     overflow-y: auto;
