@@ -2,7 +2,6 @@ import React, { useState, useCallback, useRef } from 'react';
 import LeftPanel from './components/LeftPanel';
 import RightPanel from './components/RightPanel';
 import Editor from './components/Editor';
-import BottomToolbar from './components/BottomToolbar';
 import { magazineTemplates } from './templates.js';
 import './App.css';
 
@@ -68,15 +67,7 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
-      <LeftPanel 
-        magazines={magazineTemplates} 
-        onMagazineSelect={handleMagazineSelect}
-        selectedMagazine={selectedMagazine}
-        onTemplateSelect={handleTemplateSelect}
-        selectedTemplates={selectedTemplates}
-      />
-      <div className="main-content">
+    <div className="main-content">
         <Editor 
           templates={selectedTemplates}
           onImageUpload={handleImageUpload}
@@ -85,11 +76,18 @@ function App() {
           onDeleteTemplate={handleDeleteTemplate}
           registerTemplateRef={registerTemplateRef}
         />
+    <div className="App">
+      <LeftPanel 
+        magazines={magazineTemplates} 
+        onMagazineSelect={handleMagazineSelect}
+        selectedMagazine={selectedMagazine}
+        onTemplateSelect={handleTemplateSelect}
+        selectedTemplates={selectedTemplates}
+      />
       </div>
       <div className="right-panel">
         <RightPanel />
       </div>
-      <BottomToolbar />
     </div>
   );
 }

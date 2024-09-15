@@ -3,12 +3,7 @@ import React from 'react';
 function RightPanel({ selectedTemplate }) {
   return (
     <div className="floating-panel right-panel">
-      <h2>Style</h2>
-      <button className="style-button active">Text</button>
-      <button className="style-button">Box</button>
-      <button className="style-button">Image</button>
-      
-      <h2>Properties</h2>
+      <h2>Text Properties</h2>
       <label>
         Font
         <select>
