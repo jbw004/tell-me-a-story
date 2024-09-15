@@ -31,7 +31,7 @@ function Editor({ templates, onImageUpload, uploadedImages, onReorderTemplates, 
   return (
     <div className="editor-container">
       {templates.length > 0 ? (
-        templates.map((template, index) => (
+        templates.map((template) => (
           <Canvas
             key={template.uniqueId}
             template={template}

@@ -3,6 +3,7 @@ import LeftPanel from './components/LeftPanel';
 import RightPanel from './components/RightPanel';
 import Editor from './components/Editor';
 import { magazineTemplates } from './templates.js';
+import { v4 as uuidv4 } from 'uuid';
 import './App.css';
 
 function App() {
@@ -16,14 +17,15 @@ function App() {
     setSelectedMagazine(selected);
   };
 
-  const handleTemplateSelect = (template) => {
-    const existingTemplate = selectedTemplates.find(t => t.id === template.id);
-    if (existingTemplate) {
-      scrollToTemplate(existingTemplate.uniqueId);
+  const handleTemplateSelect = (template, isExisting = false) => {
+    if (isExisting) {
+      scrollToTemplate(template.uniqueId);
     } else {
-      const newTemplateId = `${template.id}-${Date.now()}`;
+      const newTemplateId = uuidv4();
       const newTemplate = { ...template, uniqueId: newTemplateId };
       setSelectedTemplates(prev => [...prev, newTemplate]);
+      // Scroll to the newly added template after a short delay to ensure it's rendered
+      setTimeout(() => scrollToTemplate(newTemplateId), 100);
     }
   };
 
@@ -68,22 +70,22 @@ function App() {
 
   return (
     <div className="main-content">
-        <Editor 
-          templates={selectedTemplates}
-          onImageUpload={handleImageUpload}
-          uploadedImages={uploadedImages}
-          onReorderTemplates={handleReorderTemplates}
-          onDeleteTemplate={handleDeleteTemplate}
-          registerTemplateRef={registerTemplateRef}
-        />
-    <div className="App">
-      <LeftPanel 
-        magazines={magazineTemplates} 
-        onMagazineSelect={handleMagazineSelect}
-        selectedMagazine={selectedMagazine}
-        onTemplateSelect={handleTemplateSelect}
-        selectedTemplates={selectedTemplates}
+      <Editor 
+        templates={selectedTemplates}
+        onImageUpload={handleImageUpload}
+        uploadedImages={uploadedImages}
+        onReorderTemplates={handleReorderTemplates}
+        onDeleteTemplate={handleDeleteTemplate}
+        registerTemplateRef={registerTemplateRef}
       />
+      <div className="App">
+        <LeftPanel 
+          magazines={magazineTemplates} 
+          onMagazineSelect={handleMagazineSelect}
+          selectedMagazine={selectedMagazine}
+          onTemplateSelect={handleTemplateSelect}
+          selectedTemplates={selectedTemplates}
+        />
       </div>
       <div className="right-panel">
         <RightPanel />

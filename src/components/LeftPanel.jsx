@@ -2,6 +2,14 @@ import React from 'react';
 import Layout from './Layout';
 
 function LeftPanel({ magazines, onMagazineSelect, selectedMagazine, onTemplateSelect, selectedTemplates }) {
+  const handleNewTemplateSelect = (template) => {
+    onTemplateSelect(template, false);
+  };
+
+  const handleExistingTemplateSelect = (template) => {
+    onTemplateSelect(template, true);
+  };
+
   return (
     <div className="LeftPanel">
       <h2>Magazines</h2>
@@ -19,7 +27,7 @@ function LeftPanel({ magazines, onMagazineSelect, selectedMagazine, onTemplateSe
         <div>
           <h2>Templates</h2>
           {selectedMagazine.templates.map(template => (
-            <button key={template.id} onClick={() => onTemplateSelect(template)}>
+            <button key={template.id} onClick={() => handleNewTemplateSelect(template)}>
               {template.name}
             </button>
           ))}
@@ -27,7 +35,7 @@ function LeftPanel({ magazines, onMagazineSelect, selectedMagazine, onTemplateSe
       )}
 
       {selectedTemplates.length > 0 && (
-        <Layout templates={selectedTemplates} onTemplateSelect={onTemplateSelect} />
+        <Layout templates={selectedTemplates} onTemplateSelect={handleExistingTemplateSelect} />
       )}
     </div>
   );
