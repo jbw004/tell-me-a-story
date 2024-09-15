@@ -1,7 +1,18 @@
 import React, { useEffect, useRef, useCallback, useState } from 'react';
 import ConfirmationModal from './ConfirmationModal';
 
-function Canvas({ template, onImageUpload, onHeightChange, onReorder, onDelete, uploadedImages, style, registerRef }) {
+function Canvas({ 
+  template, 
+  onImageUpload, 
+  onHeightChange, 
+  onReorder, 
+  onDelete, 
+  uploadedImages, 
+  style, 
+  registerRef,
+  onTextSelect,
+  textStyles
+}) {
   const canvasRef = useRef(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
@@ -54,6 +65,27 @@ function Canvas({ template, onImageUpload, onHeightChange, onReorder, onDelete, 
     setIsDeleteModalOpen(false);
   };
 
+  const handleTextClick = (event) => {
+    const textElement = event.target.closest('[data-text-id]');
+    if (textElement) {
+      const textId = textElement.getAttribute('data-text-id');
+      onTextSelect(template.uniqueId, textId, textElement.textContent);
+    }
+  };
+
+  useEffect(() => {
+    if (canvasRef.current) {
+      const textElements = canvasRef.current.querySelectorAll('[data-text-id]');
+      textElements.forEach(element => {
+        const textId = element.getAttribute('data-text-id');
+        const style = textStyles[textId];
+        if (style) {
+          Object.assign(element.style, style);
+        }
+      });
+    }
+  }, [textStyles]);
+
   return (
     <div className="canvas-wrapper" style={style} ref={canvasRef}>
       <div className="canvas-controls">
@@ -65,6 +97,7 @@ function Canvas({ template, onImageUpload, onHeightChange, onReorder, onDelete, 
         <div 
           dangerouslySetInnerHTML={{ __html: template.content }} 
           onClick={(e) => {
+            handleTextClick(e);
             const target = e.target.closest('[data-upload-target="true"]');
             if (target) {
               const input = document.createElement('input');

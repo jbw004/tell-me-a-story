@@ -1,7 +1,16 @@
 import React, { useState, useCallback } from 'react';
 import Canvas from './Canvas';
 
-function Editor({ templates, onImageUpload, uploadedImages, onReorderTemplates, onDeleteTemplate, registerTemplateRef }) {
+function Editor({ 
+  templates, 
+  onImageUpload, 
+  uploadedImages, 
+  onReorderTemplates, 
+  onDeleteTemplate, 
+  registerTemplateRef,
+  onTextSelect,
+  textStyles
+}) {
   const [templateHeights, setTemplateHeights] = useState({});
 
   const handleTemplateHeightChange = useCallback((templateId, height) => {
@@ -41,6 +50,8 @@ function Editor({ templates, onImageUpload, uploadedImages, onReorderTemplates, 
             onDelete={onDeleteTemplate}
             uploadedImages={uploadedImages[template.uniqueId] || {}}
             registerRef={registerTemplateRef}
+            onTextSelect={onTextSelect}
+            textStyles={textStyles[template.uniqueId] || {}}
           />
         ))
       ) : (

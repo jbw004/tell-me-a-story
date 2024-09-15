@@ -11,6 +11,8 @@ function App() {
   const [selectedTemplates, setSelectedTemplates] = useState([]);
   const [uploadedImages, setUploadedImages] = useState({});
   const templateRefs = useRef({});
+  const [selectedText, setSelectedText] = useState(null);
+  const [textStyles, setTextStyles] = useState({});
 
   const handleMagazineSelect = (magazineId) => {
     const selected = magazineTemplates.find(mag => mag.id === magazineId);
@@ -68,15 +70,36 @@ function App() {
     });
   }, []);
 
+  const handleTextSelect = useCallback((templateId, textId, text) => {
+    setSelectedText({ templateId, textId, text });
+  }, []);
+
+  const handleTextStyleChange = useCallback((style) => {
+    if (selectedText) {
+      setTextStyles(prev => ({
+        ...prev,
+        [selectedText.templateId]: {
+          ...prev[selectedText.templateId],
+          [selectedText.textId]: {
+            ...prev[selectedText.templateId]?.[selectedText.textId],
+            ...style
+          }
+        }
+      }));
+    }
+  }, [selectedText]);
+
   return (
     <div className="main-content">
       <Editor 
-        templates={selectedTemplates}
-        onImageUpload={handleImageUpload}
-        uploadedImages={uploadedImages}
-        onReorderTemplates={handleReorderTemplates}
-        onDeleteTemplate={handleDeleteTemplate}
-        registerTemplateRef={registerTemplateRef}
+       templates={selectedTemplates}
+       onImageUpload={handleImageUpload}
+       uploadedImages={uploadedImages}
+       onReorderTemplates={handleReorderTemplates}
+       onDeleteTemplate={handleDeleteTemplate}
+       registerTemplateRef={registerTemplateRef}
+       onTextSelect={handleTextSelect}
+       textStyles={textStyles}
       />
       <div className="App">
         <LeftPanel 
@@ -88,7 +111,10 @@ function App() {
         />
       </div>
       <div className="right-panel">
-        <RightPanel />
+        <RightPanel 
+          selectedText={selectedText}
+          onTextStyleChange={handleTextStyleChange}
+        />
       </div>
     </div>
   );
