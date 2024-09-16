@@ -225,13 +225,13 @@ export const magazineTemplates = [
             <h1 class="article-title editable" contenteditable="true" data-text-id="article-title" style="font-size: 32px; font-weight: bold; margin-bottom: 20px; text-transform: uppercase; transform: skew(-5deg);">Sonic Rebellion</h1>
             <h2 class="article-subtitle editable" contenteditable="true" data-text-id="article-subtitle" style="font-size: 18px; margin-bottom: 20px; font-style: italic; transform: rotate(-2deg);">How underground noise is reshaping music</h2>
             <img src="/api/placeholder/375/250" alt="Feature image" id="featureImage" data-upload-target="true" style="width: 100%; height: 250px; object-fit: cover; margin-bottom: 20px; transform: perspective(500px) rotateX(5deg);">
-            <div class="article-text editable" contenteditable="true" data-text-id="article-text-1" style="font-size: 14px; line-height: 1.6; column-count: 2; column-gap: 20px; text-align: justify;">
+            <div class="article-text editable" contenteditable="true" data-text-id="article-text-1" style="font-size: 14px; line-height: 1.6; text-align: justify;">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
             </div>
             <div class="pull-quote editable" contenteditable="true" data-text-id="article-pullquote" style="font-size: 24px; font-weight: bold; padding: 20px; background-color: #000; color: #fff; margin: 20px 0; transform: rotate(-3deg);">
               "Noise is the new melody"
             </div>
-            <div class="article-text editable" contenteditable="true" data-text-id="article-text-2" style="font-size: 14px; line-height: 1.6; column-count: 2; column-gap: 20px; text-align: justify;">
+            <div class="article-text editable" contenteditable="true" data-text-id="article-text-2" style="font-size: 14px; line-height: 1.6; text-align: justify;">
               Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
             </div>
             <img src="/api/placeholder/375/250" alt="Feature image 2" id="featureImage2" data-upload-target="true" style="width: 100%; height: 250px; object-fit: cover; margin: 20px 0; transform: perspective(500px) rotateX(-5deg);">
