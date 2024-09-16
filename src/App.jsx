@@ -89,17 +89,38 @@ function App() {
     }
   }, [selectedText]);
 
+  const handleObjectDelete = useCallback((templateId, objectId) => {
+    setSelectedTemplates(prevTemplates => 
+      prevTemplates.map(template => {
+        if (template.uniqueId === templateId) {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(template.content, 'text/html');
+          const elementToDelete = doc.querySelector(`[data-object-id="${objectId}"]`);
+          if (elementToDelete) {
+            elementToDelete.remove();
+            return {
+              ...template,
+              content: doc.body.innerHTML
+            };
+          }
+        }
+        return template;
+      })
+    );
+  }, []);
+
   return (
     <div className="main-content">
       <Editor 
-       templates={selectedTemplates}
-       onImageUpload={handleImageUpload}
-       uploadedImages={uploadedImages}
-       onReorderTemplates={handleReorderTemplates}
-       onDeleteTemplate={handleDeleteTemplate}
-       registerTemplateRef={registerTemplateRef}
-       onTextSelect={handleTextSelect}
-       textStyles={textStyles}
+        templates={selectedTemplates}
+        onImageUpload={handleImageUpload}
+        uploadedImages={uploadedImages}
+        onReorderTemplates={handleReorderTemplates}
+        onDeleteTemplate={handleDeleteTemplate}
+        registerTemplateRef={registerTemplateRef}
+        onTextSelect={handleTextSelect}
+        textStyles={textStyles}
+        onObjectDelete={handleObjectDelete} // Pass down the new handler
       />
       <div className="App">
         <LeftPanel 

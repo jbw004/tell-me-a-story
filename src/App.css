@@ -327,3 +327,17 @@
 .template-item button:hover {
   background-color: #f0f0f0;
 }
+
+[data-deletable="true"].selected {
+  outline: 2px solid #ff0000; /* or any other visual indicator you prefer */
+  cursor: move; /* This indicates the object is selected and can be acted upon */
+}
+
+[data-deletable="true"]:not(.selected) {
+  cursor: pointer; /* This indicates the object can be selected */
+}
+
+[contenteditable="true"]:focus {
+  outline: 2px solid #0000ff; /* Different color for text being edited */
+  cursor: text;
+}

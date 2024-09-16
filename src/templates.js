@@ -11,7 +11,7 @@ export const magazineTemplates = [
             <style>
               .editable:hover { outline: 2px dashed #007bff; cursor: text; }
             </style>
-            <div class="logo editable" contenteditable="true" data-text-id="cover-logo" style="position: absolute; top: 20px; left: 20px; font-size: 24px; font-weight: bold; color: #000; z-index: 10;">i-D</div>
+            <div class="logo editable deletable" contenteditable="true" data-text-id="cover-logo" data-object-id="cover-logo" data-deletable="true" style="position: absolute; top: 20px; left: 20px; font-size: 24px; font-weight: bold; color: #000; z-index: 10;">i-D</div>
             <img src="/api/placeholder/375/812" alt="Cover model" id="coverImage" data-upload-target="true" style="width: 100%; height: 100%; object-fit: cover;">
             <h1 class="headline editable" contenteditable="true" data-text-id="cover-headline" style="position: absolute; bottom: 100px; left: 20px; right: 20px; font-size: 36px; font-weight: bold; color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); line-height: 1.2;">The Bold & Beautiful Issue</h1>
             <p class="subheadline editable" contenteditable="true" data-text-id="cover-subheadline" style="position: absolute; bottom: 50px; left: 20px; right: 20px; font-size: 16px; color: #fff; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">Exploring fashion's fearless frontiers</p>

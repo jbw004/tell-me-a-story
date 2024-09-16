@@ -9,7 +9,8 @@ function Editor({
   onDeleteTemplate, 
   registerTemplateRef,
   onTextSelect,
-  textStyles
+  textStyles,
+  onObjectDelete // New prop for object deletion
 }) {
   const [templateHeights, setTemplateHeights] = useState({});
 
@@ -52,6 +53,7 @@ function Editor({
             registerRef={registerTemplateRef}
             onTextSelect={onTextSelect}
             textStyles={textStyles[template.uniqueId] || {}}
+            onObjectDelete={onObjectDelete} // Pass down the new prop
           />
         ))
       ) : (

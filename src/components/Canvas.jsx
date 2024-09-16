@@ -11,10 +11,30 @@ function Canvas({
   style, 
   registerRef,
   onTextSelect,
-  textStyles
+  textStyles,
+  onObjectDelete
 }) {
   const canvasRef = useRef(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteAction, setDeleteAction] = useState(null);
+  const [selectedObject, setSelectedObject] = useState(null);
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      console.log('Key pressed:', event.key);
+      console.log('Selected object:', selectedObject);
+      if ((event.key === 'Delete' || event.key === 'Backspace') && selectedObject) {
+        console.log('Delete or Backspace key pressed with selected object');
+        event.preventDefault();
+        setDeleteAction('object');
+        setIsDeleteModalOpen(true);
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedObject]);
+
 
   useEffect(() => {
     if (canvasRef.current) {
@@ -56,21 +76,19 @@ function Canvas({
     }
   }, [template.uniqueId, onImageUpload]);
 
-  const handleDeleteClick = () => {
-    setIsDeleteModalOpen(true);
-  };
-
   const handleDeleteConfirm = () => {
-    onDelete(template.uniqueId);
-    setIsDeleteModalOpen(false);
-  };
-
-  const handleTextClick = (event) => {
-    const textElement = event.target.closest('[data-text-id]');
-    if (textElement) {
-      const textId = textElement.getAttribute('data-text-id');
-      onTextSelect(template.uniqueId, textId, textElement.textContent);
+    console.log('Delete confirmed. Action:', deleteAction, 'Selected object:', selectedObject);
+    if (deleteAction === 'template') {
+      onDelete(template.uniqueId);
+    } else if (deleteAction === 'object' && selectedObject) {
+      onObjectDelete(template.uniqueId, selectedObject);
     }
+    setIsDeleteModalOpen(false);
+    setDeleteAction(null);
+    setSelectedObject(null);
+    document.querySelectorAll('[data-deletable="true"]').forEach(el => {
+      el.classList.remove('selected');
+    });
   };
 
   useEffect(() => {
@@ -86,18 +104,65 @@ function Canvas({
     }
   }, [textStyles]);
 
+  const handleObjectSelect = (event) => {
+    const target = event.target.closest('[data-deletable="true"]');
+    if (target) {
+      event.preventDefault(); // Prevent text selection
+      document.querySelectorAll('[data-deletable="true"]').forEach(el => {
+        el.classList.remove('selected');
+      });
+      const objectId = target.getAttribute('data-object-id');
+      console.log('Object selected:', objectId);
+      setSelectedObject(objectId);
+      target.classList.add('selected');
+    } else {
+      setSelectedObject(null);
+      document.querySelectorAll('[data-deletable="true"]').forEach(el => {
+        el.classList.remove('selected');
+      });
+    }
+  };
+
+  const handleTextEdit = (event) => {
+    const textElement = event.target.closest('[data-text-id]');
+    if (textElement) {
+      const textId = textElement.getAttribute('data-text-id');
+      onTextSelect(template.uniqueId, textId, textElement.textContent);
+      // Remove selection when entering edit mode
+      setSelectedObject(null);
+      document.querySelectorAll('[data-deletable="true"]').forEach(el => {
+        el.classList.remove('selected');
+      });
+      // Make the text editable
+      textElement.contentEditable = true;
+      textElement.focus();
+    }
+  };
+
+  const handleContentChange = (event) => {
+    const textElement = event.target.closest('[data-text-id]');
+    if (textElement) {
+      const textId = textElement.getAttribute('data-text-id');
+      onTextSelect(template.uniqueId, textId, textElement.textContent);
+    }
+  };
+
+
+
   return (
     <div className="canvas-wrapper" style={style} ref={canvasRef}>
       <div className="canvas-controls">
         <button onClick={() => onReorder(template.uniqueId, 'up')}>↑</button>
         <button onClick={() => onReorder(template.uniqueId, 'down')}>↓</button>
-        <button onClick={handleDeleteClick}>🗑️</button>
+        <button onClick={() => { setDeleteAction('template'); setIsDeleteModalOpen(true); }}>🗑️</button>
       </div>
       <div className="canvas-item">
         <div 
           dangerouslySetInnerHTML={{ __html: template.content }} 
+          onMouseDown={handleObjectSelect}
+          onDoubleClick={handleTextEdit}
+          onInput={handleContentChange}
           onClick={(e) => {
-            handleTextClick(e);
             const target = e.target.closest('[data-upload-target="true"]');
             if (target) {
               const input = document.createElement('input');
@@ -113,7 +178,9 @@ function Canvas({
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleDeleteConfirm}
-        message="Are you sure you want to delete this page?"
+        message={deleteAction === 'template' 
+          ? "Are you sure you want to delete this page?" 
+          : "Are you sure you want to delete this object?"}
       />
     </div>
   );
