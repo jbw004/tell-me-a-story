@@ -15,6 +15,7 @@ function Canvas({
   onObjectDelete
 }) {
   const canvasRef = useRef(null);
+  const contentRef = useRef(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteAction, setDeleteAction] = useState(null);
   const [selectedObject, setSelectedObject] = useState(null);
@@ -39,19 +40,31 @@ function Canvas({
   useEffect(() => {
     if (canvasRef.current) {
       registerRef(template.uniqueId, canvasRef.current);
-
-      const updateHeight = () => {
-        const height = canvasRef.current.scrollHeight;
-        onHeightChange(template.uniqueId, height);
-      };
-
-      updateHeight();
-      const resizeObserver = new ResizeObserver(updateHeight);
-      resizeObserver.observe(canvasRef.current);
-
-      return () => resizeObserver.disconnect();
     }
-  }, [template.uniqueId, onHeightChange, registerRef]);
+  }, [template.uniqueId, registerRef]);
+
+  useEffect(() => {
+    const updateHeight = () => {
+      if (contentRef.current && canvasRef.current) {
+        const height = contentRef.current.scrollHeight;
+        onHeightChange(template.uniqueId, height);
+        canvasRef.current.style.height = `${height}px`;
+      }
+    };
+
+    let resizeObserver;
+    if (contentRef.current) {
+      updateHeight();
+      resizeObserver = new ResizeObserver(updateHeight);
+      resizeObserver.observe(contentRef.current);
+    }
+
+    return () => {
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      }
+    };
+  }, [template.uniqueId, onHeightChange]);
 
   useEffect(() => {
     if (canvasRef.current) {
