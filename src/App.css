@@ -341,3 +341,60 @@
   outline: 2px solid #0000ff; /* Different color for text being edited */
   cursor: text;
 }
+
+/* Existing styles ... */
+
+/* Styles for export */
+.exporting .canvas-controls,
+.exporting .reorder-controls {
+  display: none;
+}
+
+.exporting .canvas-wrapper {
+  margin: 0;
+  padding: 0;
+  box-shadow: none;
+}
+
+.exporting .canvas-item {
+  box-shadow: none;
+  border: none;
+}
+
+/* Hide any other UI elements not needed in the export */
+.exporting .editable:hover {
+  outline: none;
+}
+
+.exporting [contenteditable="true"]:focus {
+  outline: none;
+}
+
+/* Ensure full-bleed for images in export */
+.exporting img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Adjust text styles for better print quality */
+.exporting {
+  font-size: 12pt;
+  line-height: 1.5;
+  color: #000;
+}
+
+/* Ensure page breaks are handled gracefully */
+.exporting .canvas-wrapper {
+  page-break-inside: avoid;
+  page-break-after: always;
+}
+
+/* Hide scrollbars in the exported PDF */
+.exporting::-webkit-scrollbar {
+  display: none;
+}
+
+.exporting {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

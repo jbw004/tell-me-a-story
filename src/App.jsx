@@ -2,6 +2,7 @@ import React, { useState, useCallback, useRef } from 'react';
 import LeftPanel from './components/LeftPanel';
 import RightPanel from './components/RightPanel';
 import Editor from './components/Editor';
+import ExportComponent from './components/ExportComponent';
 import { magazineTemplates } from './templates.js';
 import { v4 as uuidv4 } from 'uuid';
 import './App.css';
@@ -13,6 +14,15 @@ function App() {
   const templateRefs = useRef({});
   const [selectedText, setSelectedText] = useState(null);
   const [textStyles, setTextStyles] = useState({});
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleExportStart = useCallback(() => {
+    setIsExporting(true);
+  }, []);
+
+  const handleExportEnd = useCallback(() => {
+    setIsExporting(false);
+  }, []);
 
   const handleMagazineSelect = (magazineId) => {
     const selected = magazineTemplates.find(mag => mag.id === magazineId);
@@ -121,6 +131,13 @@ function App() {
         onTextSelect={handleTextSelect}
         textStyles={textStyles}
         onObjectDelete={handleObjectDelete} // Pass down the new handler
+        isExporting={isExporting}
+      />
+      <ExportComponent 
+        templates={selectedTemplates}
+        templateRefs={templateRefs}
+        onExportStart={handleExportStart}
+        onExportEnd={handleExportEnd}
       />
       <div className="App">
         <LeftPanel 

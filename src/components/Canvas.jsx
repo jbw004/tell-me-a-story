@@ -12,7 +12,8 @@ function Canvas({
   registerRef,
   onTextSelect,
   textStyles,
-  onObjectDelete
+  onObjectDelete,
+  isExporting  // New prop for export state
 }) {
   const canvasRef = useRef(null);
   const contentRef = useRef(null);
@@ -118,6 +119,7 @@ function Canvas({
   }, [textStyles]);
 
   const handleObjectSelect = (event) => {
+    if (isExporting) return; // Disable selection during export
     const target = event.target.closest('[data-deletable="true"]');
     if (target) {
       event.preventDefault(); // Prevent text selection
@@ -137,6 +139,7 @@ function Canvas({
   };
 
   const handleTextEdit = (event) => {
+    if (isExporting) return; // Disable editing during export
     const textElement = event.target.closest('[data-text-id]');
     if (textElement) {
       const textId = textElement.getAttribute('data-text-id');
@@ -163,12 +166,14 @@ function Canvas({
 
 
   return (
-    <div className="canvas-wrapper" style={style} ref={canvasRef}>
+    <div className={`canvas-wrapper ${isExporting ? 'exporting' : ''}`} style={style} ref={canvasRef}>
+      {!isExporting && (
       <div className="canvas-controls">
         <button onClick={() => onReorder(template.uniqueId, 'up')}>↑</button>
         <button onClick={() => onReorder(template.uniqueId, 'down')}>↓</button>
         <button onClick={() => { setDeleteAction('template'); setIsDeleteModalOpen(true); }}>🗑️</button>
       </div>
+      )}
       <div className="canvas-item">
         <div 
           dangerouslySetInnerHTML={{ __html: template.content }} 
@@ -176,6 +181,7 @@ function Canvas({
           onDoubleClick={handleTextEdit}
           onInput={handleContentChange}
           onClick={(e) => {
+            if (isExporting) return; // Disable image upload during export
             const target = e.target.closest('[data-upload-target="true"]');
             if (target) {
               const input = document.createElement('input');
@@ -187,6 +193,16 @@ function Canvas({
           }}
         />
       </div>
+      {!isExporting && (
+        <ConfirmationModal
+          isOpen={isDeleteModalOpen}
+          onClose={() => setIsDeleteModalOpen(false)}
+          onConfirm={handleDeleteConfirm}
+          message={deleteAction === 'template' 
+            ? "Are you sure you want to delete this page?" 
+            : "Are you sure you want to delete this object?"}
+        />
+      )}
       <ConfirmationModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}

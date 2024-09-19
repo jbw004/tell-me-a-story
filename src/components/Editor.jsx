@@ -10,7 +10,8 @@ function Editor({
   registerTemplateRef,
   onTextSelect,
   textStyles,
-  onObjectDelete // New prop for object deletion
+  onObjectDelete, // New prop for object deletion
+  isExporting
 }) {
   const [templateHeights, setTemplateHeights] = useState({});
 
@@ -39,7 +40,7 @@ function Editor({
   }, [templates, onReorderTemplates]);
 
   return (
-    <div className="editor-container">
+    <div className={`editor-container ${isExporting ? 'exporting' : ''}`}>
       {templates.length > 0 ? (
         templates.map((template) => (
           <Canvas
@@ -54,6 +55,7 @@ function Editor({
             onTextSelect={onTextSelect}
             textStyles={textStyles[template.uniqueId] || {}}
             onObjectDelete={onObjectDelete} // Pass down the new prop
+            isExporting={isExporting}
           />
         ))
       ) : (
