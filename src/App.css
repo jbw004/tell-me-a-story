@@ -408,3 +408,20 @@
 [contenteditable="true"]:hover {
   background-color: rgba(0, 123, 255, 0.1);
 }
+
+@media print {
+  body {
+    background-color: white;
+  }
+  .export-container {
+    gap: 0;
+  }
+  .template {
+    box-shadow: none;
+    border-bottom: 1px solid #ccc;
+    page-break-inside: avoid;
+  }
+  .template:last-child {
+    border-bottom: none;
+  }
+}
