@@ -152,6 +152,17 @@ function Canvas({
       // Make the text editable
       textElement.contentEditable = true;
       textElement.focus();
+
+      // Set cursor to the end of the text
+      const range = document.createRange();
+      const selection = window.getSelection();
+      range.selectNodeContents(textElement);
+      range.collapse(false); // false means collapse to end
+      selection.removeAllRanges();
+      selection.addRange(range);
+
+      // Prevent default behavior to allow custom cursor positioning
+      event.preventDefault();
     }
   };
 
