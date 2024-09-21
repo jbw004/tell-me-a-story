@@ -119,6 +119,56 @@ function App() {
     );
   }, []);
 
+  const handleAddTocItem = useCallback((templateId) => {
+    setSelectedTemplates(prevTemplates => 
+      prevTemplates.map(template => {
+        if (template.uniqueId === templateId && template.id === 'contents-mobile') {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(template.content, 'text/html');
+          const tocContainer = doc.getElementById('tocContainer');
+          
+          if (tocContainer) {
+            const newItem = doc.createElement('div');
+            newItem.className = 'toc-item';
+            newItem.innerHTML = `
+              <span class="toc-title editable deletable" contenteditable="true" data-text-id="contents-item-new-title" data-object-id="contents-item-new-title" data-deletable="true">New Item</span>
+              <span class="toc-page editable deletable" contenteditable="true" data-text-id="contents-item-new-page" data-object-id="contents-item-new-page" data-deletable="true">00</span>
+            `;
+            tocContainer.appendChild(newItem);
+
+            return {
+              ...template,
+              content: doc.body.innerHTML
+            };
+          }
+        }
+        return template;
+      })
+    );
+  }, []);
+
+  const handleRemoveTocItem = useCallback((templateId) => {
+    setSelectedTemplates(prevTemplates => 
+      prevTemplates.map(template => {
+        if (template.uniqueId === templateId && template.id === 'contents-mobile') {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(template.content, 'text/html');
+          const tocContainer = doc.getElementById('tocContainer');
+          
+          if (tocContainer && tocContainer.lastElementChild) {
+            tocContainer.removeChild(tocContainer.lastElementChild);
+
+            return {
+              ...template,
+              content: doc.body.innerHTML
+            };
+          }
+        }
+        return template;
+      })
+    );
+  }, []);
+
   return (
     <div className="main-content">
       <Editor 
@@ -132,6 +182,8 @@ function App() {
         textStyles={textStyles}
         onObjectDelete={handleObjectDelete} // Pass down the new handler
         isExporting={isExporting}
+        onAddTocItem={handleAddTocItem}  // New prop
+        onRemoveTocItem={handleRemoveTocItem}  // New prop
       />
       <ExportComponent 
         templates={selectedTemplates}

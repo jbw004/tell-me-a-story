@@ -13,7 +13,9 @@ function Canvas({
   onTextSelect,
   textStyles,
   onObjectDelete,
-  isExporting  // New prop for export state
+  isExporting,  // New prop for export state
+  onAddTocItem,  // New prop
+  onRemoveTocItem  // New prop
 }) {
   const canvasRef = useRef(null);
   const contentRef = useRef(null);
@@ -174,7 +176,17 @@ function Canvas({
     }
   };
 
+  const handleAddTocItem = () => {
+    if (template.id === 'contents-mobile') {
+      onAddTocItem(template.uniqueId);
+    }
+  };
 
+  const handleRemoveTocItem = () => {
+    if (template.id === 'contents-mobile') {
+      onRemoveTocItem(template.uniqueId);
+    }
+  };
 
   return (
     <div className={`canvas-wrapper ${isExporting ? 'exporting' : ''}`} style={style} ref={canvasRef}>
@@ -183,6 +195,12 @@ function Canvas({
         <button onClick={() => onReorder(template.uniqueId, 'up')}>↑</button>
         <button onClick={() => onReorder(template.uniqueId, 'down')}>↓</button>
         <button onClick={() => { setDeleteAction('template'); setIsDeleteModalOpen(true); }}>🗑️</button>
+        {template.id === 'contents-mobile' && (
+            <>
+              <button onClick={handleAddTocItem}>+</button>
+              <button onClick={handleRemoveTocItem}>-</button>
+            </>
+          )}
       </div>
       )}
       <div className="canvas-item">

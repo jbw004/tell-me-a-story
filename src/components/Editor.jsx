@@ -11,7 +11,9 @@ function Editor({
   onTextSelect,
   textStyles,
   onObjectDelete, // New prop for object deletion
-  isExporting
+  isExporting,
+  onAddTocItem,  // New prop
+  onRemoveTocItem  // New prop
 }) {
   const [templateHeights, setTemplateHeights] = useState({});
 
@@ -56,6 +58,8 @@ function Editor({
             textStyles={textStyles[template.uniqueId] || {}}
             onObjectDelete={onObjectDelete} // Pass down the new prop
             isExporting={isExporting}
+            onAddTocItem={onAddTocItem}  // New prop
+            onRemoveTocItem={onRemoveTocItem}  // New prop
           />
         ))
       ) : (
