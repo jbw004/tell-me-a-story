@@ -14,10 +14,8 @@ const ExportComponent = ({ templates, templateRefs }) => {
     style.textContent = `
       body { 
         background-color: #f0f0f0; 
-        display: flex;
-        justify-content: center;
-        padding: 20px;
         margin: 0;
+        padding: 0;
         font-family: Arial, sans-serif;
       }
       .export-container {
@@ -25,6 +23,7 @@ const ExportComponent = ({ templates, templateRefs }) => {
         flex-direction: column;
         align-items: center;
         gap: 16px;
+        padding: 20px;
       }
       .template {
         background-color: white;
@@ -60,13 +59,23 @@ const ExportComponent = ({ templates, templateRefs }) => {
     `;
     exportDoc.head.appendChild(style);
 
-    // Create a container for the templates
+    // Create a container for the React app
     const container = exportDoc.createElement('div');
-    container.className = 'export-container';
+    container.id = 'root';
     exportDoc.body.appendChild(container);
 
-    // Clone and append each template to the new document
-    templates.forEach((template) => {
+    // Add React and ReactDOM scripts
+    const reactScript = exportDoc.createElement('script');
+    reactScript.src = 'https://unpkg.com/react@17/umd/react.production.min.js';
+    reactScript.defer = true;
+    const reactDOMScript = exportDoc.createElement('script');
+    reactDOMScript.src = 'https://unpkg.com/react-dom@17/umd/react-dom.production.min.js';
+    reactDOMScript.defer = true;
+    exportDoc.head.appendChild(reactScript);
+    exportDoc.head.appendChild(reactDOMScript);
+
+    // Clone and process templates
+    const processedTemplates = templates.map((template) => {
       const templateElement = templateRefs.current[template.uniqueId];
       if (templateElement) {
         const clonedTemplate = templateElement.cloneNode(true);
@@ -84,10 +93,86 @@ const ExportComponent = ({ templates, templateRefs }) => {
           element.removeAttribute('data-deletable');
         });
 
-        clonedTemplate.className = 'template';
-        container.appendChild(clonedTemplate);
+        return {
+          ...template,
+          content: clonedTemplate.outerHTML
+        };
       }
+      return template;
     });
+
+    // Add a script to define and render our React component
+    const appScript = exportDoc.createElement('script');
+    appScript.textContent = `
+      const ExportedMagazineView = ({ templates }) => {
+        const [showFullMagazine, setShowFullMagazine] = React.useState(false);
+      
+        const coverTemplate = templates[0]; // Assuming the first template is always the cover
+      
+        const CoverCard = () => (
+          React.createElement('div', {
+            className: "cover-card",
+            onClick: () => setShowFullMagazine(true),
+            style: {
+              width: '375px',
+              height: '812px',
+              margin: '20px auto',
+              cursor: 'pointer',
+              boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+              overflow: 'hidden',
+              position: 'relative',
+            }
+          },
+            React.createElement('div', { dangerouslySetInnerHTML: { __html: coverTemplate.content } }),
+            React.createElement('div', {
+              style: {
+                position: 'absolute',
+                bottom: '20px',
+                right: '20px',
+                background: 'rgba(0,0,0,0.7)',
+                color: 'white',
+                padding: '10px',
+                borderRadius: '5px',
+              }
+            }, "Click to view full magazine")
+          )
+        );
+      
+        const FullMagazine = () => (
+          React.createElement('div', { className: "export-container" },
+            React.createElement('button', {
+              onClick: () => setShowFullMagazine(false),
+              style: {
+                position: 'fixed',
+                top: '20px',
+                right: '20px',
+                zIndex: 1000,
+              }
+            }, "Close"),
+            templates.map((template, index) => (
+              React.createElement('div', {
+                key: index,
+                className: "template",
+                dangerouslySetInnerHTML: { __html: template.content }
+              })
+            ))
+          )
+        );
+      
+        return React.createElement('div', { className: "exported-magazine-view" },
+          showFullMagazine ? React.createElement(FullMagazine) : React.createElement(CoverCard)
+        );
+      };
+
+      const templates = ${JSON.stringify(processedTemplates)};
+      window.addEventListener('load', function() {
+        ReactDOM.render(
+          React.createElement(ExportedMagazineView, { templates: templates }),
+          document.getElementById('root')
+        );
+      });
+    `;
+    exportDoc.body.appendChild(appScript);
 
     // Open the new document in a new tab
     const newTab = window.open();
@@ -104,7 +189,7 @@ const ExportComponent = ({ templates, templateRefs }) => {
         disabled={exporting}
         className={`export-button ${exporting ? 'exporting' : ''}`}
       >
-        {exporting ? 'Exporting...' : 'Export Templates'}
+        {exporting ? 'Exporting...' : 'Export Magazine'}
       </button>
     </div>
   );
