@@ -13,7 +13,7 @@ const ExportComponent = ({ templates, templateRefs }) => {
     const style = exportDoc.createElement('style');
     style.textContent = `
       body { 
-        background-color: #FAF9F6; 
+        background-color: #f0f0f0; 
         display: flex;
         justify-content: center;
         padding: 20px;
@@ -28,8 +28,18 @@ const ExportComponent = ({ templates, templateRefs }) => {
       }
       .template {
         background-color: white;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
         margin: 0;
+        user-select: text;
+        -webkit-user-select: text;
+        -moz-user-select: text;
+        -ms-user-select: text;
+      }
+      .template * {
+        user-select: text;
+        -webkit-user-select: text;
+        -moz-user-select: text;
+        -ms-user-select: text;
       }
       @media print {
         body {
@@ -66,6 +76,13 @@ const ExportComponent = ({ templates, templateRefs }) => {
         if (canvasControls) {
           canvasControls.remove();
         }
+
+        // Make all content non-editable
+        clonedTemplate.querySelectorAll('*').forEach(element => {
+          element.contentEditable = 'false';
+          element.removeAttribute('data-text-id');
+          element.removeAttribute('data-deletable');
+        });
 
         clonedTemplate.className = 'template';
         container.appendChild(clonedTemplate);
