@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const ExportComponent = ({ templates, templateRefs }) => {
   const [exporting, setExporting] = useState(false);
+  const navigate = useNavigate();
 
   const exportTemplates = () => {
     setExporting(true);
@@ -174,10 +176,27 @@ const ExportComponent = ({ templates, templateRefs }) => {
     `;
     exportDoc.body.appendChild(appScript);
 
-    // Open the new document in a new tab
-    const newTab = window.open();
-    newTab.document.write(exportDoc.documentElement.outerHTML);
-    newTab.document.close();
+    // Generate a unique ID for the magazine
+    const magazineId = Date.now().toString();
+
+    // Create a new magazine object
+    const newMagazine = {
+      id: magazineId,
+      title: "My Magazine", // You might want to allow users to set a title
+      content: exportDoc.documentElement.outerHTML,
+      createdAt: new Date().toISOString()
+    };
+
+    // Save to local storage (replace with API call in production)
+    const storedMagazines = JSON.parse(localStorage.getItem('exportedMagazines')) || [];
+    const updatedMagazines = [...storedMagazines, newMagazine];
+    localStorage.setItem('exportedMagazines', JSON.stringify([...storedMagazines, newMagazine]));
+    localStorage.setItem('exportedMagazines', JSON.stringify(updatedMagazines));
+
+
+    // Open the gallery in a new tab
+    const galleryUrl = `/gallery?newMagazineId=${magazineId}`;
+    window.open(galleryUrl, '_blank');
 
     setExporting(false);
   };
