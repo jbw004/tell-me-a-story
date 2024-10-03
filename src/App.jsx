@@ -1,8 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import EditorPage from './components/EditorPage';
-import MagazineGallery from './components/MagazineGallery';
-import MagazineViewer from './components/MagazineViewer';
+import MagazineCarousel from './components/MagazineCarousel';
 import './App.css';
 
 function App() {
@@ -11,13 +10,15 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/" element={<EditorPage />} />
-          <Route path="/gallery" element={<MagazineGallery />} />
-          <Route path="/magazine/:id" element={<MagazineViewer />} />
+          <Route path="/gallery" element={<MagazineCarousel />} />
+          <Route path="/gallery/:id" element={<MagazineCarousel />} />
         </Routes>
       </div>
     </Router>
   );
 }
+
+export default App;
 
 // This function will open the gallery in a new window
 export const openGalleryInNewWindow = (zines) => {
@@ -28,5 +29,3 @@ export const openGalleryInNewWindow = (zines) => {
     };
   }
 };
-
-export default App;
