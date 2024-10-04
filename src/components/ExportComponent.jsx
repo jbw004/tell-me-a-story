@@ -76,32 +76,32 @@ const ExportComponent = ({ templates, templateRefs }) => {
     exportDoc.head.appendChild(reactScript);
     exportDoc.head.appendChild(reactDOMScript);
 
-    // Clone and process templates
-    const processedTemplates = templates.map((template) => {
-      const templateElement = templateRefs.current[template.uniqueId];
-      if (templateElement) {
-        const clonedTemplate = templateElement.cloneNode(true);
-        
-        // Remove the canvas controls
-        const canvasControls = clonedTemplate.querySelector('.canvas-controls');
-        if (canvasControls) {
-          canvasControls.remove();
-        }
-
-        // Make all content non-editable
-        clonedTemplate.querySelectorAll('*').forEach(element => {
-          element.contentEditable = 'false';
-          element.removeAttribute('data-text-id');
-          element.removeAttribute('data-deletable');
-        });
-
-        return {
-          ...template,
-          content: clonedTemplate.outerHTML
-        };
+    // Process templates
+  const processedTemplates = templates.map((template) => {
+    const templateElement = templateRefs.current[template.uniqueId];
+    if (templateElement) {
+      const clonedTemplate = templateElement.cloneNode(true);
+      
+      // Remove the canvas controls
+      const canvasControls = clonedTemplate.querySelector('.canvas-controls');
+      if (canvasControls) {
+        canvasControls.remove();
       }
-      return template;
-    });
+
+      // Make all content non-editable
+      clonedTemplate.querySelectorAll('*').forEach(element => {
+        element.contentEditable = 'false';
+        element.removeAttribute('data-text-id');
+        element.removeAttribute('data-deletable');
+      });
+
+      return {
+        ...template,
+        content: clonedTemplate.innerHTML // Store only the inner HTML
+      };
+    }
+    return template;
+  });
 
     // Add a script to define and render our React component
     const appScript = exportDoc.createElement('script');
@@ -180,26 +180,24 @@ const ExportComponent = ({ templates, templateRefs }) => {
     const magazineId = Date.now().toString();
 
     // Create a new magazine object
-    const newMagazine = {
-      id: magazineId,
-      title: "My Magazine", // You might want to allow users to set a title
-      content: exportDoc.documentElement.outerHTML,
-      createdAt: new Date().toISOString()
-    };
-
-    // Save to local storage (replace with API call in production)
-    const storedMagazines = JSON.parse(localStorage.getItem('exportedMagazines')) || [];
-    const updatedMagazines = [...storedMagazines, newMagazine];
-    localStorage.setItem('exportedMagazines', JSON.stringify([...storedMagazines, newMagazine]));
-    localStorage.setItem('exportedMagazines', JSON.stringify(updatedMagazines));
-
-
-    // Open the gallery in a new tab
-    const galleryUrl = `/gallery?newMagazineId=${magazineId}`;
-    window.open(galleryUrl, '_blank');
-
-    setExporting(false);
+  const newMagazine = {
+    id: magazineId,
+    title: "My Magazine", // You might want to allow users to set a title
+    templates: processedTemplates, // Store the processed templates directly
+    createdAt: new Date().toISOString()
   };
+
+   // Save to local storage
+  const storedMagazines = JSON.parse(localStorage.getItem('exportedMagazines')) || [];
+  const updatedMagazines = [...storedMagazines, newMagazine];
+  localStorage.setItem('exportedMagazines', JSON.stringify(updatedMagazines));
+
+  // Open the gallery in a new tab
+  const galleryUrl = `/gallery?newMagazineId=${magazineId}`;
+  window.open(galleryUrl, '_blank');
+
+  setExporting(false);
+};
 
   return (
     <div className="export-container">

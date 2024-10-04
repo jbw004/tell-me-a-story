@@ -1,23 +1,25 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import ExportedMagazineView from './ExportedMagazineView';
 
 const MagazineCarousel = () => {
   const [magazines, setMagazines] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [expanded, setExpanded] = useState(false);
+  const [showFullMagazine, setShowFullMagazine] = useState(false);
   const carouselRef = useRef(null);
   const navigate = useNavigate();
   const { id } = useParams();
 
   useEffect(() => {
     const storedMagazines = JSON.parse(localStorage.getItem('exportedMagazines')) || [];
+    console.log("Stored magazines:", storedMagazines);
     setMagazines(storedMagazines);
-
+  
     if (id) {
       const index = storedMagazines.findIndex(mag => mag.id === id);
+      console.log("Selected magazine index:", index);
       if (index !== -1) {
         setSelectedIndex(index);
-        setExpanded(true);
       }
     }
   }, [id]);
@@ -25,7 +27,7 @@ const MagazineCarousel = () => {
   useEffect(() => {
     if (carouselRef.current) {
       carouselRef.current.scrollTo({
-        left: selectedIndex * 320, // Adjust based on your card width + margin
+        left: selectedIndex * carouselRef.current.offsetWidth,
         behavior: 'smooth'
       });
     }
@@ -36,13 +38,17 @@ const MagazineCarousel = () => {
     navigate(`/gallery/${magazines[index].id}`);
   };
 
-  const toggleExpand = () => {
-    setExpanded(!expanded);
-    if (!expanded) {
-      navigate(`/gallery/${magazines[selectedIndex].id}`);
-    } else {
-      navigate('/gallery');
+  const handleScroll = () => {
+    if (carouselRef.current) {
+      const index = Math.round(carouselRef.current.scrollLeft / carouselRef.current.offsetWidth);
+      if (index !== selectedIndex) {
+        handleSelect(index);
+      }
     }
+  };
+
+  const toggleFullMagazine = () => {
+    setShowFullMagazine(!showFullMagazine);
   };
 
   if (magazines.length === 0) {
@@ -50,34 +56,46 @@ const MagazineCarousel = () => {
   }
 
   return (
-    <div className="magazine-carousel">
-      <div className="magazine-scroll-container" ref={carouselRef}>
-        {magazines.map((magazine, index) => (
-          <div
-            key={magazine.id}
-            className={`magazine-cover-card ${index === selectedIndex ? 'selected' : ''}`}
-            onClick={() => handleSelect(index)}
-          >
-            <h3>{magazine.title}</h3>
-            <p>Created: {new Date(magazine.createdAt).toLocaleString()}</p>
-          </div>
-        ))}
+    <div style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', overflow: 'hidden' }}>
+      <div 
+        ref={carouselRef}
+        onScroll={handleScroll}
+        style={{
+          display: 'flex',
+          overflowX: 'auto',
+          scrollSnapType: 'x mandatory',
+          WebkitOverflowScrolling: 'touch',
+          scrollBehavior: 'smooth',
+          width: '100%',
+          height: '100%'
+        }}
+      >
+        {magazines.map((magazine, index) => {
+          console.log(`Rendering magazine ${index}:`, magazine);
+          return (
+            <div key={magazine.id} style={{ flexShrink: 0, width: '100%', scrollSnapAlign: 'start' }}>
+              <ExportedMagazineView
+                templates={magazine.templates || [{ content: magazine.content }]} // Fallback for old data structure
+                onViewFull={() => {
+                  console.log(`Viewing full magazine ${index}`);
+                  setSelectedIndex(index);
+                  toggleFullMagazine();
+                }}
+                showFull={false}
+              />
+            </div>
+          );
+        })}
       </div>
-      <div className="magazine-view">
-        {expanded ? (
-          <iframe
-            srcDoc={magazines[selectedIndex].content}
-            style={{ width: '100%', height: '80vh', border: 'none' }}
-            title={magazines[selectedIndex].title}
+      {showFullMagazine && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'white', zIndex: 1000, overflow: 'auto' }}>
+          <ExportedMagazineView
+            templates={magazines[selectedIndex]?.templates || [{ content: magazines[selectedIndex]?.content }]} // Fallback for old data structure
+            onViewFull={toggleFullMagazine}
+            showFull={true}
           />
-        ) : (
-          <div className="cover-preview">
-            <h2>{magazines[selectedIndex].title}</h2>
-            <p>Created: {new Date(magazines[selectedIndex].createdAt).toLocaleString()}</p>
-          </div>
-        )}
-        <button onClick={toggleExpand}>{expanded ? 'Collapse' : 'Expand'}</button>
-      </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -428,13 +428,6 @@
 
 /* Add these new styles to your existing App.css file */
 
-.magazine-carousel {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  overflow: hidden;
-}
-
 .magazine-scroll-container {
   display: flex;
   overflow-x: auto;
@@ -442,20 +435,6 @@
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
   padding: 20px 0;
-}
-
-.magazine-cover-card {
-  flex: 0 0 auto;
-  width: 300px;
-  height: 400px;
-  margin-right: 20px;
-  scroll-snap-align: start;
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  cursor: pointer;
-  transition: transform 0.3s ease;
 }
 
 .magazine-cover-card:hover {
@@ -502,3 +481,8 @@
 .magazine-view button:hover {
   background-color: #3700b3;
 }
+
+.magazine-carousel::-webkit-scrollbar {
+  display: none;
+}
+

@@ -1,14 +1,21 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-const ExportedMagazineView = ({ templates }) => {
-  const [showFullMagazine, setShowFullMagazine] = useState(false);
+const ExportedMagazineView = ({ templates, onViewFull, showFull }) => {
+  console.log("ExportedMagazineView render. showFull:", showFull);
+  console.log("Received templates:", templates);
 
-  const coverTemplate = templates[0]; // Assuming the first template is always the cover
-
+  if (!templates || templates.length === 0) {
+    console.error("No templates provided to ExportedMagazineView");
+    return <div>No magazine content available.</div>;
+  }
+  
+  const coverTemplate = templates[0];
+  console.log("Cover template:", coverTemplate);
+  
   const CoverCard = () => (
     <div 
       className="cover-card"
-      onClick={() => setShowFullMagazine(true)}
+      onClick={onViewFull}
       style={{
         width: '375px',
         height: '812px',
@@ -19,12 +26,16 @@ const ExportedMagazineView = ({ templates }) => {
         position: 'relative',
       }}
     >
-      <div dangerouslySetInnerHTML={{ __html: coverTemplate.content }} />
+      <div 
+        dangerouslySetInnerHTML={{ __html: coverTemplate.content }} 
+        style={{ width: '100%', height: '100%' }}
+      />
       <div 
         style={{
           position: 'absolute',
           bottom: '20px',
-          right: '20px',
+          left: '50%',
+          transform: 'translateX(-50%)',
           background: 'rgba(0,0,0,0.7)',
           color: 'white',
           padding: '10px',
@@ -37,9 +48,9 @@ const ExportedMagazineView = ({ templates }) => {
   );
 
   const FullMagazine = () => (
-    <div className="full-magazine">
+    <div className="full-magazine" style={{ padding: '20px', maxHeight: '100vh', overflowY: 'auto' }}>
       <button 
-        onClick={() => setShowFullMagazine(false)}
+        onClick={onViewFull}
         style={{
           position: 'fixed',
           top: '20px',
@@ -59,15 +70,18 @@ const ExportedMagazineView = ({ templates }) => {
             boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
           }}
         >
-          <div dangerouslySetInnerHTML={{ __html: template.content }} />
+          <div 
+            dangerouslySetInnerHTML={{ __html: template.content }}
+            style={{ width: '100%' }}
+          />
         </div>
       ))}
     </div>
   );
 
   return (
-    <div className="exported-magazine-view">
-      {showFullMagazine ? <FullMagazine /> : <CoverCard />}
+    <div className="exported-magazine-view" style={{ height: '100%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      {showFull ? <FullMagazine /> : <CoverCard />}
     </div>
   );
 };
