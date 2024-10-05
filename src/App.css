@@ -119,7 +119,8 @@
     background-color: white;
     border-radius: 5px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
-    padding: 20px;
+    padding: 0;
+    margin: 0;
     min-height: 406px;
     transition: height 0.3s ease;
     overflow: hidden;
@@ -242,7 +243,8 @@
 
   .canvas-wrapper {
     position: relative;
-    margin-bottom: 20px;
+    margin-bottom: 0;
+    padding: 0;
   }
   
   .canvas-controls {
@@ -433,12 +435,16 @@
 
 .magazine-scroll-container {
   display: flex;
+  flex-direction: column;
+  align-items: center;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
   padding: 0; /* Removed top and bottom padding */
+  margin: 0;
   justify-content: center;
+  height: 100%;
 }
 
 .magazine-cover-card:hover {
@@ -455,7 +461,10 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 0 20px; /* Removed top padding to eliminate extra space */
+  height: 100vh;
+  box-sizing: border-box; /* Include padding and border within the total height */
+  padding: 0;
+  margin: 0;
 }
 
 .cover-preview {
@@ -467,11 +476,13 @@
   width: 100%;
   max-width: 600px;
   height: 100%;
-  max-height: 400px;
+  max-height: none;
   background-color: white;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  padding: 0;
+  margin: 0;
 }
 
 

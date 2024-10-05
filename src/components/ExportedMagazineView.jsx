@@ -19,7 +19,7 @@ const ExportedMagazineView = ({ templates, onViewFull, showFull }) => {
       style={{
         width: '375px',
         height: '812px',
-        margin: '20px auto',
+        margin: '0',
         cursor: 'pointer',
         boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
         overflow: 'hidden',
@@ -48,7 +48,7 @@ const ExportedMagazineView = ({ templates, onViewFull, showFull }) => {
   );
 
   const FullMagazine = () => (
-    <div className="full-magazine" style={{ padding: '20px', maxHeight: '100vh', overflowY: 'auto' }}>
+    <div className="full-magazine" style={{ padding: '0', maxHeight: '100vh', overflowY: 'auto' }}>
       <button 
         onClick={onViewFull}
         style={{
@@ -80,7 +80,7 @@ const ExportedMagazineView = ({ templates, onViewFull, showFull }) => {
   );
 
   return (
-    <div className="exported-magazine-view" style={{ height: '100%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+    <div className="exported-magazine-view" style={{ height: '100%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 0, margin: 0 }}>
       {showFull ? <FullMagazine /> : <CoverCard />}
     </div>
   );
