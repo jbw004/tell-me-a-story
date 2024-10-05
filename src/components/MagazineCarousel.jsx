@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { getDatabase, ref, get } from 'firebase/database';
 import ExportedMagazineView from './ExportedMagazineView';
 
 const MagazineCarousel = () => {
@@ -11,17 +12,27 @@ const MagazineCarousel = () => {
   const { id } = useParams();
 
   useEffect(() => {
-    const storedMagazines = JSON.parse(localStorage.getItem('exportedMagazines')) || [];
-    console.log("Stored magazines:", storedMagazines);
-    setMagazines(storedMagazines);
-  
-    if (id) {
-      const index = storedMagazines.findIndex(mag => mag.id === id);
-      console.log("Selected magazine index:", index);
-      if (index !== -1) {
-        setSelectedIndex(index);
+    const fetchMagazines = async () => {
+      const db = getDatabase();
+      const magazinesRef = ref(db, 'magazines');
+      const snapshot = await get(magazinesRef);
+      if (snapshot.exists()) {
+        const magazinesData = snapshot.val();
+        const magazinesArray = Object.keys(magazinesData).map(key => ({
+          id: key,
+          ...magazinesData[key]
+        }));
+        setMagazines(magazinesArray);
+
+        if (id) {
+          const index = magazinesArray.findIndex(mag => mag.id === id);
+          if (index !== -1) {
+            setSelectedIndex(index);
+          }
+        }
       }
-    }
+    };
+    fetchMagazines();
   }, [id]);
 
   useEffect(() => {

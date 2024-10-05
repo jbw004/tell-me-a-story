@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getDatabase, ref, push } from 'firebase/database';
 
 const ExportComponent = ({ templates, templateRefs }) => {
   const [exporting, setExporting] = useState(false);
   const navigate = useNavigate();
 
-  const exportTemplates = () => {
+  const exportTemplates = async () => {
     setExporting(true);
+  
 
     // Create a new document for the export view
     const exportDoc = document.implementation.createHTMLDocument('Export View');
@@ -177,24 +179,27 @@ const ExportComponent = ({ templates, templateRefs }) => {
     exportDoc.body.appendChild(appScript);
 
     // Generate a unique ID for the magazine
-    const magazineId = Date.now().toString();
+    const db = getDatabase();
+    const magazinesRef = ref(db, 'magazines');
 
     // Create a new magazine object
   const newMagazine = {
-    id: magazineId,
     title: "My Magazine", // You might want to allow users to set a title
     templates: processedTemplates, // Store the processed templates directly
     createdAt: new Date().toISOString()
   };
 
-   // Save to local storage
-  const storedMagazines = JSON.parse(localStorage.getItem('exportedMagazines')) || [];
-  const updatedMagazines = [...storedMagazines, newMagazine];
-  localStorage.setItem('exportedMagazines', JSON.stringify(updatedMagazines));
-
-  // Open the gallery in a new tab
-  const galleryUrl = `/gallery?newMagazineId=${magazineId}`;
-  window.open(galleryUrl, '_blank');
+  try {
+    // Save to Firebase
+    const newMagazineRef = await push(magazinesRef, newMagazine);
+    
+    // Open the gallery in a new tab
+    const galleryUrl = `/gallery/${newMagazineRef.key}`;
+    window.open(galleryUrl, '_blank');
+  } catch (error) {
+    console.error("Error saving magazine to Firebase:", error);
+    // You might want to show an error message to the user here
+  }
 
   setExporting(false);
 };
