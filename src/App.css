@@ -113,13 +113,16 @@
   }
 
   .canvas-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background-color: white;
     border-radius: 5px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
     padding: 20px;
-    min-height: 406px; /* Ensures the minimum height */
-    transition: height 0.3s ease; /* Smooth transition for height changes */
-    overflow: hidden; /* Prevents content from spilling out */
+    min-height: 406px;
+    transition: height 0.3s ease;
+    overflow: hidden;
   }
   
   .add-toc-item-button {
@@ -434,7 +437,8 @@
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
-  padding: 20px 0;
+  padding: 0; /* Removed top and bottom padding */
+  justify-content: center;
 }
 
 .magazine-cover-card:hover {
@@ -450,22 +454,26 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
+  justify-content: center;
+  padding: 0 20px; /* Removed top padding to eliminate extra space */
 }
 
 .cover-preview {
-  width: 100%;
-  max-width: 600px;
-  height: 400px;
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
+  width: 100%;
+  max-width: 600px;
+  height: 100%;
+  max-height: 400px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
+
 
 .magazine-view button {
   margin-top: 20px;
