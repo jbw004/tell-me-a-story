@@ -1,12 +1,20 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getDatabase, ref, push } from 'firebase/database';
+import { useAuth } from '../AuthContext';
 
 const ExportComponent = ({ templates, templateRefs }) => {
   const [exporting, setExporting] = useState(false);
   const navigate = useNavigate();
+  const { user, login } = useAuth();
 
   const exportTemplates = async () => {
+    if (!user) {
+      // Prompt user to log in
+      await login();
+      return;
+    }
+
     setExporting(true);
   
 
@@ -180,29 +188,26 @@ const ExportComponent = ({ templates, templateRefs }) => {
 
     // Generate a unique ID for the magazine
     const db = getDatabase();
-    const magazinesRef = ref(db, 'magazines');
+    const magazinesRef = ref(db, `users/${user.uid}/magazines`);
 
     // Create a new magazine object
-  const newMagazine = {
-    title: "My Magazine", // You might want to allow users to set a title
-    templates: processedTemplates, // Store the processed templates directly
-    createdAt: new Date().toISOString()
+    const newMagazine = {
+      title: "My Magazine",
+      templates: processedTemplates,
+      createdAt: new Date().toISOString(),
+      userId: user.uid
+    };
+
+    try {
+      const newMagazineRef = await push(magazinesRef, newMagazine);
+      const galleryUrl = `/gallery/${newMagazineRef.key}`;
+      window.open(galleryUrl, '_blank');
+    } catch (error) {
+      console.error("Error saving magazine to Firebase:", error);
+    }
+
+    setExporting(false);
   };
-
-  try {
-    // Save to Firebase
-    const newMagazineRef = await push(magazinesRef, newMagazine);
-    
-    // Open the gallery in a new tab
-    const galleryUrl = `/gallery/${newMagazineRef.key}`;
-    window.open(galleryUrl, '_blank');
-  } catch (error) {
-    console.error("Error saving magazine to Firebase:", error);
-    // You might want to show an error message to the user here
-  }
-
-  setExporting(false);
-};
 
   return (
     <div className="export-container">

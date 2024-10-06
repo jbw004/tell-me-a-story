@@ -1,20 +1,23 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { AuthProvider } from './AuthContext';
 import EditorPage from './components/EditorPage';
 import MagazineCarousel from './components/MagazineCarousel';
 import './App.css';
 
 function App() {
   return (
-    <Router>
-      <div className="App">
-        <Routes>
-          <Route path="/" element={<EditorPage />} />
-          <Route path="/gallery" element={<MagazineCarousel />} />
-          <Route path="/gallery/:id" element={<MagazineCarousel />} />
-        </Routes>
-      </div>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <div className="App">
+          <Routes>
+            <Route path="/" element={<EditorPage />} />
+            <Route path="/gallery" element={<MagazineCarousel />} />
+            <Route path="/gallery/:id" element={<MagazineCarousel />} />
+          </Routes>
+        </div>
+      </Router>
+    </AuthProvider>
   );
 }
 

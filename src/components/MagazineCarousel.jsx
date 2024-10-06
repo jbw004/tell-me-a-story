@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getDatabase, ref, get } from 'firebase/database';
 import ExportedMagazineView from './ExportedMagazineView';
+import { useAuth } from '../AuthContext';
+
 
 const MagazineCarousel = () => {
   const [magazines, setMagazines] = useState([]);
@@ -10,11 +12,15 @@ const MagazineCarousel = () => {
   const carouselRef = useRef(null);
   const navigate = useNavigate();
   const { id } = useParams();
+  const { user } = useAuth();
+
 
   useEffect(() => {
     const fetchMagazines = async () => {
+      if (!user) return;
+
       const db = getDatabase();
-      const magazinesRef = ref(db, 'magazines');
+      const magazinesRef = ref(db, `users/${user.uid}/magazines`);
       const snapshot = await get(magazinesRef);
       if (snapshot.exists()) {
         const magazinesData = snapshot.val();
@@ -33,7 +39,7 @@ const MagazineCarousel = () => {
       }
     };
     fetchMagazines();
-  }, [id]);
+  }, [user, id]);
 
   useEffect(() => {
     if (carouselRef.current) {
