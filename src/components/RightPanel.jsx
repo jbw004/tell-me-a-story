@@ -12,11 +12,25 @@ function RightPanel({ selectedText, onTextStyleChange }) {
     }
   };
 
+  const handleViewGallery = () => {
+    if (user) {
+      const galleryUrl = `/gallery/${user.uid}`;
+      window.open(galleryUrl, '_blank');
+    }
+  };
+
   return (
     <div className="floating-panel right-panel">
-      <button onClick={handleAuthAction} className="auth-button">
-        {user ? 'Logout' : 'Login'}
-      </button>
+      <div className="auth-buttons">
+        <button onClick={handleAuthAction} className="auth-button">
+          {user ? 'Logout' : 'Login'}
+        </button>
+        {user && (
+          <button onClick={handleViewGallery} className="view-gallery-button">
+            View Gallery
+          </button>
+        )}
+      </div>
       
       {selectedText ? (
         <>
