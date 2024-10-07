@@ -1,15 +1,46 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const ExportedMagazineView = ({ templates, onViewFull, showFull }) => {
+  const [loadedTemplates, setLoadedTemplates] = useState([]);
+
+  useEffect(() => {
+    const loadContent = async () => {
+      const loaded = await Promise.all(templates.map(async (template) => {
+        if (template.contentUrl) {
+          try {
+            const response = await fetch(`/firebase-storage${new URL(template.contentUrl).pathname}${new URL(template.contentUrl).search}`, {
+              mode: 'cors',
+              headers: {
+                'Origin': window.location.origin
+              }
+            });
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const content = await response.text();
+            return { ...template, content };
+          } catch (error) {
+            console.error("Error fetching template content:", error);
+            return { ...template, content: "Failed to load content" };
+          }
+        }
+        return template;
+      }));
+      setLoadedTemplates(loaded);
+    };
+
+    loadContent();
+  }, [templates]);
+
   console.log("ExportedMagazineView render. showFull:", showFull);
   console.log("Received templates:", templates);
 
-  if (!templates || templates.length === 0) {
+  if (!loadedTemplates || loadedTemplates.length === 0) {
     console.error("No templates provided to ExportedMagazineView");
     return <div>No magazine content available.</div>;
   }
   
-  const coverTemplate = templates[0];
+  const coverTemplate = loadedTemplates[0];
   console.log("Cover template:", coverTemplate);
   
   const CoverCard = () => (
@@ -60,7 +91,7 @@ const ExportedMagazineView = ({ templates, onViewFull, showFull }) => {
       >
         Close
       </button>
-      {templates.map((template, index) => (
+      {loadedTemplates.map((template, index) => (
         <div 
           key={index}
           className="magazine-page"

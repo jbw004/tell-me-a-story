@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getDatabase, ref, push } from 'firebase/database';
+import { getDatabase, ref as dbRef, push, set } from 'firebase/database';
+import { getStorage, ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
 import { useAuth } from '../AuthContext';
 
 const ExportComponent = ({ templates, templateRefs }) => {
@@ -10,11 +11,18 @@ const ExportComponent = ({ templates, templateRefs }) => {
 
   const exportTemplates = async () => {
     if (!user) {
-      // Prompt user to log in
-      await login();
-      return;
+      try {
+        await login();
+        if (!user) {
+          console.error("Login failed: User is still null after login attempt");
+          return;
+        }
+      } catch (error) {
+        console.error("Login failed", error);
+        return;
+      }
     }
-
+  
     setExporting(true);
   
 
@@ -188,22 +196,42 @@ const ExportComponent = ({ templates, templateRefs }) => {
 
     // Generate a unique ID for the magazine
     const db = getDatabase();
-    const magazinesRef = ref(db, `users/${user.uid}/magazines`);
-
-    // Create a new magazine object
-    const newMagazine = {
-      title: "My Magazine",
-      templates: processedTemplates,
-      createdAt: new Date().toISOString(),
-      userId: user.uid
-    };
+    const storage = getStorage();
+    const magazinesRef = dbRef(db, `users/${user.uid}/magazines`);
 
     try {
-      const newMagazineRef = await push(magazinesRef, newMagazine);
-      const galleryUrl = `/gallery/${newMagazineRef.key}`;
+      const newMagazineRef = push(dbRef(db, `users/${user.uid}/magazines`));
+      
+      // Save magazine metadata
+      await set(newMagazineRef, {
+        title: "My Magazine",
+        createdAt: new Date().toISOString(),
+        userId: user.uid
+      });
+
+      // Save each template separately
+      for (let i = 0; i < processedTemplates.length; i++) {
+        const template = processedTemplates[i];
+        const templateRef = dbRef(db, `users/${user.uid}/magazines/${newMagazineRef.key}/templates/${i}`);
+        
+        // Upload content to Cloud Storage
+        const contentRef = storageRef(storage, `users/${user.uid}/magazines/${newMagazineRef.key}/templates/${i}/content`);
+        await uploadString(contentRef, template.content, 'raw');
+        const contentUrl = await getDownloadURL(contentRef);
+
+        // Save template metadata and content URL to Realtime Database
+        await set(templateRef, {
+          ...template,
+          content: null,
+          contentUrl: contentUrl
+        });
+      }
+
+      const galleryUrl = `/gallery/${user.uid}/${newMagazineRef.key}`;
       window.open(galleryUrl, '_blank');
     } catch (error) {
       console.error("Error saving magazine to Firebase:", error);
+      // You might want to show an error message to the user here
     }
 
     setExporting(false);

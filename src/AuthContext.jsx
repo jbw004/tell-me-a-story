@@ -23,7 +23,9 @@ export const AuthProvider = ({ children }) => {
     try {
       await signInWithPopup(auth, googleProvider);
     } catch (error) {
-      console.error("Error signing in with Google", error);
+      if (error.code !== 'auth/cancelled-popup-request') {
+        console.error("Error signing in with Google", error);
+      }
     }
   };
 

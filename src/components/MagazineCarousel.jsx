@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getDatabase, ref, get } from 'firebase/database';
+import { getDatabase, ref as dbRef, get } from 'firebase/database';
+import { getStorage, ref as storageRef, getDownloadURL } from 'firebase/storage';
 import ExportedMagazineView from './ExportedMagazineView';
 import { useAuth } from '../AuthContext';
 
@@ -11,35 +12,65 @@ const MagazineCarousel = () => {
   const [showFullMagazine, setShowFullMagazine] = useState(false);
   const carouselRef = useRef(null);
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { userId, magazineId } = useParams();
   const { user } = useAuth();
 
 
   useEffect(() => {
     const fetchMagazines = async () => {
-      if (!user) return;
-
+      if (!userId) {
+        console.error("No userId provided in URL");
+        setMagazines([]);
+        return;
+      }
+    
       const db = getDatabase();
-      const magazinesRef = ref(db, `users/${user.uid}/magazines`);
+      const storage = getStorage();
+    
+      const magazinesRef = dbRef(db, `users/${userId}/magazines`);
       const snapshot = await get(magazinesRef);
+      
       if (snapshot.exists()) {
         const magazinesData = snapshot.val();
-        const magazinesArray = Object.keys(magazinesData).map(key => ({
-          id: key,
-          ...magazinesData[key]
+        const magazinesArray = await Promise.all(Object.entries(magazinesData).map(async ([key, magazine]) => {
+          // Fetch templates
+          const templatesRef = dbRef(db, `users/${userId}/magazines/${key}/templates`);
+          const templatesSnapshot = await get(templatesRef);
+          const templates = templatesSnapshot.val() || [];
+          
+          // Fetch content from Cloud Storage
+          const processedTemplates = await Promise.all(Object.values(templates).map(async (template) => {
+            if (template.contentUrl) {
+              const content = await getDownloadURL(storageRef(storage, template.contentUrl));
+              return {
+                ...template,
+                content: content
+              };
+            }
+            return template;
+          }));
+    
+          return {
+            id: key,
+            ...magazine,
+            templates: processedTemplates
+          };
         }));
+        
         setMagazines(magazinesArray);
-
-        if (id) {
-          const index = magazinesArray.findIndex(mag => mag.id === id);
-          if (index !== -1) {
-            setSelectedIndex(index);
-          }
+    
+        if (magazineId) {
+          const index = magazinesArray.findIndex(mag => mag.id === magazineId);
+          setSelectedIndex(index !== -1 ? index : 0);
         }
+      } else {
+        setMagazines([]);
       }
     };
+
     fetchMagazines();
-  }, [user, id]);
+  }, [userId, magazineId]);
+
 
   useEffect(() => {
     if (carouselRef.current) {
@@ -52,7 +83,7 @@ const MagazineCarousel = () => {
 
   const handleSelect = (index) => {
     setSelectedIndex(index);
-    navigate(`/gallery/${magazines[index].id}`);
+    navigate(`/gallery/${userId}/${magazines[index].id}`);
   };
 
   const handleScroll = () => {

@@ -7,7 +7,18 @@ import path from 'path'
 export default defineConfig(({ command, mode }) => {
   const config = {
     plugins: [react()],
-    server: {}
+    server: {
+      headers: {
+        'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
+      },
+      proxy: {
+        '/firebase-storage': {
+          target: 'https://firebasestorage.googleapis.com',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/firebase-storage/, '')
+        }
+      }
+    }
   }
 
   // Only add HTTPS configuration for local development

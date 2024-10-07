@@ -13,7 +13,8 @@ function App() {
           <Routes>
             <Route path="/" element={<EditorPage />} />
             <Route path="/gallery" element={<MagazineCarousel />} />
-            <Route path="/gallery/:id" element={<MagazineCarousel />} />
+            <Route path="/gallery/:userId" element={<MagazineCarousel />} />
+            <Route path="/gallery/:userId/:magazineId" element={<MagazineCarousel />} />
           </Routes>
         </div>
       </Router>
@@ -24,11 +25,7 @@ function App() {
 export default App;
 
 // This function will open the gallery in a new window
-export const openGalleryInNewWindow = (zines) => {
-  const galleryWindow = window.open('/gallery', '_blank');
-  if (galleryWindow) {
-    galleryWindow.onload = () => {
-      galleryWindow.postMessage({ type: 'ZINES_DATA', zines }, '*');
-    };
-  }
+export const openGalleryInNewWindow = (userId, magazineId) => {
+  const galleryUrl = userId ? `/gallery/${userId}${magazineId ? `/${magazineId}` : ''}` : '/gallery';
+  window.open(galleryUrl, '_blank');
 };
