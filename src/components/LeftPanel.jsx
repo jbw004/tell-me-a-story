@@ -1,7 +1,8 @@
 import React from 'react';
 import Layout from './Layout';
+import ExportComponent from './ExportComponent';  // Import the existing ExportComponent
 
-function LeftPanel({ magazines, onMagazineSelect, selectedMagazine, onTemplateSelect, selectedTemplates }) {
+function LeftPanel({ magazines, onMagazineSelect, selectedMagazine, onTemplateSelect, selectedTemplates, templates, templateRefs, onExportStart, onExportEnd }) {
   const handleNewTemplateSelect = (template) => {
     onTemplateSelect(template, false);
   };
@@ -34,8 +35,16 @@ function LeftPanel({ magazines, onMagazineSelect, selectedMagazine, onTemplateSe
         </div>
       )}
 
-      {selectedTemplates.length > 0 && (
-        <Layout templates={selectedTemplates} onTemplateSelect={handleExistingTemplateSelect} />
+{selectedTemplates.length > 0 && (
+        <>
+          <Layout templates={selectedTemplates} onTemplateSelect={handleExistingTemplateSelect} />
+          <ExportComponent 
+            templates={templates}
+            templateRefs={templateRefs}
+            onExportStart={onExportStart}
+            onExportEnd={onExportEnd}
+          />
+        </>
       )}
     </div>
   );

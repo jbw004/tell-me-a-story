@@ -244,7 +244,7 @@ const ExportComponent = ({ templates, templateRefs }) => {
         disabled={exporting}
         className={`export-button ${exporting ? 'exporting' : ''}`}
       >
-        {exporting ? 'Exporting...' : 'Export Magazine'}
+        {exporting ? 'Publishing...' : 'Publish to Gallery'}
       </button>
     </div>
   );

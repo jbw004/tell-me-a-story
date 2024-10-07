@@ -174,8 +174,6 @@ function EditorPage() {
     templateRefs.current[id] = ref;
   }, []);
 
-  // ... (include all other handler functions)
-
   return (
     <div className="main-content">
       <Editor 
@@ -192,12 +190,6 @@ function EditorPage() {
         onAddTocItem={handleAddTocItem}
         onRemoveTocItem={handleRemoveTocItem}
       />
-      <ExportComponent 
-        templates={selectedTemplates}
-        templateRefs={templateRefs}
-        onExportStart={handleExportStart}
-        onExportEnd={handleExportEnd}
-      />
       <div className="editor-panels">
         <LeftPanel 
           magazines={magazineTemplates} 
@@ -205,6 +197,10 @@ function EditorPage() {
           selectedMagazine={selectedMagazine}
           onTemplateSelect={handleTemplateSelect}
           selectedTemplates={selectedTemplates}
+          templates={selectedTemplates}
+          templateRefs={templateRefs}
+          onExportStart={handleExportStart}
+          onExportEnd={handleExportEnd}
         />
         <RightPanel 
           selectedText={selectedText}
