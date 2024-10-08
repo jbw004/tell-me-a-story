@@ -1,21 +1,21 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getDatabase, ref as dbRef, get } from 'firebase/database';
 import { getStorage, ref as storageRef, getDownloadURL } from 'firebase/storage';
 import ExportedMagazineView from './ExportedMagazineView';
 import { useAuth } from '../AuthContext';
-import { deleteMagazine } from '../firebase';  // Import the new function
-
-
+import { deleteMagazine } from '../firebase';
+import { ChevronLeft, ChevronRight } from 'lucide-react';  // Assuming you're using lucide-react for icons
 
 const MagazineCarousel = () => {
   const [magazines, setMagazines] = useState([]);
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [showFullMagazine, setShowFullMagazine] = useState(false);
-  const carouselRef = useRef(null);
   const navigate = useNavigate();
   const { userId, magazineId } = useParams();
   const { user } = useAuth();
+
+  const isOwner = user && user.uid === userId;
 
 
   useEffect(() => {
@@ -75,40 +75,37 @@ const MagazineCarousel = () => {
 
 
   useEffect(() => {
-    if (carouselRef.current) {
-      carouselRef.current.scrollTo({
-        left: selectedIndex * carouselRef.current.offsetWidth,
-        behavior: 'smooth'
-      });
+    if (magazineId) {
+      const index = magazines.findIndex(mag => mag.id === magazineId);
+      setCurrentIndex(index !== -1 ? index : 0);
     }
-  }, [selectedIndex]);
-
-  const handleSelect = (index) => {
-    setSelectedIndex(index);
-    navigate(`/gallery/${userId}/${magazines[index].id}`);
-  };
-
-  const handleScroll = () => {
-    if (carouselRef.current) {
-      const index = Math.round(carouselRef.current.scrollLeft / carouselRef.current.offsetWidth);
-      if (index !== selectedIndex) {
-        handleSelect(index);
-      }
-    }
-  };
+  }, [magazines, magazineId]);
 
   const handleDelete = async (magazineId) => {
+    if (!isOwner) {
+      console.error("User doesn't have permission to delete this magazine");
+      return;
+    }
+
     if (window.confirm('Are you sure you want to delete this magazine?')) {
       await deleteMagazine(userId, magazineId);
       const updatedMagazines = magazines.filter(mag => mag.id !== magazineId);
       setMagazines(updatedMagazines);
       if (updatedMagazines.length > 0) {
-        setSelectedIndex(0);
+        setCurrentIndex(0);
         navigate(`/gallery/${userId}/${updatedMagazines[0].id}`);
       } else {
         navigate(`/gallery/${userId}`);
       }
     }
+  };
+
+  const navigateCarousel = (direction) => {
+    let newIndex = currentIndex + direction;
+    if (newIndex < 0) newIndex = magazines.length - 1;
+    if (newIndex >= magazines.length) newIndex = 0;
+    setCurrentIndex(newIndex);
+    navigate(`/gallery/${userId}/${magazines[newIndex].id}`);
   };
 
   const toggleFullMagazine = () => {
@@ -120,45 +117,58 @@ const MagazineCarousel = () => {
   }
 
   return (
-    <div style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', overflow: 'hidden' }}>
-      <div 
-        ref={carouselRef}
-        onScroll={handleScroll}
-        style={{
-          display: 'flex',
-          overflowX: 'auto',
-          scrollSnapType: 'x mandatory',
-          WebkitOverflowScrolling: 'touch',
-          scrollBehavior: 'smooth',
-          width: '100%',
-          height: '100%'
-        }}
-      >
-        {magazines.map((magazine, index) => {
-          console.log(`Rendering magazine ${index}:`, magazine);
-          return (
-            <div key={magazine.id} style={{ flexShrink: 0, width: '100%', scrollSnapAlign: 'start' }}>
-              <ExportedMagazineView
-                templates={magazine.templates || [{ content: magazine.content }]} // Fallback for old data structure
-                onViewFull={() => {
-                  console.log(`Viewing full magazine ${index}`);
-                  setSelectedIndex(index);
-                  toggleFullMagazine();
-                }}
-                showFull={false}
-                onDelete={() => handleDelete(magazine.id)}
-              />
-            </div>
-          );
-        })}
+    <div style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>
+      <div style={{ position: 'relative', width: '375px', height: '812px' }}>
+        <ExportedMagazineView
+          templates={magazines[currentIndex].templates || [{ content: magazines[currentIndex].content }]}
+          onViewFull={toggleFullMagazine}
+          showFull={false}
+          onDelete={isOwner ? () => handleDelete(magazines[currentIndex].id) : null}
+        />
+        {magazines.length > 1 && (
+          <>
+            <button
+              onClick={() => navigateCarousel(-1)}
+              style={{
+                position: 'absolute',
+                left: '10px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                background: 'rgba(255, 255, 255, 0.7)',
+                border: 'none',
+                borderRadius: '50%',
+                padding: '10px',
+                cursor: 'pointer',
+              }}
+            >
+              <ChevronLeft size={24} />
+            </button>
+            <button
+              onClick={() => navigateCarousel(1)}
+              style={{
+                position: 'absolute',
+                right: '10px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                background: 'rgba(255, 255, 255, 0.7)',
+                border: 'none',
+                borderRadius: '50%',
+                padding: '10px',
+                cursor: 'pointer',
+              }}
+            >
+              <ChevronRight size={24} />
+            </button>
+          </>
+        )}
       </div>
       {showFullMagazine && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: '#FAF9F6', zIndex: 1000, overflow: 'auto' }}>
           <ExportedMagazineView
-            templates={magazines[selectedIndex]?.templates || [{ content: magazines[selectedIndex]?.content }]} // Fallback for old data structure
+            templates={magazines[currentIndex].templates || [{ content: magazines[currentIndex].content }]}
             onViewFull={toggleFullMagazine}
             showFull={true}
-            onDelete={() => handleDelete(magazines[selectedIndex].id)}
+            onDelete={isOwner ? () => handleDelete(magazines[currentIndex].id) : null}
           />
         </div>
       )}

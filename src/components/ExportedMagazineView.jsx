@@ -48,7 +48,7 @@ const ExportedMagazineView = ({ templates, onViewFull, showFull, onDelete }) => 
       onClick={onDelete}
       style={{
         position: 'absolute',
-        top: '20px',
+        top: '40px',
         right: showFull ? '80px' : '20px',
         zIndex: 1000,
         background: 'red',
@@ -84,7 +84,7 @@ const ExportedMagazineView = ({ templates, onViewFull, showFull, onDelete }) => 
       <div 
         style={{
           position: 'absolute',
-          bottom: '20px',
+          bottom: '229px',
           left: '50%',
           transform: 'translateX(-50%)',
           background: 'rgba(0,0,0,0.7)',
