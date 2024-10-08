@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LeftPanel from './LeftPanel';
 import RightPanel from './RightPanel';
@@ -6,6 +6,8 @@ import Editor from './Editor';
 import ExportComponent from './ExportComponent';
 import { magazineTemplates } from '../templates.js';
 import { v4 as uuidv4 } from 'uuid';
+import useMobileDetect from '../useMobileDetect';
+import MobileWarningModal from './MobileWarningModal';
 
 function EditorPage() {
   const [selectedMagazine, setSelectedMagazine] = useState(null);
@@ -18,6 +20,15 @@ function EditorPage() {
   const navigate = useNavigate();
 
   // ... (keep all the handler functions from the original App component)
+
+  const isMobile = useMobileDetect();
+  const [showMobileWarning, setShowMobileWarning] = useState(false);
+
+  useEffect(() => {
+    if (isMobile) {
+      setShowMobileWarning(true);
+    }
+  }, [isMobile]);
 
   const handleExportStart = useCallback(() => {
     setIsExporting(true);
@@ -175,6 +186,11 @@ function EditorPage() {
   }, []);
 
   return (
+    <>
+      <MobileWarningModal 
+        open={showMobileWarning} 
+        onClose={() => setShowMobileWarning(false)} 
+      />
     <div className="main-content">
       <Editor 
         templates={selectedTemplates}
@@ -208,6 +224,7 @@ function EditorPage() {
         />
       </div>
     </div>
+    </>
   );
 }
 
