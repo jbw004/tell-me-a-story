@@ -3,7 +3,23 @@ import { getAuth, GoogleAuthProvider } from 'firebase/auth';  // Add GoogleAuthP
 import { getDatabase } from 'firebase/database';
 import { getAnalytics } from "firebase/analytics";
 import { getStorage } from "firebase/storage";
+import { ref, remove } from 'firebase/database';
+import { ref as storageRef, listAll, deleteObject } from 'firebase/storage';
 
+export const deleteMagazine = async (userId, magazineId) => {
+  const db = getDatabase();
+  const storage = getStorage();
+
+  // Delete from Realtime Database
+  const magazineRef = ref(db, `users/${userId}/magazines/${magazineId}`);
+  await remove(magazineRef);
+
+  // Delete from Storage
+  const magazineStorageRef = storageRef(storage, `users/${userId}/magazines/${magazineId}`);
+  const listResults = await listAll(magazineStorageRef);
+  const deletePromises = listResults.items.map(item => deleteObject(item));
+  await Promise.all(deletePromises);
+};
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,

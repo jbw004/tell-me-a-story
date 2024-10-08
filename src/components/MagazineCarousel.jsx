@@ -4,6 +4,8 @@ import { getDatabase, ref as dbRef, get } from 'firebase/database';
 import { getStorage, ref as storageRef, getDownloadURL } from 'firebase/storage';
 import ExportedMagazineView from './ExportedMagazineView';
 import { useAuth } from '../AuthContext';
+import { deleteMagazine } from '../firebase';  // Import the new function
+
 
 
 const MagazineCarousel = () => {
@@ -95,6 +97,20 @@ const MagazineCarousel = () => {
     }
   };
 
+  const handleDelete = async (magazineId) => {
+    if (window.confirm('Are you sure you want to delete this magazine?')) {
+      await deleteMagazine(userId, magazineId);
+      const updatedMagazines = magazines.filter(mag => mag.id !== magazineId);
+      setMagazines(updatedMagazines);
+      if (updatedMagazines.length > 0) {
+        setSelectedIndex(0);
+        navigate(`/gallery/${userId}/${updatedMagazines[0].id}`);
+      } else {
+        navigate(`/gallery/${userId}`);
+      }
+    }
+  };
+
   const toggleFullMagazine = () => {
     setShowFullMagazine(!showFullMagazine);
   };
@@ -130,6 +146,7 @@ const MagazineCarousel = () => {
                   toggleFullMagazine();
                 }}
                 showFull={false}
+                onDelete={() => handleDelete(magazine.id)}
               />
             </div>
           );
@@ -141,6 +158,7 @@ const MagazineCarousel = () => {
             templates={magazines[selectedIndex]?.templates || [{ content: magazines[selectedIndex]?.content }]} // Fallback for old data structure
             onViewFull={toggleFullMagazine}
             showFull={true}
+            onDelete={() => handleDelete(magazines[selectedIndex].id)}
           />
         </div>
       )}

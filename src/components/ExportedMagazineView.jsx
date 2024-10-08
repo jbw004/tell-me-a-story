@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const ExportedMagazineView = ({ templates, onViewFull, showFull }) => {
+const ExportedMagazineView = ({ templates, onViewFull, showFull, onDelete }) => {
   const [loadedTemplates, setLoadedTemplates] = useState([]);
 
   useEffect(() => {
@@ -42,6 +42,26 @@ const ExportedMagazineView = ({ templates, onViewFull, showFull }) => {
   
   const coverTemplate = loadedTemplates[0];
   console.log("Cover template:", coverTemplate);
+
+  const DeleteButton = () => (
+    <button 
+      onClick={onDelete}
+      style={{
+        position: 'absolute',
+        top: '20px',
+        right: showFull ? '80px' : '20px',
+        zIndex: 1000,
+        background: 'red',
+        color: 'white',
+        border: 'none',
+        padding: '5px 10px',
+        borderRadius: '5px',
+        cursor: 'pointer',
+      }}
+    >
+      Delete
+    </button>
+  );
   
   const CoverCard = () => (
     <div 
@@ -75,6 +95,7 @@ const ExportedMagazineView = ({ templates, onViewFull, showFull }) => {
       >
         Click to view full magazine
       </div>
+      <DeleteButton />
     </div>
   );
 
@@ -91,6 +112,7 @@ const ExportedMagazineView = ({ templates, onViewFull, showFull }) => {
       >
         Close
       </button>
+      <DeleteButton />
       {loadedTemplates.map((template, index) => (
         <div 
           key={index}
