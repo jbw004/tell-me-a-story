@@ -1,22 +1,34 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import { AuthProvider } from './AuthContext';
+import Header from './components/Header';
 import EditorPage from './components/EditorPage';
 import MagazineCarousel from './components/MagazineCarousel';
 import './App.css';
+
+// This component will contain the routes and conditionally render the Header
+const AppRoutes = () => {
+  const location = useLocation();
+  const isGalleryPage = location.pathname.startsWith('/gallery');
+
+  return (
+    <div className="App">
+      {!isGalleryPage && <Header />}
+      <Routes>
+        <Route path="/" element={<EditorPage />} />
+        <Route path="/gallery" element={<MagazineCarousel />} />
+        <Route path="/gallery/:userId" element={<MagazineCarousel />} />
+        <Route path="/gallery/:userId/:magazineId" element={<MagazineCarousel />} />
+      </Routes>
+    </div>
+  );
+};
 
 function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="App">
-          <Routes>
-            <Route path="/" element={<EditorPage />} />
-            <Route path="/gallery" element={<MagazineCarousel />} />
-            <Route path="/gallery/:userId" element={<MagazineCarousel />} />
-            <Route path="/gallery/:userId/:magazineId" element={<MagazineCarousel />} />
-          </Routes>
-        </div>
+        <AppRoutes />
       </Router>
     </AuthProvider>
   );

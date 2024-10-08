@@ -191,7 +191,7 @@ function EditorPage() {
         open={showMobileWarning} 
         onClose={() => setShowMobileWarning(false)} 
       />
-    <div className="main-content">
+    <div className="main-content" style={{ paddingTop: '29px' }}>
       <Editor 
         templates={selectedTemplates}
         onImageUpload={handleImageUpload}

@@ -1,4 +1,32 @@
 import React, { useState, useEffect } from 'react';
+import logo from '/tellmeastory_clean_vector_logo.png'; // Adjust the path as needed
+
+const Header = () => (
+  <header style={{
+    width: '100%',
+    height: '29px',
+    backgroundColor: 'rgba(250, 249, 246, 0.95)',
+    display: 'flex',
+    alignItems: 'center',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    zIndex: 1000,
+  }}>
+    <a 
+      href="https://tellmeastory.press" 
+      target="_blank" 
+      rel="noopener noreferrer"
+      style={{ height: '100%', display: 'flex', alignItems: 'center' }}
+    >
+      <img 
+        src={logo} 
+        alt="Tellmeastory.press" 
+        style={{ height: '100%', width: 'auto' }} 
+      />
+    </a>
+  </header>
+);
 
 const ExportedMagazineView = ({ templates, onViewFull, showFull, onDelete, isOwner }) => {
   const [loadedTemplates, setLoadedTemplates] = useState([]);
@@ -79,6 +107,7 @@ const ExportedMagazineView = ({ templates, onViewFull, showFull, onDelete, isOwn
         position: 'relative',
       }}
     >
+      <Header />
       <div 
         dangerouslySetInnerHTML={{ __html: coverTemplate.content }} 
         style={{ width: '100%', height: '100%' }}
@@ -103,11 +132,12 @@ const ExportedMagazineView = ({ templates, onViewFull, showFull, onDelete, isOwn
 
   const FullMagazine = () => (
     <div className="full-magazine" style={{ padding: '0', maxHeight: '100vh', overflowY: 'auto' }}>
+      <Header />
       <button 
         onClick={onViewFull}
         style={{
           position: 'fixed',
-          top: '20px',
+          top: '49px',
           right: '20px',
           zIndex: 1000,
         }}
