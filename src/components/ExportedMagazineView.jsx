@@ -9,7 +9,7 @@ const Header = () => (
     display: 'flex',
     alignItems: 'center',
     position: 'absolute',
-    top: '29px',
+    top: 0,
     left: 0,
     zIndex: 1000,
   }}>

@@ -152,8 +152,8 @@ const MagazineCarousel = () => {
   }
 
   return (
-    <div style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>
-      <div style={{ position: 'relative', width: '375px', height: '812px' }}>
+    <div style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative', width: '100%' }}>
+      <div style={{ position: 'relative', width: '375px', height: '812px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <ExportedMagazineView
           templates={magazines[currentIndex].templates || [{ content: magazines[currentIndex].content }]}
           onViewFull={toggleFullMagazine}
