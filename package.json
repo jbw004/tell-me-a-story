@@ -34,6 +34,7 @@
     "jszip": "^3.10.1",
     "lucide-react": "^0.447.0",
     "react-color": "^2.19.3",
+    "react-loader-spinner": "^6.1.6",
     "react-router-dom": "^6.26.2",
     "uuid": "^10.0.0"
   }

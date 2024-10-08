@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { getDatabase, ref as dbRef, push, set } from 'firebase/database';
 import { getStorage, ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
 import { useAuth } from '../AuthContext';
+import { Oval } from 'react-loader-spinner';
 
 const ExportComponent = ({ templates, templateRefs }) => {
   const [exporting, setExporting] = useState(false);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
   const { user, login } = useAuth();
 
@@ -14,16 +16,18 @@ const ExportComponent = ({ templates, templateRefs }) => {
       try {
         await login();
         if (!user) {
-          console.error("Login failed: User is still null after login attempt");
+          setError("Login failed. Please try again.");
           return;
         }
       } catch (error) {
+        setError("Login failed. Please try again.");
         console.error("Login failed", error);
         return;
       }
     }
   
     setExporting(true);
+    setError(null);
   
 
     // Create a new document for the export view
@@ -120,6 +124,7 @@ const ExportComponent = ({ templates, templateRefs }) => {
     }
     return template;
   });
+  
 
     // Add a script to define and render our React component
     const appScript = exportDoc.createElement('script');
@@ -234,17 +239,44 @@ const ExportComponent = ({ templates, templateRefs }) => {
       // You might want to show an error message to the user here
     }
 
+    try {
+      // ... Firebase saving logic ...
+
+      const galleryUrl = `/gallery/${user.uid}/${newMagazineRef.key}`;
+      window.open(galleryUrl, '_blank');
+    } catch (error) {
+      console.error("Error saving magazine to Firebase:", error);
+      setError("Failed to save magazine. Please try again.");
+    }
+
     setExporting(false);
   };
+  
 
   return (
     <div className="export-container">
+      {error && <div style={{ color: 'red', marginBottom: '10px' }}>{error}</div>}
       <button
         onClick={exportTemplates}
         disabled={exporting}
         className={`export-button ${exporting ? 'exporting' : ''}`}
       >
-        {exporting ? 'Publishing...' : 'Publish to Gallery'}
+        {exporting ? (
+          <Oval
+            height={20}
+            width={20}
+            color="#ffffff"
+            wrapperStyle={{}}
+            wrapperClass=""
+            visible={true}
+            ariaLabel='oval-loading'
+            secondaryColor="#4fa94d"
+            strokeWidth={2}
+            strokeWidthSecondary={2}
+          />
+        ) : (
+          'Publish to Gallery'
+        )}
       </button>
     </div>
   );

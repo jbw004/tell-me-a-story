@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getDatabase, ref as dbRef, get } from 'firebase/database';
 import { getStorage, ref as storageRef, getDownloadURL } from 'firebase/storage';
+import { Oval } from 'react-loader-spinner';
 import ExportedMagazineView from './ExportedMagazineView';
 import { useAuth } from '../AuthContext';
 import { deleteMagazine } from '../firebase';
@@ -11,6 +12,8 @@ const MagazineCarousel = () => {
   const [magazines, setMagazines] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showFullMagazine, setShowFullMagazine] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
   const { userId, magazineId } = useParams();
   const { user } = useAuth();
@@ -21,52 +24,57 @@ const MagazineCarousel = () => {
   useEffect(() => {
     const fetchMagazines = async () => {
       if (!userId) {
-        console.error("No userId provided in URL");
-        setMagazines([]);
+        setError("No userId provided in URL");
+        setIsLoading(false);
         return;
       }
     
-      const db = getDatabase();
-      const storage = getStorage();
-    
-      const magazinesRef = dbRef(db, `users/${userId}/magazines`);
-      const snapshot = await get(magazinesRef);
+      try {
+        const db = getDatabase();
+        const storage = getStorage();
       
-      if (snapshot.exists()) {
-        const magazinesData = snapshot.val();
-        const magazinesArray = await Promise.all(Object.entries(magazinesData).map(async ([key, magazine]) => {
-          // Fetch templates
-          const templatesRef = dbRef(db, `users/${userId}/magazines/${key}/templates`);
-          const templatesSnapshot = await get(templatesRef);
-          const templates = templatesSnapshot.val() || [];
-          
-          // Fetch content from Cloud Storage
-          const processedTemplates = await Promise.all(Object.values(templates).map(async (template) => {
-            if (template.contentUrl) {
-              const content = await getDownloadURL(storageRef(storage, template.contentUrl));
-              return {
-                ...template,
-                content: content
-              };
-            }
-            return template;
-          }));
-    
-          return {
-            id: key,
-            ...magazine,
-            templates: processedTemplates
-          };
-        }));
+        const magazinesRef = dbRef(db, `users/${userId}/magazines`);
+        const snapshot = await get(magazinesRef);
         
-        setMagazines(magazinesArray);
-    
-        if (magazineId) {
-          const index = magazinesArray.findIndex(mag => mag.id === magazineId);
-          setSelectedIndex(index !== -1 ? index : 0);
+        if (snapshot.exists()) {
+          const magazinesData = snapshot.val();
+          const magazinesArray = await Promise.all(Object.entries(magazinesData).map(async ([key, magazine]) => {
+            const templatesRef = dbRef(db, `users/${userId}/magazines/${key}/templates`);
+            const templatesSnapshot = await get(templatesRef);
+            const templates = templatesSnapshot.val() || [];
+            
+            const processedTemplates = await Promise.all(Object.values(templates).map(async (template) => {
+              if (template.contentUrl) {
+                const content = await getDownloadURL(storageRef(storage, template.contentUrl));
+                return {
+                  ...template,
+                  content: content
+                };
+              }
+              return template;
+            }));
+      
+            return {
+              id: key,
+              ...magazine,
+              templates: processedTemplates
+            };
+          }));
+          
+          setMagazines(magazinesArray);
+      
+          if (magazineId) {
+            const index = magazinesArray.findIndex(mag => mag.id === magazineId);
+            setCurrentIndex(index !== -1 ? index : 0);
+          }
+        } else {
+          setMagazines([]);
         }
-      } else {
-        setMagazines([]);
+      } catch (err) {
+        setError("Failed to fetch magazines. Please try again later.");
+        console.error("Error fetching magazines:", err);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -114,6 +122,33 @@ const MagazineCarousel = () => {
 
   if (magazines.length === 0) {
     return <div>No magazines found.</div>;
+  }
+
+  if (isLoading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <Oval
+          height={80}
+          width={80}
+          color="#4fa94d"
+          wrapperStyle={{}}
+          wrapperClass=""
+          visible={true}
+          ariaLabel='oval-loading'
+          secondaryColor="#4fa94d"
+          strokeWidth={2}
+          strokeWidthSecondary={2}
+        />
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div style={{ textAlign: 'center', marginTop: '20px' }}>{error}</div>;
+  }
+
+  if (magazines.length === 0) {
+    return <div style={{ textAlign: 'center', marginTop: '20px' }}>No magazines found.</div>;
   }
 
   return (
