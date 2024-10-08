@@ -124,6 +124,7 @@ const MagazineCarousel = () => {
           onViewFull={toggleFullMagazine}
           showFull={false}
           onDelete={isOwner ? () => handleDelete(magazines[currentIndex].id) : null}
+          isOwner={isOwner} // Pass isOwner as a prop
         />
         {magazines.length > 1 && (
           <>
@@ -169,6 +170,7 @@ const MagazineCarousel = () => {
             onViewFull={toggleFullMagazine}
             showFull={true}
             onDelete={isOwner ? () => handleDelete(magazines[currentIndex].id) : null}
+            isOwner={isOwner} // Pass isOwner as a prop
           />
         </div>
       )}
