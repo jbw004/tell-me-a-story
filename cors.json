@@ -2,6 +2,8 @@
   {
     "origin": ["https://app.tellmeastory.press", "http://localhost:5173"],
     "method": ["GET", "HEAD", "OPTIONS"],
-    "maxAgeSeconds": 3600
+    "maxAgeSeconds": 3600,
+    "responseHeader": ["Content-Type"],
+    "allowCredentials": true
   }
 ]

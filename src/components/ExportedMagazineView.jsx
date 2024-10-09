@@ -41,7 +41,7 @@ const ExportedMagazineView = ({ templates, onViewFull, showFull, onDelete, isOwn
           try {
             const response = await fetch(template.contentUrl, {
               mode: 'cors',
-              credentials: 'include',
+              credentials: 'omit',
             });
             if (!response.ok) {
               throw new Error(`HTTP error! status: ${response.status}`);
