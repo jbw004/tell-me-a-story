@@ -27,13 +27,18 @@ function Canvas({
 
   useEffect(() => {
     const handleKeyDown = (event) => {
-      console.log('Key pressed:', event.key);
-      console.log('Selected object:', selectedObject);
       if ((event.key === 'Delete' || event.key === 'Backspace') && selectedObject) {
-        console.log('Delete or Backspace key pressed with selected object');
-        event.preventDefault();
-        setDeleteAction('object');
-        setIsDeleteModalOpen(true);
+        const activeElement = document.activeElement;
+        const isEditingText = activeElement.isContentEditable || 
+                              activeElement.tagName === 'INPUT' || 
+                              activeElement.tagName === 'TEXTAREA';
+        
+        if (!isEditingText) {
+          console.log('Delete or Backspace key pressed with selected object');
+          event.preventDefault();
+          setDeleteAction('object');
+          setIsDeleteModalOpen(true);
+        }
       }
     };
     
@@ -161,16 +166,41 @@ function Canvas({
   };
 
   const handleTextEdit = (event) => {
-    if (isExporting) return; // This line remains unchanged
-  
+    if (isExporting) return; // Disable editing during export
     const textElement = event.target.closest('[data-text-id]');
     if (textElement) {
       const textId = textElement.getAttribute('data-text-id');
       onTextSelect(textId, textElement.textContent);
-      setSelectedObject(textId);
+      // Remove selection when entering edit mode
+      setSelectedObject(null);
+      document.querySelectorAll('[data-deletable="true"]').forEach(el => {
+        el.classList.remove('selected');
+      });
+      // Make the text editable
+      textElement.contentEditable = true;
       textElement.focus();
+  
+      // Set cursor to the end of the text
+      const range = document.createRange();
+      const selection = window.getSelection();
+      range.selectNodeContents(textElement);
+      range.collapse(false); // false means collapse to end
+      selection.removeAllRanges();
+      selection.addRange(range);
+  
+      // Prevent default behavior to allow custom cursor positioning
+      event.preventDefault();
     }
   };
+
+  const handleTextEditEnd = (event) => {
+  const textElement = event.target.closest('[data-text-id]');
+  if (textElement) {
+    textElement.contentEditable = false;
+    const textId = textElement.getAttribute('data-text-id');
+    onTextSelect(textId, textElement.textContent);
+  }
+};
 
   const handleContentChange = (event) => {
     const textElement = event.target.closest('[data-text-id]');
@@ -212,6 +242,7 @@ function Canvas({
           dangerouslySetInnerHTML={{ __html: template.content }} 
           onMouseDown={handleObjectSelect}
           onDoubleClick={handleTextEdit}
+          onBlur={handleTextEditEnd}
           onInput={handleContentChange}
           onClick={(e) => {
             if (isExporting) return; // Disable image upload during export
