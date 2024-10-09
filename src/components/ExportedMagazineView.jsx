@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import logo from '/tellmeastory_clean_vector_logo.png'; // Adjust the path as needed
+import { Oval } from 'react-loader-spinner';
 
 const Header = () => (
   <header style={{
@@ -30,9 +31,11 @@ const Header = () => (
 
 const ExportedMagazineView = ({ templates, onViewFull, showFull, onDelete, isOwner }) => {
   const [loadedTemplates, setLoadedTemplates] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadContent = async () => {
+      setIsLoading(true);
       const loaded = await Promise.all(templates.map(async (template) => {
         if (template.contentUrl) {
           try {
@@ -55,6 +58,7 @@ const ExportedMagazineView = ({ templates, onViewFull, showFull, onDelete, isOwn
         return template;
       }));
       setLoadedTemplates(loaded);
+      setIsLoading(false);
     };
 
     loadContent();
@@ -62,6 +66,33 @@ const ExportedMagazineView = ({ templates, onViewFull, showFull, onDelete, isOwn
 
   console.log("ExportedMagazineView render. showFull:", showFull);
   console.log("Received templates:", templates);
+
+  const LoadingSpinner = () => (
+    <div style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100%',
+      width: '100%'
+    }}>
+      <Oval
+        height={80}
+        width={80}
+        color="#6200ee"
+        wrapperStyle={{}}
+        wrapperClass=""
+        visible={true}
+        ariaLabel='oval-loading'
+        secondaryColor="#3700b3"
+        strokeWidth={2}
+        strokeWidthSecondary={2}
+      />
+    </div>
+  );
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   if (!loadedTemplates || loadedTemplates.length === 0) {
     console.error("No templates provided to ExportedMagazineView");
