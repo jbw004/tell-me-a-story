@@ -118,6 +118,10 @@ function Canvas({
         const style = textStyles[textId];
         if (style) {
           Object.assign(element.style, style);
+          // Ensure background color is applied
+          if (style.backgroundColor) {
+            element.style.backgroundColor = style.backgroundColor;
+          }
         }
       });
       const backgroundElements = canvasRef.current.querySelectorAll('[data-background-id]');

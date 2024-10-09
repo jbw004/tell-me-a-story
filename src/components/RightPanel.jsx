@@ -83,6 +83,14 @@ function RightPanel({ selectedText, selectedBackground, onTextStyleChange, onBac
               onChange={(e) => onTextStyleChange({ textShadow: e.target.value })}
             />
           </label>
+          <label>
+            Background Color
+            <input 
+              type="color" 
+              defaultValue="#ffffff" 
+              onChange={(e) => onTextStyleChange({ backgroundColor: e.target.value })}
+            />
+          </label>
         </>
       )}
       
