@@ -394,7 +394,7 @@ export const magazineTemplates = [
               .editable:hover { outline: 2px dashed #007bff; cursor: text; }
               @import url('https://fonts.googleapis.com/css2?family=Playfair+Display&family=Raleway&display=swap');
             </style>
-            <div class="editable deletable" data-background-id="article-background" data-object-id="article-background" data-deletable="true" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #f5f5f5;"></div>
+            <div class="editable deletable" data-background-id="article-background" data-object-id="article-background" data-deletable="true" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #f5f5f5; opacity: 0.2; mix-blend-mode: overlay; pointer-events: none"></div>
             <h1 class="article-title editable deletable" contenteditable="true" data-text-id="article-title" data-object-id="article-title" data-deletable="true" style="font-family: 'Playfair Display', serif; font-size: 32px; font-weight: normal; margin-bottom: 20px; color: #333; border-bottom: 1px solid #333; padding-bottom: 10px;">The Art of Slow Living</h1>
             <h2 class="article-subtitle editable deletable" contenteditable="true" data-text-id="article-subtitle" data-object-id="article-subtitle" data-deletable="true" style="font-family: 'Raleway', sans-serif; font-size: 18px; margin-bottom: 30px; font-style: italic; color: #666;">Embracing simplicity in a fast-paced world</h2>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
