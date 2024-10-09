@@ -45,14 +45,26 @@ const MagazineCarousel = () => {
             
             const processedTemplates = await Promise.all(Object.values(templates).map(async (template) => {
               if (template.contentUrl) {
-                const content = await getDownloadURL(storageRef(storage, template.contentUrl));
-                return {
+                let retries = 3;
+                while (retries > 0) {
+                  try {
+                    const content = await getDownloadURL(storageRef(storage, template.contentUrl));
+                    return {
                   ...template,
                   content: content
                 };
+              } catch (error) {
+                retries--;
+                if (retries === 0) {
+                  console.error("Failed to load image after 3 attempts:", error);
+                  return template;
+                }
+                await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second before retrying
               }
-              return template;
-            }));
+            }
+          }
+          return template;
+        }));
       
             return {
               id: key,

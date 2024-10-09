@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getDatabase, ref as dbRef, push, set } from 'firebase/database';
 import { getStorage, ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
+import { runTransaction, serverTimestamp } from 'firebase/database';
 import { useAuth } from '../AuthContext';
 import { Oval } from 'react-loader-spinner';
 
@@ -10,6 +11,26 @@ const ExportComponent = ({ templates, templateRefs }) => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const { user, login } = useAuth();
+
+  const saveMagazine = async (userId, magazineData) => {
+    const db = getDatabase();
+    const newMagazineRef = push(dbRef(db, `users/${userId}/magazines`));
+    
+    try {
+      await runTransaction(newMagazineRef, (currentData) => {
+        if (currentData === null) {
+          return magazineData;
+        } else {
+          console.warn("Magazine already exists, not overwriting");
+          return; // Abort the transaction
+        }
+      });
+      return newMagazineRef.key;
+    } catch (error) {
+      console.error("Error saving magazine:", error);
+      throw error;
+    }
+  };
 
   const exportTemplates = async () => {
     if (!user) {
@@ -205,25 +226,22 @@ const ExportComponent = ({ templates, templateRefs }) => {
     const magazinesRef = dbRef(db, `users/${user.uid}/magazines`);
 
     try {
-      const newMagazineRef = push(dbRef(db, `users/${user.uid}/magazines`));
-      
-      // Save magazine metadata
-      await set(newMagazineRef, {
+      const magazineId = await saveMagazine(user.uid, {
         title: "My Magazine",
-        createdAt: new Date().toISOString(),
+        createdAt: serverTimestamp(),
         userId: user.uid
       });
-
+    
       // Save each template separately
       for (let i = 0; i < processedTemplates.length; i++) {
         const template = processedTemplates[i];
-        const templateRef = dbRef(db, `users/${user.uid}/magazines/${newMagazineRef.key}/templates/${i}`);
+        const templateRef = dbRef(db, `users/${user.uid}/magazines/${magazineId}/templates/${i}`);
         
         // Upload content to Cloud Storage
-        const contentRef = storageRef(storage, `users/${user.uid}/magazines/${newMagazineRef.key}/templates/${i}/content`);
+        const contentRef = storageRef(storage, `users/${user.uid}/magazines/${magazineId}/templates/${i}/content`);
         await uploadString(contentRef, template.content, 'raw');
         const contentUrl = await getDownloadURL(contentRef);
-
+    
         // Save template metadata and content URL to Realtime Database
         await set(templateRef, {
           ...template,
@@ -231,18 +249,8 @@ const ExportComponent = ({ templates, templateRefs }) => {
           contentUrl: contentUrl
         });
       }
-
-      const galleryUrl = `/gallery/${user.uid}/${newMagazineRef.key}`;
-      window.open(galleryUrl, '_blank');
-    } catch (error) {
-      console.error("Error saving magazine to Firebase:", error);
-      // You might want to show an error message to the user here
-    }
-
-    try {
-      // ... Firebase saving logic ...
-
-      const galleryUrl = `/gallery/${user.uid}/${newMagazineRef.key}`;
+    
+      const galleryUrl = `/gallery/${user.uid}/${magazineId}`;
       window.open(galleryUrl, '_blank');
     } catch (error) {
       console.error("Error saving magazine to Firebase:", error);
