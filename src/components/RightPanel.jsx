@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../AuthContext';
 
 function RightPanel({ selectedText, selectedBackground, onTextStyleChange, onBackgroundStyleChange }) {
@@ -17,6 +17,14 @@ function RightPanel({ selectedText, selectedBackground, onTextStyleChange, onBac
       const galleryUrl = `/gallery/${user.uid}`;
       window.open(galleryUrl, '_blank');
     }
+  };
+
+  const [shadowOffset, setShadowOffset] = useState(2);
+  const [shadowColor, setShadowColor] = useState('#000000');
+
+  const handleShadowChange = (offset, color) => {
+    const shadowStyle = `${offset}px ${offset}px ${offset}px ${color}`;
+    onTextStyleChange({ textShadow: shadowStyle });
   };
 
   return (
@@ -76,11 +84,27 @@ function RightPanel({ selectedText, selectedBackground, onTextStyleChange, onBac
             />
           </label>
           <label>
-            Text Shadow
+            Shadow Offset
             <input 
-              type="text" 
-              placeholder="2px 2px 2px #000000"
-              onChange={(e) => onTextStyleChange({ textShadow: e.target.value })}
+              type="number" 
+              value={shadowOffset}
+              onChange={(e) => {
+                const newOffset = e.target.value;
+                setShadowOffset(newOffset);
+                handleShadowChange(newOffset, shadowColor);
+              }}
+            />
+          </label>
+          <label>
+            Shadow Color
+            <input 
+              type="color" 
+              value={shadowColor}
+              onChange={(e) => {
+                const newColor = e.target.value;
+                setShadowColor(newColor);
+                handleShadowChange(shadowOffset, newColor);
+              }}
             />
           </label>
           <label>
