@@ -11,6 +11,8 @@ function Canvas({
   style, 
   registerRef,
   onTextSelect,
+  onBackgroundSelect,
+  backgroundStyles,
   textStyles,
   onObjectDelete,
   isExporting,  // New prop for export state
@@ -97,7 +99,8 @@ function Canvas({
     if (deleteAction === 'template') {
       onDelete(template.uniqueId);
     } else if (deleteAction === 'object' && selectedObject) {
-      onObjectDelete(template.uniqueId, selectedObject);
+      console.log('Deleting object:', selectedObject, 'from template:', template.uniqueId);
+      onObjectDelete(selectedObject); // Remove template.uniqueId from here
     }
     setIsDeleteModalOpen(false);
     setDeleteAction(null);
@@ -117,8 +120,16 @@ function Canvas({
           Object.assign(element.style, style);
         }
       });
+      const backgroundElements = canvasRef.current.querySelectorAll('[data-background-id]');
+      backgroundElements.forEach(element => {
+        const backgroundId = element.getAttribute('data-background-id');
+        const style = backgroundStyles[backgroundId];
+        if (style) {
+          Object.assign(element.style, style);
+        }
+      });
     }
-  }, [textStyles]);
+  }, [textStyles, backgroundStyles]);
 
   const handleObjectSelect = (event) => {
     if (isExporting) return; // Disable selection during export
@@ -130,8 +141,13 @@ function Canvas({
       });
       const objectId = target.getAttribute('data-object-id');
       console.log('Object selected:', objectId);
+      console.log('Object attributes:', target.getAttributeNames().map(attr => `${attr}="${target.getAttribute(attr)}"`));
       setSelectedObject(objectId);
       target.classList.add('selected');
+  
+      if (target.hasAttribute('data-background-id')) {
+        onBackgroundSelect(objectId);
+      }
     } else {
       setSelectedObject(null);
       document.querySelectorAll('[data-deletable="true"]').forEach(el => {
@@ -141,30 +157,14 @@ function Canvas({
   };
 
   const handleTextEdit = (event) => {
-    if (isExporting) return; // Disable editing during export
+    if (isExporting) return; // This line remains unchanged
+  
     const textElement = event.target.closest('[data-text-id]');
     if (textElement) {
       const textId = textElement.getAttribute('data-text-id');
-      onTextSelect(template.uniqueId, textId, textElement.textContent);
-      // Remove selection when entering edit mode
-      setSelectedObject(null);
-      document.querySelectorAll('[data-deletable="true"]').forEach(el => {
-        el.classList.remove('selected');
-      });
-      // Make the text editable
-      textElement.contentEditable = true;
+      onTextSelect(textId, textElement.textContent);
+      setSelectedObject(textId);
       textElement.focus();
-
-      // Set cursor to the end of the text
-      const range = document.createRange();
-      const selection = window.getSelection();
-      range.selectNodeContents(textElement);
-      range.collapse(false); // false means collapse to end
-      selection.removeAllRanges();
-      selection.addRange(range);
-
-      // Prevent default behavior to allow custom cursor positioning
-      event.preventDefault();
     }
   };
 

@@ -62,7 +62,7 @@ export const magazineTemplates = [
               .editable:hover { outline: 2px dashed #007bff; cursor: text; }
               @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Roboto&display=swap');
             </style>
-            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 40%; background-color: #ff3366; z-index: 1;"></div>
+            <div class="editable deletable" data-background-id="article-background" data-object-id="article-background" data-deletable="true" style="position: absolute; top: 0; left: 0; width: 100%; height: 40%; background-color: #ff3366; z-index: 1;"></div>
             <h1 class="article-title editable deletable" contenteditable="true" data-text-id="article-title" data-object-id="article-title" data-deletable="true" style="font-family: 'Archivo Black', sans-serif; font-size: 36px; font-weight: bold; margin-bottom: 20px; color: #fff; position: relative; z-index: 2; transform: skew(-5deg); padding-top: 40px;">The Future of Fashion</h1>
             <img src="/api/placeholder/335/250" alt="Fashion image" id="articleImage" data-upload-target="true" style="width: 90%; height: 250px; object-fit: cover; margin-bottom: 20px; position: relative; z-index: 2; transform: rotate(-3deg); box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
             <h2 class="article-subtitle editable deletable" contenteditable="true" data-text-id="article-subtitle" data-object-id="article-subtitle" data-deletable="true" style="font-family: 'Roboto', sans-serif; font-size: 18px; margin-bottom: 20px; font-style: italic; color: #333; transform: translateX(-10px);">How sustainable practices are reshaping the industry</h2>
@@ -221,7 +221,7 @@ export const magazineTemplates = [
               .editable:hover { outline: 2px dashed #ff00ff; cursor: text; }
               @import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=Zilla+Slab&display=swap');
             </style>
-            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('/api/placeholder/375/812'); opacity: 0.2; mix-blend-mode: overlay; pointer-events: none;"></div>
+            <div class="editable deletable" data-background-id="article-background" data-object-id="article-background" data-deletable="true" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('/api/placeholder/375/812'); opacity: 0.2; mix-blend-mode: overlay; pointer-events: none;"></div>
             <div style="position: relative; z-index: 1;">
               <h1 class="article-title editable deletable" contenteditable="true" data-text-id="article-title" data-object-id="article-title" data-deletable="true" style="font-family: 'Special Elite', cursive; font-size: 42px; font-weight: bold; margin-bottom: 20px; color: #fff; transform: rotate(-5deg) translateY(20px); text-shadow: 2px 2px #ff00ff;">Sonic Rebellion</h1>
               <img src="/api/placeholder/335/250" alt="Music image" id="articleImage" data-upload-target="true" style="width: 100%; height: 250px; object-fit: cover; margin-bottom: 20px; mix-blend-mode: screen; transform: skew(-5deg, 2deg);">
@@ -394,6 +394,7 @@ export const magazineTemplates = [
               .editable:hover { outline: 2px dashed #007bff; cursor: text; }
               @import url('https://fonts.googleapis.com/css2?family=Playfair+Display&family=Raleway&display=swap');
             </style>
+            <div class="editable deletable" data-background-id="article-background" data-object-id="article-background" data-deletable="true" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #f5f5f5;"></div>
             <h1 class="article-title editable deletable" contenteditable="true" data-text-id="article-title" data-object-id="article-title" data-deletable="true" style="font-family: 'Playfair Display', serif; font-size: 32px; font-weight: normal; margin-bottom: 20px; color: #333; border-bottom: 1px solid #333; padding-bottom: 10px;">The Art of Slow Living</h1>
             <h2 class="article-subtitle editable deletable" contenteditable="true" data-text-id="article-subtitle" data-object-id="article-subtitle" data-deletable="true" style="font-family: 'Raleway', sans-serif; font-size: 18px; margin-bottom: 30px; font-style: italic; color: #666;">Embracing simplicity in a fast-paced world</h2>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">

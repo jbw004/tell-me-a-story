@@ -9,7 +9,9 @@ function Editor({
   onDeleteTemplate, 
   registerTemplateRef,
   onTextSelect,
+  onBackgroundSelect,  // New prop
   textStyles,
+  backgroundStyles,  // New prop
   onObjectDelete, // New prop for object deletion
   isExporting,
   onAddTocItem,  // New prop
@@ -54,12 +56,14 @@ function Editor({
             onDelete={onDeleteTemplate}
             uploadedImages={uploadedImages[template.uniqueId] || {}}
             registerRef={registerTemplateRef}
-            onTextSelect={onTextSelect}
+            onTextSelect={(textId, text) => onTextSelect(template.uniqueId, textId, text)}
+            onBackgroundSelect={(backgroundId) => onBackgroundSelect(template.uniqueId, backgroundId)}  // New prop
             textStyles={textStyles[template.uniqueId] || {}}
-            onObjectDelete={onObjectDelete} // Pass down the new prop
+            backgroundStyles={backgroundStyles[template.uniqueId] || {}}  // New prop
+            onObjectDelete={(objectId) => onObjectDelete(template.uniqueId, objectId)}
             isExporting={isExporting}
-            onAddTocItem={onAddTocItem}  // New prop
-            onRemoveTocItem={onRemoveTocItem}  // New prop
+            onAddTocItem={() => onAddTocItem(template.uniqueId)}
+            onRemoveTocItem={() => onRemoveTocItem(template.uniqueId)}
           />
         ))
       ) : (

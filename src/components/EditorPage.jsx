@@ -17,6 +17,8 @@ function EditorPage() {
   const [selectedText, setSelectedText] = useState(null);
   const [textStyles, setTextStyles] = useState({});
   const [isExporting, setIsExporting] = useState(false);
+  const [selectedBackground, setSelectedBackground] = useState(null);
+  const [backgroundStyles, setBackgroundStyles] = useState({});
   const navigate = useNavigate();
 
   // ... (keep all the handler functions from the original App component)
@@ -87,6 +89,12 @@ function EditorPage() {
 
   const handleTextSelect = useCallback((templateId, textId, text) => {
     setSelectedText({ templateId, textId, text });
+    setSelectedBackground(null);
+  }, []);
+
+  const handleBackgroundSelect = useCallback((templateId, backgroundId) => {
+    setSelectedBackground({ templateId, backgroundId });
+    setSelectedText(null);
   }, []);
 
   const handleTextStyleChange = useCallback((style) => {
@@ -104,19 +112,63 @@ function EditorPage() {
     }
   }, [selectedText]);
 
+  const handleBackgroundStyleChange = useCallback((style) => {
+    if (selectedBackground) {
+      setBackgroundStyles(prev => ({
+        ...prev,
+        [selectedBackground.templateId]: {
+          ...prev[selectedBackground.templateId],
+          [selectedBackground.backgroundId]: {
+            ...prev[selectedBackground.templateId]?.[selectedBackground.backgroundId],
+            ...style
+          }
+        }
+      }));
+    }
+  }, [selectedBackground]);
+
   const handleObjectDelete = useCallback((templateId, objectId) => {
+    console.log('Handling object delete:', templateId, objectId);
     setSelectedTemplates(prevTemplates => 
       prevTemplates.map(template => {
         if (template.uniqueId === templateId) {
+          console.log('Found template:', templateId);
           const parser = new DOMParser();
           const doc = parser.parseFromString(template.content, 'text/html');
+          
+          // Log all data-object-id attributes in the template
+          const allObjects = doc.querySelectorAll('[data-object-id]');
+          console.log('All object IDs in template:', Array.from(allObjects).map(el => el.getAttribute('data-object-id')));
+          
           const elementToDelete = doc.querySelector(`[data-object-id="${objectId}"]`);
           if (elementToDelete) {
+            console.log('Found element to delete:', objectId);
             elementToDelete.remove();
+            // Clear the styles for the deleted object
+            if (elementToDelete.hasAttribute('data-text-id')) {
+              setTextStyles(prev => {
+                const newStyles = {...prev};
+                if (newStyles[templateId]) {
+                  delete newStyles[templateId][objectId];
+                }
+                return newStyles;
+              });
+            } else if (elementToDelete.hasAttribute('data-background-id')) {
+              setBackgroundStyles(prev => {
+                const newStyles = {...prev};
+                if (newStyles[templateId]) {
+                  delete newStyles[templateId][objectId];
+                }
+                return newStyles;
+              });
+            }
             return {
               ...template,
               content: doc.body.innerHTML
             };
+          } else {
+            console.log('Element not found:', objectId);
+            console.log('Template content:', template.content);
           }
         }
         return template;
@@ -200,7 +252,9 @@ function EditorPage() {
         onDeleteTemplate={handleDeleteTemplate}
         registerTemplateRef={registerTemplateRef}
         onTextSelect={handleTextSelect}
+        onBackgroundSelect={handleBackgroundSelect}
         textStyles={textStyles}
+        backgroundStyles={backgroundStyles}
         onObjectDelete={handleObjectDelete}
         isExporting={isExporting}
         onAddTocItem={handleAddTocItem}
@@ -219,9 +273,11 @@ function EditorPage() {
           onExportEnd={handleExportEnd}
         />
         <RightPanel 
-          selectedText={selectedText}
-          onTextStyleChange={handleTextStyleChange}
-        />
+            selectedText={selectedText}
+            selectedBackground={selectedBackground}
+            onTextStyleChange={handleTextStyleChange}
+            onBackgroundStyleChange={handleBackgroundStyleChange}
+          />
       </div>
     </div>
     </>
