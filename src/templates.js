@@ -9,12 +9,15 @@ export const magazineTemplates = [
         content: `
           <div id="magazine-cover" style="width: 375px; height: 812px; margin: 0 auto; background-color: #fff; position: relative; overflow: hidden; font-family: Arial, sans-serif;">
             <style>
+              @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap');
               .editable:hover { outline: 2px dashed #007bff; cursor: text; }
+              .color-block { position: absolute; z-index: 1; }
             </style>
-            <div class="logo editable deletable" contenteditable="true" data-text-id="cover-logo" data-object-id="cover-logo" data-deletable="true" style="position: absolute; top: 20px; left: 20px; font-size: 24px; font-weight: bold; color: #000; z-index: 10;">i-D</div>
+            <div class="color-block editable deletable" data-background-id="cover-color-block" data-object-id="cover-color-block" data-deletable="true" style="top: 0; left: 0; width: 30%; height: 100%; background-color: #ff3366; transform: skew(-10deg) translateX(-20px);"></div>
+            <div class="logo editable deletable" contenteditable="true" data-text-id="cover-logo" data-object-id="cover-logo" data-deletable="true" style="position: absolute; top: 40px; left: 40px; font-family: 'Roboto', sans-serif; font-size: 36px; font-weight: bold; color: #000; z-index: 10; transform: rotate(-90deg); transform-origin: left top;">i-D</div>
             <img src="/api/placeholder/375/812" alt="Cover model" id="coverImage" data-upload-target="true" style="width: 100%; height: 100%; object-fit: cover;">
-            <h1 class="headline editable deletable" contenteditable="true" data-text-id="cover-headline" data-object-id="cover-headline" data-deletable="true" style="position: absolute; bottom: 100px; left: 20px; right: 20px; font-size: 36px; font-weight: bold; color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); line-height: 1.2;">The Bold & Beautiful Issue</h1>
-            <p class="subheadline editable deletable" contenteditable="true" data-text-id="cover-subheadline" data-object-id="cover-subheadline" data-deletable="true" style="position: absolute; bottom: 50px; left: 20px; right: 20px; font-size: 16px; color: #fff; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">Exploring fashion's fearless frontiers</p>
+            <h1 class="headline editable deletable" contenteditable="true" data-text-id="cover-headline" data-object-id="cover-headline" data-deletable="true" style="position: absolute; bottom: 120px; right: 20px; font-family: 'Roboto', sans-serif; font-size: 48px; font-weight: bold; color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); line-height: 1; text-align: right; max-width: 60%;">The Bold & Beautiful Issue</h1>
+            <p class="subheadline editable deletable" contenteditable="true" data-text-id="cover-subheadline" data-object-id="cover-subheadline" data-deletable="true" style="position: absolute; bottom: 80px; right: 20px; font-family: 'Roboto', sans-serif; font-size: 18px; font-weight: bold; color: #ff3366; text-transform: uppercase; text-align: right; max-width: 60%;">Exploring fashion's fearless frontiers</p>
           </div>
         `
       },
@@ -22,15 +25,24 @@ export const magazineTemplates = [
         id: 'contents-mobile',
         name: 'Contents',
         content: `
-          <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #fff; position: relative; overflow: hidden; padding: 20px; box-sizing: border-box; font-family: Arial, sans-serif;">
+          <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #fff; position: relative; overflow: hidden; padding: 40px 20px; box-sizing: border-box; font-family: Arial, sans-serif;">
             <style>
+              @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
               .editable:hover { outline: 2px dashed #007bff; cursor: text; }
-              .toc-item { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 16px; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
-              .toc-title { font-weight: bold; }
-              .toc-page { color: #999; }
+              .toc-item { 
+                display: flex; 
+                justify-content: space-between; 
+                margin-bottom: 15px; 
+                font-size: 16px; 
+                border-bottom: 1px solid #ddd; 
+                padding-bottom: 10px; 
+                position: relative; 
+              }
+              .toc-title { font-weight: bold; max-width: 80%; }
+              .toc-page { color: #ff3366; font-weight: bold; }
             </style>
-            <div class="logo editable deletable" contenteditable="true" data-text-id="contents-logo" data-object-id="contents-logo" data-deletable="true" style="font-size: 20px; font-weight: bold; margin-bottom: 20px;">i-D</div>
-            <h1 id="contents" class="section-title editable deletable" contenteditable="true" data-text-id="contents-title" data-object-id="contents-title" data-deletable="true" style="font-size: 36px; font-weight: bold; margin-bottom: 30px; text-transform: uppercase;">Contents</h1>
+            <div class="logo editable deletable" contenteditable="true" data-text-id="contents-logo" data-object-id="contents-logo" data-deletable="true" style="font-family: 'Roboto', sans-serif; font-size: 24px; font-weight: bold; margin-bottom: 40px; transform: rotate(-5deg);">i-D</div>
+            <h1 id="contents" class="section-title editable deletable" contenteditable="true" data-text-id="contents-title" data-object-id="contents-title" data-deletable="true" style="font-family: 'Roboto', sans-serif; font-size: 48px; font-weight: bold; margin-bottom: 40px; text-transform: uppercase; line-height: 1; transform: skew(-5deg);">Con<br>te<br>nts</h1>
             <div id="tocContainer">
               <div class="toc-item">
                 <span class="toc-title editable deletable" contenteditable="true" data-text-id="contents-item-1-title" data-object-id="contents-item-1-title" data-deletable="true">The Big Interview</span>
@@ -49,7 +61,7 @@ export const magazineTemplates = [
                 <span class="toc-page editable deletable" contenteditable="true" data-text-id="contents-item-4-page" data-object-id="contents-item-4-page" data-deletable="true">32</span>
               </div>
             </div>
-            <div class="page-number editable deletable" contenteditable="true" data-text-id="contents-page-number" data-object-id="contents-page-number" data-deletable="true" style="position: absolute; bottom: 20px; right: 20px; font-size: 14px; color: #999;">03</div>
+            <div class="page-number editable deletable" contenteditable="true" data-text-id="contents-page-number" data-object-id="contents-page-number" data-deletable="true" style="position: absolute; bottom: 20px; right: 20px; font-family: 'Roboto', sans-serif; font-size: 14px; color: #ff3366; transform: rotate(90deg);">03</div>
           </div>
         `
       },
@@ -79,15 +91,19 @@ export const magazineTemplates = [
         id: 'photo-editorial-mobile',
         name: 'Photo Editorial',
         content: `
-          <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #fff; position: relative; overflow: hidden; font-family: Arial, sans-serif;">
+          <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #000; position: relative; overflow: hidden; font-family: 'Roboto', sans-serif;">
             <style>
-              .editable:hover { outline: 2px dashed #007bff; cursor: text; }
+              @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+              .editable:hover { outline: 2px dashed #ff3366; cursor: text; }
             </style>
-            <img src="/api/placeholder/375/700" alt="Editorial photo 1" id="editorialImage1" data-upload-target="true" style="width: 100%; height: 700px; object-fit: cover;">
-            <div class="caption editable deletable" contenteditable="true" data-text-id="photo-caption-1" data-object-id="photo-caption-1" data-deletable="true" style="padding: 20px; font-size: 14px; color: #000;">Model wears Jacket by Designer A, Pants by Designer B</div>
-            <div class="editorial-title editable deletable" contenteditable="true" data-text-id="editorial-title" data-object-id="editorial-title" data-deletable="true" style="padding: 20px; font-size: 36px; font-weight: bold; color: #000;">URBAN CHIC</div>
-            <img src="/api/placeholder/375/700" alt="Editorial photo 2" id="editorialImage2" data-upload-target="true" style="width: 100%; height: 700px; object-fit: cover;">
-            <div class="caption editable deletable" contenteditable="true" data-text-id="photo-caption-2" data-object-id="photo-caption-2" data-deletable="true" style="padding: 20px; font-size: 14px; color: #000;">Dress by Designer C, Shoes by Designer D</div>
+            <img src="/api/placeholder/375/500" alt="Editorial photo 1" id="editorialImage1" data-upload-target="true" style="width: 100%; height: 500px; object-fit: cover; clip-path: polygon(0 0, 100% 0, 100% 90%, 0% 100%);">
+            <div class="editorial-title editable deletable" contenteditable="true" data-text-id="editorial-title" data-object-id="editorial-title" data-deletable="true" style="position: absolute; top: 20px; left: 20px; font-size: 48px; font-weight: bold; color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); transform: rotate(-5deg);">URBAN CHIC</div>
+            <div class="caption editable deletable" contenteditable="true" data-text-id="photo-caption-1" data-object-id="photo-caption-1" data-deletable="true" style="position: absolute; top: 460px; left: 20px; padding: 10px; font-size: 12px; color: #fff; background-color: #ff3366; transform: skew(-5deg);">Model wears Jacket by Designer A, Pants by Designer B</div>
+            <img src="/api/placeholder/375/500" alt="Editorial photo 2" id="editorialImage2" data-upload-target="true" style="width: 100%; height: 500px; object-fit: cover; clip-path: polygon(0 10%, 100% 0, 100% 100%, 0 100%);">
+            <div class="caption editable deletable" contenteditable="true" data-text-id="photo-caption-2" data-object-id="photo-caption-2" data-deletable="true" style="position: absolute; bottom: 20px; right: 20px; padding: 10px; font-size: 12px; color: #fff; background-color: #000; transform: skew(5deg);">Dress by Designer C, Shoes by Designer D</div>
+            <div class="pull-quote editable deletable" contenteditable="true" data-text-id="editorial-pullquote" data-object-id="editorial-pullquote" data-deletable="true" style="position: absolute; bottom: 200px; left: 20px; right: 20px; font-size: 24px; font-weight: bold; color: #fff; text-align: center; transform: rotate(-3deg);">
+              "Fashion is the armor to survive everyday life"
+            </div>
           </div>
         `
       },
@@ -95,29 +111,26 @@ export const magazineTemplates = [
         id: 'interview-mobile',
         name: 'Interview',
         content: `
-          <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #fff; position: relative; overflow: hidden; padding: 20px; box-sizing: border-box; font-family: Arial, sans-serif;">
+          <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #fff; position: relative; overflow: hidden; padding: 20px; box-sizing: border-box; font-family: 'Roboto', sans-serif;">
             <style>
-              .editable:hover { outline: 2px dashed #007bff; cursor: text; }
-              .question { font-weight: bold; margin-top: 15px; }
+              @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+              .editable:hover { outline: 2px dashed #ff3366; cursor: text; }
+              .question { font-weight: bold; margin-top: 15px; transform: skew(-5deg); }
               .answer { margin-bottom: 15px; }
             </style>
-            <h1 class="interview-title editable deletable" contenteditable="true" data-text-id="interview-title" data-object-id="interview-title" data-deletable="true" style="font-size: 32px; font-weight: bold; margin-bottom: 20px; text-transform: uppercase;">Fashion Forward</h1>
-            <h2 class="interview-subtitle editable deletable" contenteditable="true" data-text-id="interview-subtitle" data-object-id="interview-subtitle" data-deletable="true" style="font-size: 18px; margin-bottom: 20px; font-style: italic;">An exclusive chat with Designer X</h2>
-            <img src="/api/placeholder/375/300" alt="Designer X portrait" id="interviewImage" data-upload-target="true" style="width: 100%; height: 300px; object-fit: cover; margin-bottom: 20px;">
+            <h1 class="interview-title editable deletable" contenteditable="true" data-text-id="interview-title" data-object-id="interview-title" data-deletable="true" style="font-size: 36px; font-weight: bold; margin-bottom: 20px; text-transform: uppercase; transform: rotate(-3deg);">Fashion Forward</h1>
+            <h2 class="interview-subtitle editable deletable" contenteditable="true" data-text-id="interview-subtitle" data-object-id="interview-subtitle" data-deletable="true" style="font-size: 18px; margin-bottom: 20px; font-style: italic; color: #ff3366;">An exclusive chat with Designer X</h2>
+            <div style="position: relative; width: 100%; height: 250px; margin-bottom: 20px; overflow: hidden;">
+              <img src="/api/placeholder/375/250" alt="Designer X portrait" id="interviewImage" data-upload-target="true" style="width: 100%; height: 100%; object-fit: cover; transform: skew(-5deg, 2deg) scale(1.1);">
+            </div>
             <div class="interview-text">
               <div class="question editable deletable" contenteditable="true" data-text-id="interview-question-1" data-object-id="interview-question-1" data-deletable="true">i-D: How would you describe your design philosophy?</div>
-              <div class="answer editable deletable" contenteditable="true" data-text-id="interview-answer-1" data-object-id="interview-answer-1" data-deletable="true">Designer X: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div>
+              <div class="answer editable deletable" contenteditable="true" data-text-id="interview-answer-1" data-object-id="interview-answer-1" data-deletable="true">Designer X: It's about pushing boundaries and redefining what's possible in fashion. I believe in creating pieces that are both provocative and wearable.</div>
               <div class="question editable deletable" contenteditable="true" data-text-id="interview-question-2" data-object-id="interview-question-2" data-deletable="true">i-D: What inspired your latest collection?</div>
-              <div class="answer editable deletable" contenteditable="true" data-text-id="interview-answer-2" data-object-id="interview-answer-2" data-deletable="true">Designer X: Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</div>
+              <div class="answer editable deletable" contenteditable="true" data-text-id="interview-answer-2" data-object-id="interview-answer-2" data-deletable="true">Designer X: My latest work draws inspiration from urban architecture and the way light interacts with different surfaces throughout the day.</div>
             </div>
-            <div class="pull-quote editable deletable" contenteditable="true" data-text-id="interview-pullquote" data-object-id="interview-pullquote" data-deletable="true" style="font-size: 24px; font-weight: bold; padding: 20px; background-color: #f0f0f0; margin: 20px 0;">
+            <div class="pull-quote editable deletable" contenteditable="true" data-text-id="interview-pullquote" data-object-id="interview-pullquote" data-deletable="true" style="font-size: 24px; font-weight: bold; padding: 20px; background-color: #ff3366; color: #fff; margin: 20px 0; transform: rotate(-2deg);">
               "Fashion is a language that creates itself in clothes to interpret reality."
-            </div>
-            <div class="interview-text">
-              <div class="question editable deletable" contenteditable="true" data-text-id="interview-question-3" data-object-id="interview-question-3" data-deletable="true">i-D: How do you see the future of sustainable fashion?</div>
-              <div class="answer editable deletable" contenteditable="true" data-text-id="interview-answer-3" data-object-id="interview-answer-3" data-deletable="true">Designer X: Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</div>
-              <div class="question editable deletable" contenteditable="true" data-text-id="interview-question-4" data-object-id="interview-question-4" data-deletable="true">i-D: What advice would you give to aspiring designers?</div>
-              <div class="answer editable deletable" contenteditable="true" data-text-id="interview-answer-4" data-object-id="interview-answer-4" data-deletable="true">Designer X: Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</div>
             </div>
           </div>
         `
@@ -126,33 +139,34 @@ export const magazineTemplates = [
         id: 'trend-report-mobile',
         name: 'Trend Report',
         content: `
-          <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #fff; position: relative; overflow: hidden; padding: 20px; box-sizing: border-box; font-family: Arial, sans-serif;">
-            <style>
-              .editable:hover { outline: 2px dashed #007bff; cursor: text; }
-              .trend-item { margin-bottom: 20px; }
-              .trend-name { font-weight: bold; margin: 10px 0 5px; }
-              .trend-description { font-size: 14px; }
-            </style>
-            <h1 class="trend-title editable deletable" contenteditable="true" data-text-id="trend-title" data-object-id="trend-title" data-deletable="true" style="font-size: 32px; font-weight: bold; margin-bottom: 20px; text-transform: uppercase;">Spring/Summer Trends</h1>
-            <h2 class="trend-subtitle editable deletable" contenteditable="true" data-text-id="trend-subtitle" data-object-id="trend-subtitle" data-deletable="true" style="font-size: 18px; margin-bottom: 20px; font-style: italic;">What's hot this season</h2>
-            <div class="trend-grid">
-              <div class="trend-item">
-                <img src="/api/placeholder/335/200" alt="Trend 1" id="trendImage1" data-upload-target="true" style="width: 100%; height: 200px; object-fit: cover;">
-                <div class="trend-name editable deletable" contenteditable="true" data-text-id="trend-1-name" data-object-id="trend-1-name" data-deletable="true">Neon Accents</div>
-                <div class="trend-description editable deletable" contenteditable="true" data-text-id="trend-1-description" data-object-id="trend-1-description" data-deletable="true">Bold pops of color to brighten any outfit</div>
-              </div>
-              <div class="trend-item">
-                <img src="/api/placeholder/335/200" alt="Trend 2" id="trendImage2" data-upload-target="true" style="width: 100%; height: 200px; object-fit: cover;">
-                <div class="trend-name editable deletable" contenteditable="true" data-text-id="trend-2-name" data-object-id="trend-2-name" data-deletable="true">Oversized Blazers</div>
-                <div class="trend-description editable deletable" contenteditable="true" data-text-id="trend-2-description" data-object-id="trend-2-description" data-deletable="true">Relaxed silhouettes for effortless chic</div>
-              </div>
+          <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #fff; position: relative; overflow: hidden; padding: 20px; box-sizing: border-box; font-family: 'Roboto', sans-serif;">
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+            .editable:hover { outline: 2px dashed #ff3366; cursor: text; }
+            .trend-item { margin-bottom: 20px; position: relative; }
+            .trend-name { font-weight: bold; margin: 10px 0 5px; text-transform: uppercase; }
+            .trend-description { font-size: 14px; }
+          </style>
+          <h1 class="trend-title editable deletable" contenteditable="true" data-text-id="trend-title" data-object-id="trend-title" data-deletable="true" style="font-size: 36px; font-weight: bold; margin-bottom: 20px; text-transform: uppercase; transform: skew(-5deg);">Spring/Summer Trends</h1>
+          <h2 class="trend-subtitle editable deletable" contenteditable="true" data-text-id="trend-subtitle" data-object-id="trend-subtitle" data-deletable="true" style="font-size: 18px; margin-bottom: 20px; font-style: italic; color: #ff3366;">What's hot this season</h2>
+          <div class="trend-grid">
+            <div class="trend-item">
+              <img src="/api/placeholder/335/200" alt="Trend 1" id="trendImage1" data-upload-target="true" style="width: 100%; height: 200px; object-fit: cover; clip-path: polygon(0 0, 100% 0, 95% 100%, 5% 100%);">
+              <div class="trend-name editable deletable" contenteditable="true" data-text-id="trend-1-name" data-object-id="trend-1-name" data-deletable="true" style="position: absolute; top: 10px; left: 10px; background-color: #ff3366; color: #fff; padding: 5px 10px; transform: rotate(-3deg);">Neon Accents</div>
+              <div class="trend-description editable deletable" contenteditable="true" data-text-id="trend-1-description" data-object-id="trend-1-description" data-deletable="true">Bold pops of color to brighten any outfit</div>
             </div>
-            <div class="style-tip editable deletable" contenteditable="true" data-text-id="trend-style-tip" data-object-id="trend-style-tip" data-deletable="true" style="background-color: #f0f0f0; padding: 15px; margin-top: 20px;">
-              <strong>Style Tip:</strong> Mix and match these trends for a truly unique look!
+            <div class="trend-item">
+              <img src="/api/placeholder/335/200" alt="Trend 2" id="trendImage2" data-upload-target="true" style="width: 100%; height: 200px; object-fit: cover; clip-path: polygon(5% 0, 95% 0, 100% 100%, 0 100%);">
+              <div class="trend-name editable deletable" contenteditable="true" data-text-id="trend-2-name" data-object-id="trend-2-name" data-deletable="true" style="position: absolute; bottom: 30px; right: 10px; background-color: #000; color: #fff; padding: 5px 10px; transform: rotate(3deg);">Oversized Blazers</div>
+              <div class="trend-description editable deletable" contenteditable="true" data-text-id="trend-2-description" data-object-id="trend-2-description" data-deletable="true">Relaxed silhouettes for effortless chic</div>
             </div>
-            <div class="page-number editable deletable" contenteditable="true" data-text-id="trend-page-number" data-object-id="trend-page-number" data-deletable="true" style="position: absolute; bottom: 20px; right: 20px; font-size: 14px; color: #999;">32</div>
           </div>
-        `
+          <div class="style-tip editable deletable" contenteditable="true" data-text-id="trend-style-tip" data-object-id="trend-style-tip" data-deletable="true" style="background-color: #ff3366; color: #fff; padding: 15px; margin-top: 20px; transform: skew(-5deg);">
+            <strong>Style Tip:</strong> Mix and match these trends for a truly unique look!
+          </div>
+          <div class="page-number editable deletable" contenteditable="true" data-text-id="trend-page-number" data-object-id="trend-page-number" data-deletable="true" style="position: absolute; bottom: 20px; right: 20px; font-size: 14px; color: #ff3366; transform: rotate(90deg);">32</div>
+        </div>
+      `
       }
     ]
   },
