@@ -39,11 +39,9 @@ const ExportedMagazineView = ({ templates, onViewFull, showFull, onDelete, isOwn
       const loaded = await Promise.all(templates.map(async (template) => {
         if (template.contentUrl) {
           try {
-            const response = await fetch(`/firebase-storage${new URL(template.contentUrl).pathname}${new URL(template.contentUrl).search}`, {
+            const response = await fetch(template.contentUrl, {
               mode: 'cors',
-              headers: {
-                'Origin': window.location.origin
-              }
+              credentials: 'include',
             });
             if (!response.ok) {
               throw new Error(`HTTP error! status: ${response.status}`);
