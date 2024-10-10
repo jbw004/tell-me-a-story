@@ -1,9 +1,9 @@
 [
   {
-    "origin": ["https://app.tellmeastory.press", "http://localhost:5173"],
-    "method": ["GET", "HEAD", "OPTIONS"],
+    "origin": ["https://app.tellmeastory.press", "http://localhost:5173", "https://localhost:5173"],
+    "method": ["GET", "HEAD", "PUT", "POST", "DELETE"],
     "maxAgeSeconds": 3600,
-    "responseHeader": ["Content-Type"],
+    "responseHeader": ["Content-Type", "Authorization", "Content-Length", "User-Agent", "x-goog-*"],
     "allowCredentials": true
   }
 ]
