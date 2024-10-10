@@ -695,5 +695,177 @@ export const magazineTemplates = [
         `
       }
     ]
+  },
+  {
+    id: 'kinfolk-magazine-mobile',
+    name: 'Kinfolk Magazine Mobile',
+    templates: [
+      {
+        id: 'cover-mobile',
+        name: 'Cover',
+        content: `
+          <div id="magazine-cover" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #f8f8f8; position: relative; overflow: hidden; font-family: 'Georgia', serif;">
+            <style>
+              @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;700&display=swap');
+              .editable:hover { outline: 2px dashed #888; cursor: text; }
+            </style>
+            <img src="/api/placeholder/375/812" alt="Cover image" id="coverImage" data-upload-target="true" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.8; mask-image: linear-gradient(to bottom, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 100%); -webkit-mask-image: linear-gradient(to bottom, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 100%);">
+            <div class="logo editable deletable" contenteditable="true" data-text-id="cover-logo" data-object-id="cover-logo" data-deletable="true" style="position: absolute; top: 40px; left: 40px; font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 300; color: #333; letter-spacing: 4px;">KINFOLK</div>
+            <h1 class="headline editable deletable" contenteditable="true" data-text-id="cover-headline" data-object-id="cover-headline" data-deletable="true" style="position: absolute; bottom: 200px; left: 40px; right: 40px; font-family: 'Cormorant Garamond', serif; font-size: 48px; font-weight: 300; color: #333; line-height: 1.2;">The Art of Slow Living</h1>
+            <p class="subheadline editable deletable" contenteditable="true" data-text-id="cover-subheadline" data-object-id="cover-subheadline" data-deletable="true" style="position: absolute; bottom: 160px; left: 40px; right: 40px; font-family: 'Georgia', serif; font-size: 16px; font-style: italic; color: #666;">Embracing simplicity in a complex world</p>
+            <div class="issue-info editable deletable" contenteditable="true" data-text-id="cover-issue-info" data-object-id="cover-issue-info" data-deletable="true" style="position: absolute; bottom: 40px; left: 40px; font-family: 'Georgia', serif; font-size: 14px; color: #666;">Issue 42 · Summer 2023</div>
+          </div>
+        `
+      },
+      {
+        id: 'contents-mobile',
+        name: 'Contents',
+        content: `
+          <div id="magazine-page" style="width: 375px; height: 812px; margin: 0 auto; background-color: #fff; position: relative; overflow: hidden; padding: 40px 20px; box-sizing: border-box; font-family: 'Georgia', serif;">
+            <style>
+              @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;700&display=swap');
+              .editable:hover { outline: 2px dashed #888; cursor: text; }
+              .toc-item { 
+                display: flex; 
+                justify-content: space-between; 
+                margin-bottom: 20px; 
+                font-size: 16px; 
+                border-bottom: 1px solid #ddd; 
+                padding-bottom: 10px; 
+              }
+              .toc-title { font-weight: normal; max-width: 80%; }
+              .toc-page { color: #888; }
+            </style>
+            <h1 id="contents" class="section-title editable deletable" contenteditable="true" data-text-id="contents-title" data-object-id="contents-title" data-deletable="true" style="font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; margin-bottom: 40px; color: #333;">Contents</h1>
+            <div id="tocContainer">
+              <div class="toc-item">
+                <span class="toc-title editable deletable" contenteditable="true" data-text-id="contents-item-1-title" data-object-id="contents-item-1-title" data-deletable="true">The Essence of Simplicity</span>
+                <span class="toc-page editable deletable" contenteditable="true" data-text-id="contents-item-1-page" data-object-id="contents-item-1-page" data-deletable="true">08</span>
+              </div>
+              <div class="toc-item">
+                <span class="toc-title editable deletable" contenteditable="true" data-text-id="contents-item-2-title" data-object-id="contents-item-2-title" data-deletable="true">Mindful Living Spaces</span>
+                <span class="toc-page editable deletable" contenteditable="true" data-text-id="contents-item-2-page" data-object-id="contents-item-2-page" data-deletable="true">16</span>
+              </div>
+              <div class="toc-item">
+                <span class="toc-title editable deletable" contenteditable="true" data-text-id="contents-item-3-title" data-object-id="contents-item-3-title" data-deletable="true">The Art of Slow Cooking</span>
+                <span class="toc-page editable deletable" contenteditable="true" data-text-id="contents-item-3-page" data-object-id="contents-item-3-page" data-deletable="true">24</span>
+              </div>
+              <div class="toc-item">
+                <span class="toc-title editable deletable" contenteditable="true" data-text-id="contents-item-4-title" data-object-id="contents-item-4-title" data-deletable="true">Conversations: Artisan Spotlight</span>
+                <span class="toc-page editable deletable" contenteditable="true" data-text-id="contents-item-4-page" data-object-id="contents-item-4-page" data-deletable="true">32</span>
+              </div>
+            </div>
+            <div class="page-number editable deletable" contenteditable="true" data-text-id="contents-page-number" data-object-id="contents-page-number" data-deletable="true" style="margin-top: 40px; font-family: 'Georgia', serif; font-size: 14px; color: #888; text-align: center;">3</div>
+          </div>
+        `
+      },
+      {
+        id: 'feature-article-mobile',
+        name: 'Feature Article',
+        content: `
+          <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #fff; position: relative; overflow: hidden; padding: 40px 20px; box-sizing: border-box; font-family: 'Georgia', serif;">
+            <style>
+              @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;700&display=swap');
+              .editable:hover { outline: 2px dashed #888; cursor: text; }
+            </style>
+            <h1 class="article-title editable deletable" contenteditable="true" data-text-id="article-title" data-object-id="article-title" data-deletable="true" style="font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; margin-bottom: 20px; color: #333; line-height: 1.2;">The Art of Slow Living</h1>
+            <div class="article-subtitle editable deletable" contenteditable="true" data-text-id="article-subtitle" data-object-id="article-subtitle" data-deletable="true" style="font-family: 'Georgia', serif; font-size: 16px; font-style: italic; margin-bottom: 30px; color: #666;">Embracing simplicity in a fast-paced world</div>
+            <img src="/api/placeholder/335/250" alt="Feature image" id="featureImage" data-upload-target="true" style="width: 100%; height: 250px; object-fit: cover; margin-bottom: 30px;">
+            <div class="article-text editable deletable" contenteditable="true" data-text-id="article-text-1" data-object-id="article-text-1" data-deletable="true" style="font-family: 'Georgia', serif; font-size: 16px; line-height: 1.6; margin-bottom: 20px; color: #333;">
+              In a world that seems to move at an ever-increasing pace, there's a growing movement towards slowing down and savoring life's simple pleasures. This philosophy, often referred to as 'slow living,' is not about doing everything at a snail's pace, but rather about being present, finding purpose, and living intentionally.
+            </div>
+            <div class="pull-quote editable deletable" contenteditable="true" data-text-id="article-pullquote" data-object-id="article-pullquote" data-deletable="true" style="font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 300; font-style: italic; padding: 20px 0; border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; margin: 30px 0; color: #666; text-align: center;">
+              "Slow living is about creating space for the things that matter most."
+            </div>
+            <div class="article-text editable deletable" contenteditable="true" data-text-id="article-text-2" data-object-id="article-text-2" data-deletable="true" style="font-family: 'Georgia', serif; font-size: 16px; line-height: 1.6; color: #333;">
+              By embracing slow living, we can cultivate a deeper appreciation for the world around us, nurture meaningful relationships, and find joy in the everyday moments that might otherwise pass us by unnoticed.
+            </div>
+            <div class="page-number editable deletable" contenteditable="true" data-text-id="article-page-number" data-object-id="article-page-number" data-deletable="true" style="font-family: 'Georgia', serif; font-size: 12px; color: #999; text-align: center; margin-top: 40px;">1</div>
+          </div>
+        `
+      },
+      {
+        id: 'photo-editorial-mobile',
+        name: 'Photo Editorial',
+        content: `
+          <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #fff; position: relative; overflow: hidden; padding: 40px 20px; box-sizing: border-box; font-family: 'Georgia', serif;">
+            <style>
+              @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;700&display=swap');
+              .editable:hover { outline: 2px dashed #888; cursor: text; }
+            </style>
+            <h1 class="editorial-title editable deletable" contenteditable="true" data-text-id="editorial-title" data-object-id="editorial-title" data-deletable="true" style="font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; margin-bottom: 20px; color: #333; text-align: center;">Simplicity in Form</h1>
+            <div class="editorial-subtitle editable deletable" contenteditable="true" data-text-id="editorial-subtitle" data-object-id="editorial-subtitle" data-deletable="true" style="font-family: 'Georgia', serif; font-size: 16px; font-style: italic; margin-bottom: 30px; color: #666; text-align: center;">A visual exploration of minimalist design</div>
+            <img src="/api/placeholder/335/400" alt="Editorial photo 1" id="editorialImage1" data-upload-target="true" style="width: 100%; height: 400px; object-fit: cover; margin-bottom: 20px;">
+            <div class="caption editable deletable" contenteditable="true" data-text-id="photo-caption-1" data-object-id="photo-caption-1" data-deletable="true" style="font-family: 'Georgia', serif; font-size: 14px; color: #666; margin-bottom: 30px; text-align: center;">The beauty of negative space in interior design</div>
+            <img src="/api/placeholder/335/400" alt="Editorial photo 2" id="editorialImage2" data-upload-target="true" style="width: 100%; height: 400px; object-fit: cover; margin-bottom: 20px;">
+            <div class="caption editable deletable" contenteditable="true" data-text-id="photo-caption-2" data-object-id="photo-caption-2" data-deletable="true" style="font-family: 'Georgia', serif; font-size: 14px; color: #666; margin-bottom: 30px; text-align: center;">Embracing natural textures and muted tones</div>
+            <div class="editorial-text editable deletable" contenteditable="true" data-text-id="editorial-text" data-object-id="editorial-text" data-deletable="true" style="font-family: 'Georgia', serif; font-size: 16px; line-height: 1.6; color: #333; margin-top: 30px;">
+              In this photo series, we explore how simplicity in design can create spaces that are both visually striking and deeply calming. By focusing on clean lines, natural materials, and a muted color palette, these interiors demonstrate the power of restraint in creating harmonious living environments.
+            </div>
+            <div class="page-number editable deletable" contenteditable="true" data-text-id="editorial-page-number" data-object-id="editorial-page-number" data-deletable="true" style="font-family: 'Georgia', serif; font-size: 12px; color: #999; text-align: center; margin-top: 40px;">8</div>
+          </div>
+        `
+      },
+      {
+        id: 'interview-mobile',
+        name: 'Interview',
+        content: `
+          <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #fff; position: relative; overflow: hidden; padding: 40px 20px; box-sizing: border-box; font-family: 'Georgia', serif;">
+            <style>
+              @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;700&display=swap');
+              .editable:hover { outline: 2px dashed #888; cursor: text; }
+              .question { font-weight: 700; margin-top: 20px; color: #333; }
+              .answer { margin-bottom: 20px; color: #666; }
+            </style>
+            <h1 class="interview-title editable deletable" contenteditable="true" data-text-id="interview-title" data-object-id="interview-title" data-deletable="true" style="font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; margin-bottom: 20px; color: #333; text-align: center;">A Conversation with Nature</h1>
+            <div class="interview-subtitle editable deletable" contenteditable="true" data-text-id="interview-subtitle" data-object-id="interview-subtitle" data-deletable="true" style="font-family: 'Georgia', serif; font-size: 16px; font-style: italic; margin-bottom: 30px; color: #666; text-align: center;">Exploring sustainable living with eco-architect Jane Doe</div>
+            <img src="/api/placeholder/335/250" alt="Interviewee portrait" id="interviewImage" data-upload-target="true" style="width: 100%; height: 250px; object-fit: cover; margin-bottom: 30px;">
+            <div class="interview-text" style="font-family: 'Georgia', serif; font-size: 16px; line-height: 1.6;">
+              <div class="question editable deletable" contenteditable="true" data-text-id="interview-question-1" data-object-id="interview-question-1" data-deletable="true">How would you describe your approach to sustainable architecture?</div>
+              <div class="answer editable deletable" contenteditable="true" data-text-id="interview-answer-1" data-object-id="interview-answer-1" data-deletable="true">My philosophy is rooted in the belief that our living spaces should exist in harmony with nature, not in opposition to it. I strive to create homes that not only minimize their environmental impact but also enhance the well-being of their inhabitants.</div>
+              <div class="question editable deletable" contenteditable="true" data-text-id="interview-question-2" data-object-id="interview-question-2" data-deletable="true">What inspired you to focus on eco-friendly design?</div>
+              <div class="answer editable deletable" contenteditable="true" data-text-id="interview-answer-2" data-object-id="interview-answer-2" data-deletable="true">Growing up surrounded by nature, I've always felt a deep connection to the environment. As I pursued architecture, it became clear that our built environments often disconnect us from nature. My work aims to bridge that gap, bringing the outside in and creating spaces that feel like natural extensions of the landscape.</div>
+            </div>
+            <div class="pull-quote editable deletable" contenteditable="true" data-text-id="interview-pullquote" data-object-id="interview-pullquote" data-deletable="true" style="font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 300; font-style: italic; padding: 20px 0; border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; margin: 30px 0; color: #666; text-align: center;">
+              "Sustainable design is not just about materials; it's about creating spaces that nurture both people and the planet."
+            </div>
+            <div class="page-number editable deletable" contenteditable="true" data-text-id="interview-page-number" data-object-id="interview-page-number" data-deletable="true" style="font-family: 'Georgia', serif; font-size: 12px; color: #999; text-align: center; margin-top: 40px;">15</div>
+          </div>
+        `
+      },
+      {
+        id: 'trend-report-mobile',
+        name: 'Trend Report',
+        content: `
+          <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #fff; position: relative; overflow: hidden; padding: 40px 20px; box-sizing: border-box; font-family: 'Georgia', serif;">
+            <style>
+              @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;700&display=swap');
+              .editable:hover { outline: 2px dashed #888; cursor: text; }
+              .trend-item { margin-bottom: 40px; }
+              .trend-name { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 24px; margin-bottom: 10px; color: #333; }
+              .trend-description { font-size: 16px; color: #666; line-height: 1.6; }
+            </style>
+            <h1 class="trend-title editable deletable" contenteditable="true" data-text-id="trend-title" data-object-id="trend-title" data-deletable="true" style="font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; margin-bottom: 20px; color: #333; text-align: center;">Emerging Lifestyle Trends</h1>
+            <div class="trend-subtitle editable deletable" contenteditable="true" data-text-id="trend-subtitle" data-object-id="trend-subtitle" data-deletable="true" style="font-family: 'Georgia', serif; font-size: 16px; font-style: italic; margin-bottom: 40px; color: #666; text-align: center;">Shaping the future of mindful living</div>
+            <div class="trend-grid">
+              <div class="trend-item">
+                <img src="/api/placeholder/335/200" alt="Trend 1" id="trendImage1" data-upload-target="true" style="width: 100%; height: 200px; object-fit: cover; margin-bottom: 20px;">
+                <div class="trend-name editable deletable" contenteditable="true" data-text-id="trend-1-name" data-object-id="trend-1-name" data-deletable="true">Biophilic Design</div>
+                <div class="trend-description editable deletable" contenteditable="true" data-text-id="trend-1-description" data-object-id="trend-1-description" data-deletable="true">Incorporating nature into our living spaces, biophilic design is more than just adding plants. It's about creating environments that connect us to the natural world, improving our well-being and productivity.</div>
+              </div>
+              <div class="trend-item">
+                <img src="/api/placeholder/335/200" alt="Trend 2" id="trendImage2" data-upload-target="true" style="width: 100%; height: 200px; object-fit: cover; margin-bottom: 20px;">
+                <div class="trend-name editable deletable" contenteditable="true" data-text-id="trend-2-name" data-object-id="trend-2-name" data-deletable="true">Slow Fashion</div>
+                <div class="trend-description editable deletable" contenteditable="true" data-text-id="trend-2-description" data-object-id="trend-2-description" data-deletable="true">Moving away from fast fashion, consumers are embracing quality over quantity. This shift towards timeless, durable pieces reflects a growing awareness of the environmental impact of our clothing choices.</div>
+              </div>
+            </div>
+            <div class="trend-quote editable deletable" contenteditable="true" data-text-id="trend-quote" data-object-id="trend-quote" data-deletable="true" style="font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 300; font-style: italic; padding: 20px 0; border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; margin: 30px 0; color: #666; text-align: center;">
+              "The future of lifestyle design lies in conscious choices that prioritize both personal well-being and environmental sustainability."
+            </div>
+            <div class="page-number editable deletable" contenteditable="true" data-text-id="trend-page-number" data-object-id="trend-page-number" data-deletable="true" style="font-family: 'Georgia', serif; font-size: 12px; color: #999; text-align: center; margin-top: 40px;">22</div>
+          </div>
+        `
+      }
+    ]
   }
 ];
