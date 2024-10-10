@@ -21,11 +21,13 @@ export const AuthProvider = ({ children }) => {
 
   const login = async () => {
     try {
-      await signInWithPopup(auth, googleProvider);
+      const result = await signInWithPopup(auth, googleProvider);
+      return result.user;
     } catch (error) {
       if (error.code !== 'auth/cancelled-popup-request') {
         console.error("Error signing in with Google", error);
       }
+      throw error;
     }
   };
 
@@ -41,6 +43,7 @@ export const AuthProvider = ({ children }) => {
     user,
     login,
     logout,
+    loading
   };
 
   return (

@@ -3,14 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import { getDatabase, ref as dbRef, push, set } from 'firebase/database';
 import { getStorage, ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
 import { runTransaction, serverTimestamp } from 'firebase/database';
+import { onAuthStateChanged } from 'firebase/auth';
 import { useAuth } from '../AuthContext';
 import { Oval } from 'react-loader-spinner';
+import { auth } from '../firebase'; // Make sure this path is correct
+
+
 
 const ExportComponent = ({ templates, templateRefs }) => {
   const [exporting, setExporting] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const { user, login } = useAuth();
+  const { user, login, loading } = useAuth();
 
   const saveMagazine = async (userId, magazineData) => {
     const db = getDatabase();
@@ -28,7 +32,7 @@ const ExportComponent = ({ templates, templateRefs }) => {
       return newMagazineRef.key;
     } catch (error) {
       console.error("Error saving magazine:", error);
-      throw error;
+      throw new Error("Failed to save magazine. Please try again.");
     }
   };
 
@@ -36,21 +40,16 @@ const ExportComponent = ({ templates, templateRefs }) => {
     if (!user) {
       try {
         await login();
-        if (!user) {
-          setError("Login failed. Please try again.");
-          return;
-        }
       } catch (error) {
         setError("Login failed. Please try again.");
         console.error("Login failed", error);
         return;
       }
     }
-  
+
     setExporting(true);
     setError(null);
   
-
     // Create a new document for the export view
     const exportDoc = document.implementation.createHTMLDocument('Export View');
 
@@ -259,6 +258,10 @@ const ExportComponent = ({ templates, templateRefs }) => {
 
     setExporting(false);
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
   
 
   return (
@@ -266,7 +269,7 @@ const ExportComponent = ({ templates, templateRefs }) => {
       {error && <div style={{ color: 'red', marginBottom: '10px' }}>{error}</div>}
       <button
         onClick={exportTemplates}
-        disabled={exporting}
+        disabled={exporting || !user}
         className={`export-button ${exporting ? 'exporting' : ''}`}
       >
         {exporting ? (
@@ -283,7 +286,7 @@ const ExportComponent = ({ templates, templateRefs }) => {
             strokeWidthSecondary={2}
           />
         ) : (
-          'Publish to Gallery'
+          user ? 'Publish to Gallery' : 'Login to Publish'
         )}
       </button>
     </div>
