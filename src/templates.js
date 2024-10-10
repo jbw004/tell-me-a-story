@@ -867,5 +867,187 @@ export const magazineTemplates = [
         `
       }
     ]
-  }
+  },
+  {
+    id: 'nylon-magazine-mobile',
+    name: 'Nylon Magazine Mobile',
+    templates: [
+      {
+        id: 'cover-mobile',
+        name: 'Cover',
+        content: `
+          <div id="magazine-cover" style="width: 375px; height: 812px; margin: 0 auto; background-color: #000; position: relative; overflow: hidden; font-family: 'Arial', sans-serif;">
+            <style>
+              @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto:wght@400;700&display=swap');
+              .editable:hover { outline: 2px dashed #ff00ff; cursor: text; }
+            </style>
+            <img src="/api/placeholder/375/812" alt="Cover image" id="coverImage" data-upload-target="true" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.8;">
+            <div class="logo editable deletable" contenteditable="true" data-text-id="cover-logo" data-object-id="cover-logo" data-deletable="true" style="position: absolute; top: 40px; left: 40px; font-family: 'Montserrat', sans-serif; font-size: 48px; font-weight: 700; color: #fff; letter-spacing: -2px; transform: skew(-5deg);">NYLON</div>
+            <h1 class="headline editable deletable" contenteditable="true" data-text-id="cover-headline" data-object-id="cover-headline" data-deletable="true" style="position: absolute; bottom: 200px; left: 20px; right: 20px; font-family: 'Montserrat', sans-serif; font-size: 64px; font-weight: 700; color: #fff; line-height: 0.9; text-transform: uppercase; mix-blend-mode: difference;">Pop Culture Reloaded</h1>
+            <p class="subheadline editable deletable" contenteditable="true" data-text-id="cover-subheadline" data-object-id="cover-subheadline" data-deletable="true" style="position: absolute; bottom: 160px; left: 20px; right: 20px; font-family: 'Roboto', sans-serif; font-size: 18px; font-weight: 400; color: #fff; text-transform: uppercase; letter-spacing: 2px;">Fashion • Music • Art • Tech</p>
+            <div class="issue-info editable deletable" contenteditable="true" data-text-id="cover-issue-info" data-object-id="cover-issue-info" data-deletable="true" style="position: absolute; top: 100px; right: 20px; font-family: 'Roboto', sans-serif; font-size: 14px; color: #fff; writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg);">ISSUE 127 • SUMMER 2023 • $5.99</div>
+            <div class="color-block editable deletable" data-background-id="cover-color-block" data-object-id="cover-color-block" data-deletable="true" style="position: absolute; bottom: 0; right: 0; width: 50%; height: 30%; background-color: #ff00ff; mix-blend-mode: multiply; transform: skew(-10deg) translateX(20px);"></div>
+          </div>
+          `
+      },
+      {
+        id: 'contents-mobile',
+        name: 'Contents',
+        content: `
+        <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #f0f0f0; position: relative; overflow: hidden; padding: 40px 20px; box-sizing: border-box; font-family: 'Arial', sans-serif;">
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto:wght@400;700&display=swap');
+            .editable:hover { outline: 2px dashed #ff00ff; cursor: text; }
+            .toc-item { 
+              display: flex; 
+              justify-content: space-between; 
+              margin-bottom: 15px; 
+              font-size: 16px; 
+              border-bottom: 1px solid #000; 
+              padding-bottom: 10px; 
+              position: relative; 
+            }
+            .toc-title { font-weight: bold; max-width: 80%; }
+            .toc-page { font-weight: bold; color: #ff00ff; }
+          </style>
+          <h1 id="contents" class="section-title editable deletable" contenteditable="true" data-text-id="contents-title" data-object-id="contents-title" data-deletable="true" style="font-family: 'Montserrat', sans-serif; font-size: 72px; font-weight: 700; margin-bottom: 40px; text-transform: uppercase; line-height: 0.9; transform: skew(-5deg);">What's Inside</h1>
+          <div id="tocContainer">
+            <div class="toc-item">
+              <span class="toc-title editable deletable" contenteditable="true" data-text-id="contents-item-1-title" data-object-id="contents-item-1-title" data-deletable="true">The Next Wave: Gen Z Innovators</span>
+              <span class="toc-page editable deletable" contenteditable="true" data-text-id="contents-item-1-page" data-object-id="contents-item-1-page" data-deletable="true">08</span>
+            </div>
+            <div class="toc-item">
+              <span class="toc-title editable deletable" contenteditable="true" data-text-id="contents-item-2-title" data-object-id="contents-item-2-title" data-deletable="true">Street Style: Neon Nights</span>
+              <span class="toc-page editable deletable" contenteditable="true" data-text-id="contents-item-2-page" data-object-id="contents-item-2-page" data-deletable="true">16</span>
+            </div>
+            <div class="toc-item">
+              <span class="toc-title editable deletable" contenteditable="true" data-text-id="contents-item-3-title" data-object-id="contents-item-3-title" data-deletable="true">Music: The Sound of Tomorrow</span>
+              <span class="toc-page editable deletable" contenteditable="true" data-text-id="contents-item-3-page" data-object-id="contents-item-3-page" data-deletable="true">24</span>
+            </div>
+            <div class="toc-item">
+              <span class="toc-title editable deletable" contenteditable="true" data-text-id="contents-item-4-title" data-object-id="contents-item-4-title" data-deletable="true">Tech Talk: AR Fashion Revolution</span>
+              <span class="toc-page editable deletable" contenteditable="true" data-text-id="contents-item-4-page" data-object-id="contents-item-4-page" data-deletable="true">32</span>
+            </div>
+          </div>
+          <div class="color-block editable deletable" data-background-id="contents-color-block" data-object-id="contents-color-block" data-deletable="true" style="position: absolute; top: 0; left: 0; width: 30%; height: 100%; background-color: #ff00ff; opacity: 0.1; transform: skew(-10deg) translateX(-20px);"></div>
+          <div class="page-number editable deletable" contenteditable="true" data-text-id="contents-page-number" data-object-id="contents-page-number" data-deletable="true" style="position: absolute; bottom: 20px; right: 20px; font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 700;">03</div>
+        </div>
+        `
+      },
+      {
+        id: 'feature-article-mobile',
+        name: 'Feature Article',
+        content: `
+        <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #fff; position: relative; overflow: hidden; padding: 20px; box-sizing: border-box; font-family: 'Arial', sans-serif;">
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto:wght@400;700&display=swap');
+            .editable:hover { outline: 2px dashed #ff00ff; cursor: text; }
+          </style>
+          <h1 class="article-title editable deletable" contenteditable="true" data-text-id="article-title" data-object-id="article-title" data-deletable="true" style="font-family: 'Montserrat', sans-serif; font-size: 36px; font-weight: 700; margin-bottom: 20px; line-height: 1; text-transform: uppercase; color: #000;">The Future of Fashion Tech</h1>
+            <div class="article-intro editable deletable" contenteditable="true" data-text-id="article-intro" data-object-id="article-intro" data-deletable="true" style="font-family: 'Roboto', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 20px; color: #ff00ff;">How AR and AI are revolutionizing your wardrobe</div>
+            <img src="/api/placeholder/335/250" alt="Fashion Tech image" id="articleImage" data-upload-target="true" style="width: calc(100% + 40px); height: 250px; object-fit: cover; margin-left: -20px; margin-bottom: 20px;">
+            <div class="article-text editable deletable" contenteditable="true" data-text-id="article-text-1" data-object-id="article-text-1" data-deletable="true" style="font-family: 'Roboto', sans-serif; font-size: 16px; line-height: 1.6; margin-bottom: 20px; color: #333;">
+              In an era where our phones are an extension of ourselves, it's no surprise that fashion is getting a high-tech makeover. From AR fitting rooms to AI-designed collections, the future of fashion is here, and it's nothing short of revolutionary.
+            </div>
+            <div class="pull-quote editable deletable" contenteditable="true" data-text-id="article-pullquote" data-object-id="article-pullquote" data-deletable="true" style="font-family: 'Montserrat', sans-serif; font-size: 24px; font-weight: 700; padding: 20px 0; border-top: 4px solid #ff00ff; border-bottom: 4px solid #ff00ff; margin: 20px 0; color: #000;">
+              "The next big trend? Clothes that adapt to your mood and environment in real-time."
+            </div>
+            <div class="article-text editable deletable" contenteditable="true" data-text-id="article-text-2" data-object-id="article-text-2" data-deletable="true" style="font-family: 'Roboto', sans-serif; font-size: 16px; line-height: 1.6; color: #333;">
+              Imagine a world where your jacket changes color based on your mood, or your shoes adapt their cushioning as you walk. With advancements in smart textiles and AI, this sci-fi fantasy is quickly becoming a reality.
+            </div>
+            <div class="page-number editable deletable" contenteditable="true" data-text-id="article-page-number" data-object-id="article-page-number" data-deletable="true" style="position: absolute; bottom: 20px; right: 20px; font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 700;">01</div>
+        </div>        
+        `
+    },
+    {
+      id: 'photo-editorial-mobile',
+      name: 'Photo Editorial',
+      content: `
+      <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #000; position: relative; overflow: hidden; font-family: 'Arial', sans-serif;">
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto:wght@400;700&display=swap');
+        .editable:hover { outline: 2px dashed #ff00ff; cursor: text; }
+      </style>
+      <div class="editorial-title editable deletable" contenteditable="true" data-text-id="editorial-title" data-object-id="editorial-title" data-deletable="true" style="padding: 20px 20px 0; font-family: 'Montserrat', sans-serif; font-size: 36px; font-weight: 700; color: #ff00ff; text-transform: uppercase; line-height: 1; z-index: 20;">Neon Dreams</div>
+      <div class="editorial-subtitle editable deletable" contenteditable="true" data-text-id="editorial-subtitle" data-object-id="editorial-subtitle" data-deletable="true" style="padding: 10px 20px; font-family: 'Roboto', sans-serif; font-size: 18px; color: #fff; z-index: 20;">
+        A vibrant exploration of cyber-punk fashion in the urban jungle
+      </div>
+      <img src="/api/placeholder/375/400" alt="Editorial photo 1" id="editorialImage1" data-upload-target="true" style="width: 100%; height: 400px; object-fit: cover; z-index: 10;">
+      <div class="caption editable deletable" contenteditable="true" data-text-id="photo-caption-1" data-object-id="photo-caption-1" data-deletable="true" style="padding: 10px 20px; font-family: 'Roboto', sans-serif; font-size: 14px; color: #fff; background-color: #ff00ff; z-index: 30;">Model wears: Holographic jacket by TechWear, LED-infused boots by NightWalk</div>
+      <img src="/api/placeholder/375/250" alt="Editorial photo 2" id="editorialImage2" data-upload-target="true" style="width: 100%; height: 250px; object-fit: cover; z-index: 10;">
+      <div class="caption editable deletable" contenteditable="true" data-text-id="photo-caption-2" data-object-id="photo-caption-2" data-deletable="true" style="padding: 10px 20px; font-family: 'Roboto', sans-serif; font-size: 14px; color: #000; background-color: #fff; z-index: 30;">Accessories: AR glasses by FutureVision, Smart bracelet by ConnectWear</div>
+      <div class="pull-quote editable deletable" contenteditable="true" data-text-id="editorial-pullquote" data-object-id="editorial-pullquote" data-deletable="true" style="font-family: 'Montserrat', sans-serif; font-size: 24px; font-weight: 700; padding: 20px; color: #ff00ff; margin: 20px 0; text-align: center; z-index: 20;">
+        "The city is our runway, technology is our designer"
+      </div>
+      <div class="page-number editable deletable" contenteditable="true" data-text-id="editorial-page-number" data-object-id="editorial-page-number" data-deletable="true" style="position: absolute; bottom: 20px; right: 20px; font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 700; color: #fff; z-index: 20;">08</div>
+    </div>
+      `
+    },
+    {
+      id: 'interview-mobile',
+      name: 'Interview',
+      content: `
+        <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #fff; position: relative; overflow: hidden; padding: 20px; box-sizing: border-box; font-family: 'Arial', sans-serif;">
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto:wght@400;700&display=swap');
+            .editable:hover { outline: 2px dashed #ff00ff; cursor: text; }
+            .question { font-weight: 700; margin-top: 15px; color: #ff00ff; }
+            .answer { margin-bottom: 15px; }
+          </style>
+          <div class="interview-title editable deletable" contenteditable="true" data-text-id="interview-title" data-object-id="interview-title" data-deletable="true" style="font-family: 'Montserrat', sans-serif; font-size: 36px; font-weight: 700; margin-bottom: 20px; text-transform: uppercase; line-height: 1; color: #000;">Tech Visionary Speaks</div>
+          <div class="interview-subtitle editable deletable" contenteditable="true" data-text-id="interview-subtitle" data-object-id="interview-subtitle" data-deletable="true" style="font-family: 'Roboto', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 20px; color: #ff00ff;">One-on-one with AI fashion designer Alex Future</div>
+          <img src="/api/placeholder/335/200" alt="Interviewee portrait" id="interviewImage" data-upload-target="true" style="width: calc(100% + 40px); height: 200px; object-fit: cover; margin-left: -20px; margin-bottom: 20px;">
+          <div class="interview-text" style="font-family: 'Roboto', sans-serif; font-size: 16px;">
+            <div class="question editable deletable" contenteditable="true" data-text-id="interview-question-1" data-object-id="interview-question-1" data-deletable="true">NYLON: How would you describe your AI-driven design process?</div>
+            <div class="answer editable deletable" contenteditable="true" data-text-id="interview-answer-1" data-object-id="interview-answer-1" data-deletable="true">ALEX: It's like having a conversation with the future. We feed the AI with current trends, historical data, and even social media buzz. Then, it creates designs that are both familiar and completely new.</div>
+            <div class="question editable deletable" contenteditable="true" data-text-id="interview-question-2" data-object-id="interview-question-2" data-deletable="true">NYLON: What inspired your latest collection?</div>
+            <div class="answer editable deletable" contenteditable="true" data-text-id="interview-answer-2" data-object-id="interview-answer-2" data-deletable="true">ALEX: Our AI analyzed thousands of sci-fi movies and combined that with current streetwear trends. The result is what we call 'Neo Tokyo Streetwear' - it's cyberpunk meets hypebeast.</div>
+          </div>
+          <div class="pull-quote editable deletable" contenteditable="true" data-text-id="interview-pullquote" data-object-id="interview-pullquote" data-deletable="true" style="font-family: 'Montserrat', sans-serif; font-size: 24px; font-weight: 700; padding: 20px 0; border-top: 4px solid #ff00ff; border-bottom: 4px solid #ff00ff; margin: 20px 0; color: #000;">
+            "AI doesn't replace creativity, it amplifies it."
+          </div>
+          <div class="page-number editable deletable" contenteditable="true" data-text-id="interview-page-number" data-object-id="interview-page-number" data-deletable="true" style="position: absolute; bottom: 20px; right: 20px; font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 700;">15</div>
+        </div>
+      `
+    },
+    {
+      id: 'trend-report-mobile',
+      name: 'Trend Report',
+      content: `
+        <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #f0f0f0; position: relative; overflow: hidden; padding: 20px; box-sizing: border-box; font-family: 'Arial', sans-serif;">
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto:wght@400;700&display=swap');
+            .editable:hover { outline: 2px dashed #ff00ff; cursor: text; }
+            .trend-item { margin-bottom: 20px; }
+            .trend-name { font-weight: 700; margin: 10px 0 5px; text-transform: uppercase; color: #ff00ff; }
+            .trend-description { font-size: 14px; color: #333; }
+          </style>
+          <div class="trend-title editable deletable" contenteditable="true" data-text-id="trend-title" data-object-id="trend-title" data-deletable="true" style="font-family: 'Montserrat', sans-serif; font-size: 36px; font-weight: 700; margin-bottom: 20px; text-transform: uppercase; color: #000;">Future Forecast</div>
+          <div class="trend-subtitle editable deletable" contenteditable="true" data-text-id="trend-subtitle" data-object-id="trend-subtitle" data-deletable="true" style="font-family: 'Roboto', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 20px; color: #ff00ff;">The trends shaping tomorrow's style</div>
+          <div class="trend-grid">
+            <div class="trend-item">
+              <img src="/api/placeholder/335/150" alt="Trend 1" id="trendImage1" data-upload-target="true" style="width: 100%; height: 150px; object-fit: cover;">
+              <div class="trend-name editable deletable" contenteditable="true" data-text-id="trend-1-name" data-object-id="trend-1-name" data-deletable="true">Holographic Couture</div>
+              <div class="trend-description editable deletable" contenteditable="true" data-text-id="trend-1-description" data-object-id="trend-1-description" data-deletable="true">Clothing that changes patterns with a swipe on your smartphone</div>
+            </div>
+            <div class="trend-item">
+              <img src="/api/placeholder/335/150" alt="Trend 2" id="trendImage2" data-upload-target="true" style="width: 100%; height: 150px; object-fit: cover;">
+              <div class="trend-name editable deletable" contenteditable="true" data-text-id="trend-2-name" data-object-id="trend-2-name" data-deletable="true">Biometric Accessories</div>
+              <div class="trend-description editable deletable" contenteditable="true" data-text-id="trend-2-description" data-object-id="trend-2-description" data-deletable="true">Jewelry that monitors your mood and adjusts your environment</div>
+            </div>
+          </div>
+          <div class="trend-quote editable deletable" contenteditable="true" data-text-id="trend-quote" data-object-id="trend-quote" data-deletable="true" style="font-family: 'Montserrat', sans-serif; font-size: 24px; font-weight: 700; padding: 20px 0; border-top: 4px solid #ff00ff; border-bottom: 4px solid #ff00ff; margin: 20px 0; color: #000;">
+            "The future of fashion is interactive, adaptive, and deeply personal."
+          </div>
+          <div class="trend-item">
+            <img src="/api/placeholder/335/150" alt="Trend 3" id="trendImage3" data-upload-target="true" style="width: 100%; height: 150px; object-fit: cover;">
+            <div class="trend-name editable deletable" contenteditable="true" data-text-id="trend-3-name" data-object-id="trend-3-name" data-deletable="true">Nano-tech Fabrics</div>
+            <div class="trend-description editable deletable" contenteditable="true" data-text-id="trend-3-description" data-object-id="trend-3-description" data-deletable="true">Self-cleaning, temperature-regulating materials that adapt to your body</div>
+          </div>
+          <div class="page-number editable deletable" contenteditable="true" data-text-id="trend-page-number" data-object-id="trend-page-number" data-deletable="true" style="position: absolute; bottom: 20px; right: 20px; font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 700;">22</div>
+        </div>
+      `
+    }
+  ]
+}
 ];
