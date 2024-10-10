@@ -1049,5 +1049,182 @@ export const magazineTemplates = [
       `
     }
   ]
+},
+{
+  id: 'foam-magazine-mobile',
+  name: 'Foam Magazine Mobile',
+  templates: [
+    {
+      id: 'cover-mobile',
+      name: 'Cover',
+      content: `
+        <div id="magazine-cover" style="width: 375px; height: 812px; margin: 0 auto; background-color: #fff; position: relative; overflow: hidden; font-family: 'Helvetica Neue', Arial, sans-serif;">
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+            .editable:hover { outline: 2px dashed #00ff00; cursor: text; }
+          </style>
+          <img src="/api/placeholder/375/812" alt="Cover image" id="coverImage" data-upload-target="true" style="width: 100%; height: 100%; object-fit: cover;">
+          <div class="logo editable deletable" contenteditable="true" data-text-id="cover-logo" data-object-id="cover-logo" data-deletable="true" style="position: absolute; top: 20px; left: 20px; font-family: 'Space Mono', monospace; font-size: 24px; font-weight: 700; color: #fff; background-color: #000; padding: 5px 10px; transform-origin: left top;">FOAM</div>
+          <h1 class="headline editable deletable" contenteditable="true" data-text-id="cover-headline" data-object-id="cover-headline" data-deletable="true" style="position: absolute; bottom: 100px; left: 20px; right: 20px; font-family: 'Space Mono', monospace; font-size: 48px; font-weight: 700; color: #fff; line-height: 1.1; text-transform: uppercase; mix-blend-mode: difference;">Reimagining Reality</h1>
+          <p class="subheadline editable deletable" contenteditable="true" data-text-id="cover-subheadline" data-object-id="cover-subheadline" data-deletable="true" style="position: absolute; bottom: 60px; left: 20px; right: 20px; font-family: 'Space Mono', monospace; font-size: 14px; color: #fff; text-transform: uppercase; letter-spacing: 2px; mix-blend-mode: difference;">Photography beyond boundaries</p>
+          <div class="issue-info editable deletable" contenteditable="true" data-text-id="cover-issue-info" data-object-id="cover-issue-info" data-deletable="true" style="position: absolute; bottom: 20px; right: 20px; font-family: 'Space Mono', monospace; font-size: 12px; color: #fff; mix-blend-mode: difference;">ISSUE 62 • SUMMER 2023 • €25</div>
+        </div>
+      `
+    },
+    {
+      id: 'contents-mobile',
+      name: 'Contents',
+      content: `
+        <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #fff; position: relative; overflow: hidden; padding: 40px 20px; box-sizing: border-box; font-family: 'Helvetica Neue', Arial, sans-serif;">
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+            .editable:hover { outline: 2px dashed #00ff00; cursor: text; }
+            .toc-item { 
+              display: flex; 
+              justify-content: space-between; 
+              margin-bottom: 15px; 
+              font-size: 14px; 
+              border-bottom: 1px solid #000; 
+              padding-bottom: 10px; 
+              position: relative; 
+            }
+            .toc-title { font-weight: bold; max-width: 80%; }
+            .toc-page { font-weight: bold; }
+          </style>
+          <h1 id="contents" class="section-title editable deletable" contenteditable="true" data-text-id="contents-title" data-object-id="contents-title" data-deletable="true" style="font-family: 'Space Mono', monospace; font-size: 36px; font-weight: 700; margin-bottom: 40px; text-transform: uppercase; line-height: 1; transform: rotate(-90deg); transform-origin: left top; position: absolute; left: 20px; top: 200px;">Contents</h1>
+          <div id="tocContainer" style="margin-left: 60px; margin-top: 120px;">
+            <div class="toc-item">
+              <span class="toc-title editable deletable" contenteditable="true" data-text-id="contents-item-1-title" data-object-id="contents-item-1-title" data-deletable="true">Distorted Perspectives</span>
+              <span class="toc-page editable deletable" contenteditable="true" data-text-id="contents-item-1-page" data-object-id="contents-item-1-page" data-deletable="true">08</span>
+            </div>
+            <div class="toc-item">
+              <span class="toc-title editable deletable" contenteditable="true" data-text-id="contents-item-2-title" data-object-id="contents-item-2-title" data-deletable="true">The Unseen Spectrum</span>
+              <span class="toc-page editable deletable" contenteditable="true" data-text-id="contents-item-2-page" data-object-id="contents-item-2-page" data-deletable="true">16</span>
+            </div>
+            <div class="toc-item">
+              <span class="toc-title editable deletable" contenteditable="true" data-text-id="contents-item-3-title" data-object-id="contents-item-3-title" data-deletable="true">Fractured Realities</span>
+              <span class="toc-page editable deletable" contenteditable="true" data-text-id="contents-item-3-page" data-object-id="contents-item-3-page" data-deletable="true">24</span>
+            </div>
+            <div class="toc-item">
+              <span class="toc-title editable deletable" contenteditable="true" data-text-id="contents-item-4-title" data-object-id="contents-item-4-title" data-deletable="true">Beyond the Lens</span>
+              <span class="toc-page editable deletable" contenteditable="true" data-text-id="contents-item-4-page" data-object-id="contents-item-4-page" data-deletable="true">32</span>
+            </div>
+          </div>
+          <div class="page-number editable deletable" contenteditable="true" data-text-id="contents-page-number" data-object-id="contents-page-number" data-deletable="true" style="position: absolute; bottom: 20px; right: 20px; font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700;">03</div>
+        </div>
+      `
+    },
+    {
+      id: 'feature-article-mobile',
+      name: 'Feature Article',
+      content: `
+        <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #fff; position: relative; overflow: hidden; padding: 20px; box-sizing: border-box; font-family: 'Helvetica Neue', Arial, sans-serif;">
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+            .editable:hover { outline: 2px dashed #00ff00; cursor: text; }
+          </style>
+          <h1 class="article-title editable deletable" contenteditable="true" data-text-id="article-title" data-object-id="article-title" data-deletable="true" style="font-family: 'Space Mono', monospace; font-size: 32px; font-weight: 700; margin-bottom: 20px; line-height: 1.2; text-transform: uppercase; color: #000;">The Boundaries of Perception</h1>
+          <div class="article-subtitle editable deletable" contenteditable="true" data-text-id="article-subtitle" data-object-id="article-subtitle" data-deletable="true" style="font-family: 'Space Mono', monospace; font-size: 16px; margin-bottom: 20px; color: #666;">Exploring the liminal spaces of visual art</div>
+          <img src="/api/placeholder/335/250" alt="Feature image" id="featureImage" data-upload-target="true" style="width: calc(100% + 40px); margin-left: -20px; height: 250px; object-fit: cover; margin-bottom: 20px;">
+          <div class="article-text editable deletable" contenteditable="true" data-text-id="article-text-1" data-object-id="article-text-1" data-deletable="true" style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.6; margin-bottom: 20px; color: #333;">
+            In the realm where reality blends with imagination, photographers are pushing the boundaries of visual perception. This exploration goes beyond mere representation, delving into the very essence of how we interpret the world around us.
+          </div>
+          <div class="pull-quote editable deletable" contenteditable="true" data-text-id="article-pullquote" data-object-id="article-pullquote" data-deletable="true" style="font-family: 'Space Mono', monospace; font-size: 24px; font-weight: 700; padding: 20px 0; border-left: 4px solid #000; margin: 20px 0; padding-left: 20px; color: #000; transform: skew(-5deg);">
+            "Photography is not about capturing reality, but creating it."
+          </div>
+          <div class="article-text editable deletable" contenteditable="true" data-text-id="article-text-2" data-object-id="article-text-2" data-deletable="true" style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.6; color: #333;">
+            Artists featured in this issue challenge our preconceptions, using techniques that blur the line between photography and other visual arts. From multi-exposure compositions to digital manipulations that defy physics, these works invite us to question the very nature of visual truth.
+          </div>
+          <div class="page-number editable deletable" contenteditable="true" data-text-id="article-page-number" data-object-id="article-page-number" data-deletable="true" style="position: absolute; bottom: 20px; right: 20px; font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700;">01</div>
+        </div>
+      `
+    },
+    {
+      id: 'photo-editorial-mobile',
+      name: 'Photo Editorial',
+      content: `
+        <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #000; position: relative; overflow: hidden; font-family: 'Helvetica Neue', Arial, sans-serif; padding-bottom: 40px;">
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+            .editable:hover { outline: 2px dashed #00ff00; cursor: text; }
+          </style>
+          <div class="editorial-title editable deletable" contenteditable="true" data-text-id="editorial-title" data-object-id="editorial-title" data-deletable="true" style="position: absolute; top: 20px; left: 20px; font-family: 'Space Mono', monospace; font-size: 24px; font-weight: 700; color: #fff; writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); z-index: 10;">VISUAL PARADOX</div>
+          <img src="/api/placeholder/375/400" alt="Editorial photo 1" id="editorialImage1" data-upload-target="true" style="width: 100%; height: 400px; object-fit: cover; z-index: 1; display: block; margin-bottom: 10px;">
+          <div class="caption editable deletable" contenteditable="true" data-text-id="photo-caption-1" data-object-id="photo-caption-1" data-deletable="true" style="font-family: 'Space Mono', monospace; font-size: 12px; color: #fff; background-color: rgba(0,0,0,0.7); padding: 5px; z-index: 10; margin-bottom: 20px;">Ethereal Shadows by Photographer A</div>
+          <img src="/api/placeholder/375/400" alt="Editorial photo 2" id="editorialImage2" data-upload-target="true" style="width: 100%; height: 400px; object-fit: cover; z-index: 1; display: block; margin-bottom: 10px;">
+          <div class="caption editable deletable" contenteditable="true" data-text-id="photo-caption-2" data-object-id="photo-caption-2" data-deletable="true" style="font-family: 'Space Mono', monospace; font-size: 12px; color: #fff; background-color: rgba(0,0,0,0.7); padding: 5px; z-index: 10; margin-bottom: 20px;">Fractured Realities by Photographer B</div>
+          <div class="editorial-description editable deletable" contenteditable="true" data-text-id="editorial-description" data-object-id="editorial-description" data-deletable="true" style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px; color: #fff; background-color: rgba(0,0,0,0.7); padding: 10px; z-index: 10; margin-bottom: 20px;">
+            In this series, we explore the intersection of reality and imagination, where photographers bend the rules of perception to create new visual paradigms.
+          </div>
+          <div class="page-number editable deletable" contenteditable="true" data-text-id="editorial-page-number" data-object-id="editorial-page-number" data-deletable="true" style="position: absolute; top: 20px; right: 20px; font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700; color: #fff; z-index: 10;">08</div>
+        </div>
+      `
+    },
+    {
+      id: 'interview-mobile',
+      name: 'Interview',
+      content: `
+        <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #fff; position: relative; overflow: hidden; padding: 20px; box-sizing: border-box; font-family: 'Helvetica Neue', Arial, sans-serif;">
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+            .editable:hover { outline: 2px dashed #00ff00; cursor: text; }
+            .question { font-weight: 700; margin-top: 15px; color: #000; }
+            .answer { margin-bottom: 15px; color: #333; }
+          </style>
+          <div class="interview-title editable deletable" contenteditable="true" data-text-id="interview-title" data-object-id="interview-title" data-deletable="true" style="font-family: 'Space Mono', monospace; font-size: 32px; font-weight: 700; margin-bottom: 20px; text-transform: uppercase; line-height: 1.2; color: #000;">Capturing the Unseen</div>
+          <div class="interview-subtitle editable deletable" contenteditable="true" data-text-id="interview-subtitle" data-object-id="interview-subtitle" data-deletable="true" style="font-family: 'Space Mono', monospace; font-size: 18px; margin-bottom: 20px; color: #666;">A conversation with avant-garde photographer Lisa Reimer</div>
+          <img src="/api/placeholder/335/200" alt="Interviewee portrait" id="interviewImage" data-upload-target="true" style="width: calc(100% + 40px); margin-left: -20px; height: 200px; object-fit: cover; margin-bottom: 20px;">
+          <div class="interview-text" style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.6;">
+            <div class="question editable deletable" contenteditable="true" data-text-id="interview-question-1" data-object-id="interview-question-1" data-deletable="true">FOAM: Your work often blurs the line between photography and abstract art. How do you approach this intersection?</div>
+            <div class="answer editable deletable" contenteditable="true" data-text-id="interview-answer-1" data-object-id="interview-answer-1" data-deletable="true">LISA: I see photography as a medium for capturing energy rather than just visual reality. By manipulating light, exposure, and post-processing, I aim to reveal the unseen frequencies that permeate our world.</div>
+            <div class="question editable deletable" contenteditable="true" data-text-id="interview-question-2" data-object-id="interview-question-2" data-deletable="true">FOAM: Can you tell us about your latest project, "Quantum Visions"?</div>
+            <div class="answer editable deletable" contenteditable="true" data-text-id="interview-answer-2" data-object-id="interview-answer-2" data-deletable="true">LISA: "Quantum Visions" is an attempt to visualize the principles of quantum mechanics through photography. Each image is a long exposure of subatomic particle simulations, creating abstract landscapes that exist between the real and the theoretical.</div>
+          </div>
+          <div class="pull-quote editable deletable" contenteditable="true" data-text-id="interview-pullquote" data-object-id="interview-pullquote" data-deletable="true" style="font-family: 'Space Mono', monospace; font-size: 24px; font-weight: 700; padding: 20px 0; border-left: 4px solid #000; margin: 20px 0; padding-left: 20px; color: #000; transform: skew(-5deg);">
+            "Photography is not about capturing light, but about revealing the invisible."
+          </div>
+          <div class="page-number editable deletable" contenteditable="true" data-text-id="interview-page-number" data-object-id="interview-page-number" data-deletable="true" style="position: absolute; bottom: 20px; right: 20px; font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700;">15</div>
+        </div>
+      `
+    },
+    {
+      id: 'trend-report-mobile',
+      name: 'Trend Report',
+      content: `
+        <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #f0f0f0; position: relative; overflow: hidden; padding: 20px; box-sizing: border-box; font-family: 'Helvetica Neue', Arial, sans-serif;">
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+            .editable:hover { outline: 2px dashed #00ff00; cursor: text; }
+            .trend-item { margin-bottom: 30px; }
+            .trend-name { font-family: 'Space Mono', monospace; font-weight: 700; font-size: 18px; margin: 10px 0 5px; text-transform: uppercase; color: #000; }
+            .trend-description { font-size: 14px; color: #333; }
+          </style>
+          <div class="trend-title editable deletable" contenteditable="true" data-text-id="trend-title" data-object-id="trend-title" data-deletable="true" style="font-family: 'Space Mono', monospace; font-size: 32px; font-weight: 700; margin-bottom: 20px; text-transform: uppercase; color: #000;">Emerging Visions</div>
+          <div class="trend-subtitle editable deletable" contenteditable="true" data-text-id="trend-subtitle" data-object-id="trend-subtitle" data-deletable="true" style="font-family: 'Space Mono', monospace; font-size: 18px; margin-bottom: 30px; color: #666;">Photographic trends reshaping visual culture</div>
+          <div class="trend-grid">
+            <div class="trend-item">
+              <img src="/api/placeholder/335/200" alt="Trend 1" id="trendImage1" data-upload-target="true" style="width: 100%; height: 200px; object-fit: cover;">
+              <div class="trend-name editable deletable" contenteditable="true" data-text-id="trend-1-name" data-object-id="trend-1-name" data-deletable="true">Hyper-Real Surrealism</div>
+              <div class="trend-description editable deletable" contenteditable="true" data-text-id="trend-1-description" data-object-id="trend-1-description" data-deletable="true">Blending high-definition photography with digital manipulation to create uncanny, dreamlike images that challenge perception.</div>
+            </div>
+            <div class="trend-item">
+              <img src="/api/placeholder/335/200" alt="Trend 2" id="trendImage2" data-upload-target="true" style="width: 100%; height: 200px; object-fit: cover;">
+              <div class="trend-name editable deletable" contenteditable="true" data-text-id="trend-2-name" data-object-id="trend-2-name" data-deletable="true">Micro-Macro Fusion</div>
+              <div class="trend-description editable deletable" contenteditable="true" data-text-id="trend-2-description" data-object-id="trend-2-description" data-deletable="true">Juxtaposing microscopic details with vast landscapes to explore the interconnectedness of scale in our visual world.</div>
+            </div>
+          </div>
+          <div class="trend-quote editable deletable" contenteditable="true" data-text-id="trend-quote" data-object-id="trend-quote" data-deletable="true" style="font-family: 'Space Mono', monospace; font-size: 24px; font-weight: 700; padding: 20px 0; border-top: 2px solid #000; border-bottom: 2px solid #000; margin: 30px 0; color: #000; text-align: center;">
+            "The future of photography lies in reimagining reality, not just capturing it."
+          </div>
+          <div class="trend-item">
+            <img src="/api/placeholder/335/200" alt="Trend 3" id="trendImage3" data-upload-target="true" style="width: 100%; height: 200px; object-fit: cover;">
+            <div class="trend-name editable deletable" contenteditable="true" data-text-id="trend-3-name" data-object-id="trend-3-name" data-deletable="true">Temporal Collage</div>
+            <div class="trend-description editable deletable" contenteditable="true" data-text-id="trend-3-description" data-object-id="trend-3-description" data-deletable="true">Layering multiple exposures taken over extended periods to create complex, time-bending compositions that challenge linear narratives.</div>
+          </div>
+          <div class="page-number editable deletable" contenteditable="true" data-text-id="trend-page-number" data-object-id="trend-page-number" data-deletable="true" style="position: absolute; bottom: 20px; right: 20px; font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700;">22</div>
+        </div>
+      `
+    }    
+  ]
 }
 ];
