@@ -1226,5 +1226,178 @@ export const magazineTemplates = [
       `
     }    
   ]
+},
+{
+  id: 'emigre-magazine-mobile',
+  name: 'Emigre Magazine Mobile',
+  templates: [
+    {
+      id: 'cover-mobile',
+      name: 'Cover',
+      content: `
+        <div id="magazine-cover" style="width: 375px; height: 812px; margin: 0 auto; background-color: #e0e0e0; position: relative; overflow: hidden; font-family: 'Helvetica', sans-serif;">
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Roboto+Condensed:wght@700&display=swap');
+            .editable:hover { outline: 2px dashed #ff0000; cursor: text; }
+          </style>
+          <div class="background editable deletable" data-background-id="cover-background" data-object-id="cover-background" data-deletable="true" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #e0e0e0; z-index: 1;"></div>
+          <img src="/api/placeholder/375/812" alt="Cover image" id="coverImage" data-upload-target="true" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 2;">
+          <div class="logo editable deletable" contenteditable="true" data-text-id="cover-logo" data-object-id="cover-logo" data-deletable="true" style="position: absolute; top: 20px; left: 20px; right: 20px; font-family: 'Archivo Black', sans-serif; font-size: 72px; line-height: 0.9; color: #ff3300; z-index: 4; transform: scaleY(1.2);">EMI<br>GRE</div>
+          <div class="issue-number editable deletable" contenteditable="true" data-text-id="cover-issue-number" data-object-id="cover-issue-number" data-deletable="true" style="position: absolute; top: 200px; right: 20px; font-family: 'Roboto Condensed', sans-serif; font-size: 150px; color: #000; opacity: 0.7; z-index: 3;">51</div>
+          <h1 class="headline editable deletable" contenteditable="true" data-text-id="cover-headline" data-object-id="cover-headline" data-deletable="true" style="position: absolute; bottom: 100px; left: 20px; right: 20px; font-family: 'Roboto Condensed', sans-serif; font-size: 36px; font-weight: 700; color: #000; line-height: 1; text-transform: uppercase; z-index: 4;">Deconstructing Digital Typography</h1>
+          <div class="graphic-element editable deletable" data-background-id="cover-graphic" data-object-id="cover-graphic" data-deletable="true" style="position: absolute; bottom: 80px; left: 20px; width: 100px; height: 5px; background-color: #ff3300; z-index: 4;"></div>
+          <p class="subheadline editable deletable" contenteditable="true" data-text-id="cover-subheadline" data-object-id="cover-subheadline" data-deletable="true" style="position: absolute; bottom: 40px; left: 20px; right: 20px; font-family: 'Helvetica', sans-serif; font-size: 14px; color: #333; z-index: 4;">Exploring the intersection of technology and design</p>
+        </div>
+      `
+    },
+    {
+      id: 'contents-mobile',
+      name: 'Contents',
+      content: `
+        <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #fff; position: relative; overflow: hidden; padding: 40px 20px; box-sizing: border-box; font-family: 'Helvetica', sans-serif;">
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Roboto+Condensed:wght@700&display=swap');
+            .editable:hover { outline: 2px dashed #ff0000; cursor: text; }
+            .toc-item { 
+              margin-bottom: 20px; 
+              font-size: 14px; 
+              position: relative; 
+            }
+            .toc-title { font-weight: bold; display: block; }
+            .toc-page { font-weight: normal; color: #ff3300; }
+          </style>
+          <h1 id="contents" class="section-title editable deletable" contenteditable="true" data-text-id="contents-title" data-object-id="contents-title" data-deletable="true" style="font-family: 'Archivo Black', sans-serif; font-size: 36px; margin-bottom: 40px; text-transform: uppercase; line-height: 1; transform: rotate(-90deg) translateX(-100%); transform-origin: left top; position: absolute; left: 340px; top: 20px;">Contents</h1>
+          <div id="tocContainer" style="margin-top: 80px;">
+            <div class="toc-item">
+              <span class="toc-title editable deletable" contenteditable="true" data-text-id="contents-item-1-title" data-object-id="contents-item-1-title" data-deletable="true">The Evolution of Digital Type <span class="toc-page">08</span></span>
+            </div>
+            <div class="toc-item">
+              <span class="toc-title editable deletable" contenteditable="true" data-text-id="contents-item-2-title" data-object-id="contents-item-2-title" data-deletable="true">Deconstructing the Grid <span class="toc-page">16</span></span>
+            </div>
+            <div class="toc-item">
+              <span class="toc-title editable deletable" contenteditable="true" data-text-id="contents-item-3-title" data-object-id="contents-item-3-title" data-deletable="true">Interview: Pioneers of Digital Design <span class="toc-page">24</span></span>
+            </div>
+            <div class="toc-item">
+              <span class="toc-title editable deletable" contenteditable="true" data-text-id="contents-item-4-title" data-object-id="contents-item-4-title" data-deletable="true">The Future of Print in a Digital World <span class="toc-page">32</span></span>
+            </div>
+          </div>
+          <div class="graphic-element editable deletable" data-background-id="contents-graphic" data-object-id="contents-graphic" data-deletable="true" style="position: absolute; top: 50%; left: 20px; width: 100px; height: 5px; background-color: #ff3300; transform: rotate(90deg); transform-origin: left center;"></div>
+          <div class="page-number editable deletable" contenteditable="true" data-text-id="contents-page-number" data-object-id="contents-page-number" data-deletable="true" style="position: absolute; bottom: 20px; right: 20px; font-family: 'Roboto Condensed', sans-serif; font-size: 14px; font-weight: 700;">03</div>
+        </div>
+      `
+    },
+    {
+      id: 'feature-article-mobile',
+      name: 'Feature Article',
+      content: `
+        <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #fff; position: relative; overflow: hidden; padding: 40px 20px; box-sizing: border-box; font-family: 'Helvetica', sans-serif;">
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Roboto+Condensed:wght@400;700&display=swap');
+            .editable:hover { outline: 2px dashed #ff0000; cursor: text; }
+          </style>
+          <h1 class="article-title editable deletable" contenteditable="true" data-text-id="article-title" data-object-id="article-title" data-deletable="true" style="font-family: 'Archivo Black', sans-serif; font-size: 36px; line-height: 1.2; margin-bottom: 20px; transform: skew(-5deg);">The Digital Revolution in Typography</h1>
+          <div class="article-subtitle editable deletable" contenteditable="true" data-text-id="article-subtitle" data-object-id="article-subtitle" data-deletable="true" style="font-family: 'Roboto Condensed', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 30px; color: #ff3300;">How technology is reshaping the world of type design</div>
+          <img src="/api/placeholder/335/200" alt="Feature image" id="featureImage" data-upload-target="true" style="width: calc(100% + 40px); margin-left: -20px; height: 200px; object-fit: cover; margin-bottom: 20px;">
+          <div class="article-text editable deletable" contenteditable="true" data-text-id="article-text-1" data-object-id="article-text-1" data-deletable="true" style="font-family: 'Helvetica', sans-serif; font-size: 14px; line-height: 1.6; margin-bottom: 20px;">
+            In the ever-evolving landscape of graphic design, the impact of digital technology on typography has been nothing short of revolutionary. From the early days of bitmap fonts to today's variable typefaces, the journey of digital type design is a testament to the symbiotic relationship between creativity and technology.
+          </div>
+          <div class="pull-quote editable deletable" contenteditable="true" data-text-id="article-pullquote" data-object-id="article-pullquote" data-deletable="true" style="font-family: 'Archivo Black', sans-serif; font-size: 24px; line-height: 1.2; padding: 20px 0; border-top: 2px solid #000; border-bottom: 2px solid #000; margin: 20px 0; transform: rotate(-2deg);">
+            "Typography is the voice of a new language in a digital realm."
+          </div>
+          <div class="article-text editable deletable" contenteditable="true" data-text-id="article-text-2" data-object-id="article-text-2" data-deletable="true" style="font-family: 'Helvetica', sans-serif; font-size: 14px; line-height: 1.6;">
+            As we delve deeper into this digital renaissance, questions arise: How will emerging technologies like AI and VR further transform type design? What does this mean for the future of readability and visual communication? Join us as we explore these questions and more in our feature article.
+          </div>
+          <div class="graphic-element editable deletable" data-background-id="article-graphic" data-object-id="article-graphic" data-deletable="true" style="position: absolute; bottom: 40px; right: 20px; width: 100px; height: 100px; border: 5px solid #ff3300; border-radius: 50%; transform: rotate(45deg);"></div>
+        </div>
+      `
+    },
+    {
+      id: 'photo-editorial-mobile',
+      name: 'Photo Editorial',
+      content: `
+        <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #000; position: relative; overflow: hidden; padding: 40px 20px; box-sizing: border-box; font-family: 'Helvetica', sans-serif;">
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Roboto+Condensed:wght@400;700&display=swap');
+            .editable:hover { outline: 2px dashed #ff0000; cursor: text; }
+          </style>
+          <h1 class="editorial-title editable deletable" contenteditable="true" data-text-id="editorial-title" data-object-id="editorial-title" data-deletable="true" style="font-family: 'Archivo Black', sans-serif; font-size: 36px; color: #fff; margin-bottom: 20px; transform: skew(-5deg);">VISUAL SYNTAX</h1>
+          <div class="editorial-subtitle editable deletable" contenteditable="true" data-text-id="editorial-subtitle" data-object-id="editorial-subtitle" data-deletable="true" style="font-family: 'Roboto Condensed', sans-serif; font-size: 18px; color: #ff3300; margin-bottom: 30px;">Exploring the grammar of digital design</div>
+          <img src="/api/placeholder/335/300" alt="Editorial photo 1" id="editorialImage1" data-upload-target="true" style="width: calc(100% + 40px); margin-left: -20px; height: 300px; object-fit: cover; margin-bottom: 20px;">
+          <div class="caption editable deletable" contenteditable="true" data-text-id="photo-caption-1" data-object-id="photo-caption-1" data-deletable="true" style="font-family: 'Roboto Condensed', sans-serif; font-size: 12px; color: #fff; margin-bottom: 30px; transform: rotate(-1deg);">Image 1: The intersection of code and creativity</div>
+          <img src="/api/placeholder/335/300" alt="Editorial photo 2" id="editorialImage2" data-upload-target="true" style="width: calc(100% + 40px); margin-left: -20px; height: 300px; object-fit: cover; margin-bottom: 20px;">
+          <div class="caption editable deletable" contenteditable="true" data-text-id="photo-caption-2" data-object-id="photo-caption-2" data-deletable="true" style="font-family: 'Roboto Condensed', sans-serif; font-size: 12px; color: #fff; margin-bottom: 30px; transform: rotate(1deg);">Image 2: Typography as a visual language</div>
+          <div class="editorial-text editable deletable" contenteditable="true" data-text-id="editorial-text" data-object-id="editorial-text" data-deletable="true" style="font-family: 'Helvetica', sans-serif; font-size: 14px; color: #fff; line-height: 1.6; margin-top: 30px;">
+            In this visual exploration, we deconstruct the elements of digital design, examining how typography, imagery, and code intertwine to create a new visual language for the digital age.
+          </div>
+          <div class="graphic-element editable deletable" data-background-id="editorial-graphic" data-object-id="editorial-graphic" data-deletable="true" style="position: absolute; top: 60px; right: 20px; width: 80px; height: 80px; border: 3px solid #ff3300; transform: rotate(45deg);"></div>
+        </div>
+      `
+    },
+    {
+      id: 'interview-mobile',
+      name: 'Interview',
+      content: `
+        <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #fff; position: relative; overflow: hidden; padding: 40px 20px; box-sizing: border-box; font-family: 'Helvetica', sans-serif;">
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Roboto+Condensed:wght@400;700&display=swap');
+            .editable:hover { outline: 2px dashed #ff0000; cursor: text; }
+            .question { font-weight: 700; margin-top: 15px; color: #ff3300; }
+            .answer { margin-bottom: 15px; }
+          </style>
+          <h1 class="interview-title editable deletable" contenteditable="true" data-text-id="interview-title" data-object-id="interview-title" data-deletable="true" style="font-family: 'Archivo Black', sans-serif; font-size: 36px; line-height: 1.2; margin-bottom: 20px; transform: skew(-5deg);">DIGITAL PIONEER</h1>
+          <div class="interview-subtitle editable deletable" contenteditable="true" data-text-id="interview-subtitle" data-object-id="interview-subtitle" data-deletable="true" style="font-family: 'Roboto Condensed', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 30px; color: #000;">A conversation with type designer Jane Doe</div>
+          <img src="/api/placeholder/335/200" alt="Interviewee portrait" id="interviewImage" data-upload-target="true" style="width: calc(100% + 40px); margin-left: -20px; height: 200px; object-fit: cover; margin-bottom: 20px;">
+          <div class="interview-text" style="font-family: 'Helvetica', sans-serif; font-size: 14px; line-height: 1.6;">
+            <div class="question editable deletable" contenteditable="true" data-text-id="interview-question-1" data-object-id="interview-question-1" data-deletable="true">How has digital technology transformed your approach to type design?</div>
+            <div class="answer editable deletable" contenteditable="true" data-text-id="interview-answer-1" data-object-id="interview-answer-1" data-deletable="true">Digital tools have opened up a whole new world of possibilities. We're no longer constrained by the physical limitations of traditional type-setting. Now, a single font can have infinite variations, responding dynamically to its context.</div>
+            <div class="question editable deletable" contenteditable="true" data-text-id="interview-question-2" data-object-id="interview-question-2" data-deletable="true">What's your view on the future of typography in the digital age?</div>
+            <div class="answer editable deletable" contenteditable="true" data-text-id="interview-answer-2" data-object-id="interview-answer-2" data-deletable="true">I believe we're moving towards more adaptive and context-aware typography. Fonts will become more like intelligent organisms, evolving and adapting to the user's needs and the viewing environment in real-time.</div>
+          </div>
+          <div class="pull-quote editable deletable" contenteditable="true" data-text-id="interview-pullquote" data-object-id="interview-pullquote" data-deletable="true" style="font-family: 'Archivo Black', sans-serif; font-size: 24px; line-height: 1.2; padding: 20px 0; border-left: 5px solid #ff3300; margin: 20px 0; padding-left: 20px; transform: rotate(-2deg);">
+            "The future of type is fluid, responsive, and alive."
+          </div>
+          <div class="graphic-element editable deletable" data-background-id="interview-graphic" data-object-id="interview-graphic" data-deletable="true" style="position: absolute; top: 60px; right: 20px; width: 80px; height: 80px; border: 3px solid #ff3300; transform: rotate(45deg);"></div>
+        </div>
+      `
+    },
+    {
+      id: 'trend-report-mobile',
+      name: 'Trend Report',
+      content: `
+        <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #f0f0f0; position: relative; overflow: hidden; padding: 40px 20px; box-sizing: border-box; font-family: 'Helvetica', sans-serif;">
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Roboto+Condensed:wght@400;700&display=swap');
+            .editable:hover { outline: 2px dashed #ff0000; cursor: text; }
+            .trend-item { margin-bottom: 30px; }
+            .trend-name { font-family: 'Archivo Black', sans-serif; font-weight: 700; font-size: 18px; margin: 10px 0 5px; text-transform: uppercase; color: #ff3300; }
+            .trend-description { font-size: 14px; color: #333; }
+          </style>
+          <h1 class="trend-title editable deletable" contenteditable="true" data-text-id="trend-title" data-object-id="trend-title" data-deletable="true" style="font-family: 'Archivo Black', sans-serif; font-size: 36px; line-height: 1.2; margin-bottom: 20px; transform: skew(-5deg);">EMERGING VISIONS</h1>
+          <div class="trend-subtitle editable deletable" contenteditable="true" data-text-id="trend-subtitle" data-object-id="trend-subtitle" data-deletable="true" style="font-family: 'Roboto Condensed', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 30px; color: #000;">Typographic trends shaping the digital landscape</div>
+          <div class="trend-grid">
+            <div class="trend-item">
+              <img src="/api/placeholder/335/150" alt="Trend 1" id="trendImage1" data-upload-target="true" style="width: 100%; height: 150px; object-fit: cover;">
+              <div class="trend-name editable deletable" contenteditable="true" data-text-id="trend-1-name" data-object-id="trend-1-name" data-deletable="true">Variable Fonts</div>
+              <div class="trend-description editable deletable" contenteditable="true" data-text-id="trend-1-description" data-object-id="trend-1-description" data-deletable="true">Adaptive typefaces that fluidly adjust to different contexts and screen sizes.</div>
+            </div>
+            <div class="trend-item">
+              <img src="/api/placeholder/335/150" alt="Trend 2" id="trendImage2" data-upload-target="true" style="width: 100%; height: 150px; object-fit: cover;">
+              <div class="trend-name editable deletable" contenteditable="true" data-text-id="trend-2-name" data-object-id="trend-2-name" data-deletable="true">Kinetic Typography</div>
+              <div class="trend-description editable deletable" contenteditable="true" data-text-id="trend-2-description" data-object-id="trend-2-description" data-deletable="true">Motion-based type design that brings letters to life in digital environments.</div>
+            </div>
+          </div>
+          <div class="trend-quote editable deletable" contenteditable="true" data-text-id="trend-quote" data-object-id="trend-quote" data-deletable="true" style="font-family: 'Archivo Black', sans-serif; font-size: 24px; line-height: 1.2; padding: 20px 0; border-top: 2px solid #ff3300; border-bottom: 2px solid #ff3300; margin: 30px 0; color: #000; text-align: center; transform: rotate(-2deg);">
+            "Typography is no longer static; it's a dynamic, living entity in the digital realm."
+          </div>
+          <div class="trend-item">
+            <img src="/api/placeholder/335/150" alt="Trend 3" id="trendImage3" data-upload-target="true" style="width: 100%; height: 150px; object-fit: cover;">
+            <div class="trend-name editable deletable" contenteditable="true" data-text-id="trend-3-name" data-object-id="trend-3-name" data-deletable="true">AI-Generated Fonts</div>
+            <div class="trend-description editable deletable" contenteditable="true" data-text-id="trend-3-description" data-object-id="trend-3-description" data-deletable="true">Machine learning algorithms creating unique typefaces based on vast datasets of existing designs.</div>
+          </div>
+          <div class="graphic-element editable deletable" data-background-id="trend-graphic" data-object-id="trend-graphic" data-deletable="true" style="position: absolute; bottom: 40px; left: 20px; width: 100px; height: 5px; background-color: #ff3300; transform: rotate(-45deg);"></div>
+        </div>
+      `
+    }
+  ]
 }
 ];
