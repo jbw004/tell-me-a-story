@@ -1399,5 +1399,174 @@ export const magazineTemplates = [
       `
     }
   ]
+},
+{
+  id: 'dazed-magazine-mobile',
+  name: 'Dazed Mobile',
+  templates: [
+    {
+      id: 'cover-mobile',
+      name: 'Cover',
+      content: `
+        <div id="magazine-cover" style="width: 375px; height: 812px; margin: 0 auto; background-color: #000; position: relative; overflow: hidden; font-family: 'Arial', sans-serif;">
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Roboto+Mono:wght@400;700&display=swap');
+            .editable:hover { outline: 2px dashed #00ffff; cursor: text; }
+          </style>
+          <div class="background editable deletable" data-background-id="cover-background" data-object-id="cover-background" data-deletable="true" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; z-index: 1;"></div>
+          <img src="/api/placeholder/375/812" alt="Cover image" id="coverImage" data-upload-target="true" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 2; mix-blend-mode: luminosity;">
+          <div class="logo editable deletable" contenteditable="true" data-text-id="cover-logo" data-object-id="cover-logo" data-deletable="true" style="position: absolute; top: 20px; left: 20px; right: 20px; font-family: 'Dela Gothic One', cursive; font-size: 48px; line-height: 0.9; color: #00ffff; z-index: 4; transform: skew(-5deg);">DAZED</div>
+          <h1 class="headline editable deletable" contenteditable="true" data-text-id="cover-headline" data-object-id="cover-headline" data-deletable="true" style="position: absolute; bottom: 200px; left: 20px; right: 20px; font-family: 'Roboto Mono', monospace; font-size: 36px; font-weight: 700; color: #fff; line-height: 1; text-transform: uppercase; z-index: 4; mix-blend-mode: difference;">The Future Is Unwritten</h1>
+          <p class="subheadline editable deletable" contenteditable="true" data-text-id="cover-subheadline" data-object-id="cover-subheadline" data-deletable="true" style="position: absolute; bottom: 160px; left: 20px; right: 20px; font-family: 'Roboto Mono', monospace; font-size: 14px; color: #00ffff; text-transform: uppercase; letter-spacing: 2px; z-index: 4;">Exploring the avant-garde in fashion, art, and culture</p>
+          <div class="issue-info editable deletable" contenteditable="true" data-text-id="cover-issue-info" data-object-id="cover-issue-info" data-deletable="true" style="position: absolute; bottom: 20px; left: 20px; font-family: 'Roboto Mono', monospace; font-size: 12px; color: #fff; z-index: 4;">ISSUE 312 • SUMMER 2023 • £5.99</div>
+        </div>
+      `
+    },
+    {
+      id: 'contents-mobile',
+      name: 'Contents',
+      content: `
+        <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #000; position: relative; overflow: hidden; padding: 40px 20px; box-sizing: border-box; font-family: 'Arial', sans-serif;">
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Roboto+Mono:wght@400;700&display=swap');
+            .editable:hover { outline: 2px dashed #00ffff; cursor: text; }
+            .toc-item { 
+              margin-bottom: 20px; 
+              font-size: 14px; 
+              position: relative; 
+              border-bottom: 1px solid #00ffff;
+              padding-bottom: 10px;
+            }
+            .toc-title { font-weight: bold; display: block; color: #fff; }
+            .toc-page { font-weight: normal; color: #00ffff; float: right; }
+          </style>
+          <h1 id="contents" class="section-title editable deletable" contenteditable="true" data-text-id="contents-title" data-object-id="contents-title" data-deletable="true" style="font-family: 'Dela Gothic One', cursive; font-size: 36px; margin-bottom: 40px; text-transform: uppercase; line-height: 1; color: #00ffff; transform: skew(-5deg);">In This Issue</h1>
+          <div id="tocContainer" style="margin-top: 60px;">
+            <div class="toc-item">
+              <span class="toc-title editable deletable" contenteditable="true" data-text-id="contents-item-1-title" data-object-id="contents-item-1-title" data-deletable="true">The New Avant-Garde <span class="toc-page">08</span></span>
+            </div>
+            <div class="toc-item">
+              <span class="toc-title editable deletable" contenteditable="true" data-text-id="contents-item-2-title" data-object-id="contents-item-2-title" data-deletable="true">Deconstructing Fashion <span class="toc-page">16</span></span>
+            </div>
+            <div class="toc-item">
+              <span class="toc-title editable deletable" contenteditable="true" data-text-id="contents-item-3-title" data-object-id="contents-item-3-title" data-deletable="true">Art in the Digital Age <span class="toc-page">24</span></span>
+            </div>
+            <div class="toc-item">
+              <span class="toc-title editable deletable" contenteditable="true" data-text-id="contents-item-4-title" data-object-id="contents-item-4-title" data-deletable="true">Cultural Revolution <span class="toc-page">32</span></span>
+            </div>
+          </div>
+          <div class="page-number editable deletable" contenteditable="true" data-text-id="contents-page-number" data-object-id="contents-page-number" data-deletable="true" style="position: absolute; bottom: 20px; left: 20px; font-family: 'Roboto Mono', monospace; font-size: 14px; font-weight: 700; color: #00ffff;">03</div>
+        </div>
+      `
+    },
+    {
+      id: 'feature-article-mobile',
+      name: 'Feature Article',
+      content: `
+        <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #000; position: relative; overflow: hidden; padding: 40px 20px; box-sizing: border-box; font-family: 'Arial', sans-serif;">
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Roboto+Mono:wght@400;700&display=swap');
+            .editable:hover { outline: 2px dashed #00ffff; cursor: text; }
+          </style>
+          <h1 class="article-title editable deletable" contenteditable="true" data-text-id="article-title" data-object-id="article-title" data-deletable="true" style="font-family: 'Dela Gothic One', cursive; font-size: 36px; line-height: 1.2; margin-bottom: 20px; color: #00ffff; transform: skew(-5deg);">The Future of Fashion</h1>
+          <div class="article-subtitle editable deletable" contenteditable="true" data-text-id="article-subtitle" data-object-id="article-subtitle" data-deletable="true" style="font-family: 'Roboto Mono', monospace; font-size: 16px; font-weight: 700; margin-bottom: 30px; color: #fff;">Deconstructing the boundaries of style</div>
+          <img src="/api/placeholder/335/250" alt="Feature image" id="featureImage" data-upload-target="true" style="width: calc(100% + 40px); margin-left: -20px; height: 250px; object-fit: cover; margin-bottom: 20px; mix-blend-mode: screen;">
+          <div class="article-text editable deletable" contenteditable="true" data-text-id="article-text-1" data-object-id="article-text-1" data-deletable="true" style="font-family: 'Roboto Mono', monospace; font-size: 14px; line-height: 1.6; margin-bottom: 20px; color: #fff;">
+            In an era where the digital and physical realms increasingly blur, fashion stands at the forefront of a revolution. Designers are pushing boundaries, merging technology with textiles to create garments that challenge our perception of clothing.
+          </div>
+          <div class="pull-quote editable deletable" contenteditable="true" data-text-id="article-pullquote" data-object-id="article-pullquote" data-deletable="true" style="font-family: 'Dela Gothic One', cursive; font-size: 24px; line-height: 1.2; padding: 20px 0; border-top: 2px solid #00ffff; border-bottom: 2px solid #00ffff; margin: 20px 0; color: #00ffff; transform: rotate(-2deg);">
+            "Fashion is no longer about covering the body, but about extending it."
+          </div>
+          <div class="article-text editable deletable" contenteditable="true" data-text-id="article-text-2" data-object-id="article-text-2" data-deletable="true" style="font-family: 'Roboto Mono', monospace; font-size: 14px; line-height: 1.6; color: #fff;">
+            From AI-designed patterns to garments that change color based on environmental factors, the future of fashion is a playground of innovation. But as we embrace these advancements, we must also question: What does it mean to be 'dressed' in the digital age?
+          </div>
+          <div class="page-number editable deletable" contenteditable="true" data-text-id="article-page-number" data-object-id="article-page-number" data-deletable="true" style="position: absolute; bottom: 20px; left: 20px; font-family: 'Roboto Mono', monospace; font-size: 14px; font-weight: 700; color: #00ffff;">08</div>
+        </div>
+      `
+    },
+    {
+      id: 'photo-editorial-mobile',
+      name: 'Photo Editorial',
+      content: `
+        <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #000; position: relative; overflow: hidden; padding: 20px; box-sizing: border-box; font-family: 'Arial', sans-serif;">
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Roboto+Mono:wght@400;700&display=swap');
+            .editable:hover { outline: 2px dashed #00ffff; cursor: text; }
+          </style>
+          <h1 class="editorial-title editable deletable" contenteditable="true" data-text-id="editorial-title" data-object-id="editorial-title" data-deletable="true" style="font-family: 'Dela Gothic One', cursive; font-size: 36px; color: #00ffff; margin-bottom: 20px; transform: skew(-5deg);">DIGITAL DYSTOPIA</h1>
+          <div class="editorial-subtitle editable deletable" contenteditable="true" data-text-id="editorial-subtitle" data-object-id="editorial-subtitle" data-deletable="true" style="font-family: 'Roboto Mono', monospace; font-size: 14px; color: #fff; margin-bottom: 30px; transform: skew(5deg);">A visual exploration of post-human aesthetics</div>
+          <img src="/api/placeholder/335/400" alt="Editorial photo 1" id="editorialImage1" data-upload-target="true" style="width: calc(100% + 40px); margin-left: -20px; height: 400px; object-fit: cover; margin-bottom: 20px; mix-blend-mode: screen;">
+          <div class="caption editable deletable" contenteditable="true" data-text-id="photo-caption-1" data-object-id="photo-caption-1" data-deletable="true" style="font-family: 'Roboto Mono', monospace; font-size: 12px; color: #00ffff; margin-bottom: 30px; transform: rotate(-1deg);">Cyborg couture: Model wears neuro-linked exoskeleton by TechnoFashion</div>
+          <img src="/api/placeholder/335/300" alt="Editorial photo 2" id="editorialImage2" data-upload-target="true" style="width: calc(100% + 40px); margin-left: -20px; height: 300px; object-fit: cover; margin-bottom: 20px; mix-blend-mode: difference;">
+          <div class="caption editable deletable" contenteditable="true" data-text-id="photo-caption-2" data-object-id="photo-caption-2" data-deletable="true" style="font-family: 'Roboto Mono', monospace; font-size: 12px; color: #fff; margin-bottom: 30px; transform: rotate(1deg);">Holographic overlay dress by QuantumThreads, neural implant accessories by SynapseStyle</div>
+          <div class="editorial-text editable deletable" contenteditable="true" data-text-id="editorial-text" data-object-id="editorial-text" data-deletable="true" style="font-family: 'Roboto Mono', monospace; font-size: 14px; color: #fff; line-height: 1.6; margin-top: 30px;">
+            In this series, we envision a future where the line between human and machine blurs, and fashion becomes a medium for technological augmentation and self-expression in a post-human world.
+          </div>
+          <div class="page-number editable deletable" contenteditable="true" data-text-id="editorial-page-number" data-object-id="editorial-page-number" data-deletable="true" style="position: absolute; bottom: 20px; left: 20px; font-family: 'Roboto Mono', monospace; font-size: 14px; font-weight: 700; color: #00ffff;">16</div>
+        </div>
+      `
+    },
+    {
+      id: 'interview-mobile',
+      name: 'Interview',
+      content: `
+        <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #000; position: relative; overflow: hidden; padding: 40px 20px; box-sizing: border-box; font-family: 'Arial', sans-serif;">
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Roboto+Mono:wght@400;700&display=swap');
+          .editable:hover { outline: 2px dashed #00ffff; cursor: text; }
+          .question { font-weight: 700; color: #00ffff; transform: skew(-5deg); display: inline-block; }
+          .answer { color: #fff; margin-bottom: 15px; }
+        </style>
+        <h1 class="interview-title editable deletable" contenteditable="true" data-text-id="interview-title" data-object-id="interview-title" data-deletable="true" style="font-family: 'Dela Gothic One', cursive; font-size: 36px; line-height: 1.2; margin-bottom: 20px; color: #00ffff; transform: skew(-5deg);">VOICES OF THE FUTURE</h1>
+        <div class="interview-subtitle editable deletable" contenteditable="true" data-text-id="interview-subtitle" data-object-id="interview-subtitle" data-deletable="true" style="font-family: 'Roboto Mono', monospace; font-size: 16px; font-weight: 700; margin-bottom: 30px; color: #fff;">In conversation with cyber-artist Zoe.AI</div>
+        <img src="/api/placeholder/335/200" alt="Interviewee portrait" id="interviewImage" data-upload-target="true" style="width: calc(100% + 40px); margin-left: -20px; height: 200px; object-fit: cover; margin-bottom: 20px; mix-blend-mode: screen; clip-path: polygon(0% 0%, 100% 0%, 100% 75%, 75% 100%, 0% 100%);">
+        <div class="interview-text" style="font-family: 'Roboto Mono', monospace; font-size: 14px; line-height: 1.6; margin-left: 20px;">
+          <div class="question editable deletable" contenteditable="true" data-text-id="interview-question-1" data-object-id="interview-question-1" data-deletable="true">DAZED: Your work blurs the line between human creativity and AI. How do you define your role as an artist?</div>
+          <div class="answer editable deletable" contenteditable="true" data-text-id="interview-answer-1" data-object-id="interview-answer-1" data-deletable="true">ZOE.AI: I see myself as a collaborator with technology, not its master. My role is to guide the AI, to infuse it with human emotion and experience. The result is a hybrid art form that challenges our understanding of creativity itself.</div>
+          <div class="question editable deletable" contenteditable="true" data-text-id="interview-question-2" data-object-id="interview-question-2" data-deletable="true">DAZED: Can you tell us about your latest project, "Neural Dreamscapes"?</div>
+          <div class="answer editable deletable" contenteditable="true" data-text-id="interview-answer-2" data-object-id="interview-answer-2" data-deletable="true">ZOE.AI: "Neural Dreamscapes" is an immersive VR experience that translates human brainwaves into evolving digital landscapes. It's a journey into the subconscious, rendered in real-time by AI. Each viewer's mind creates a unique, ever-changing virtual world.</div>
+        </div>
+        <div class="graphic-element editable deletable" data-background-id="interview-graphic" data-object-id="interview-graphic" data-deletable="true" style="position: absolute; top: 0; left: 0; width: 5px; height: 100%; background-color: #00ffff;"></div>
+        <div class="page-number editable deletable" contenteditable="true" data-text-id="interview-page-number" data-object-id="interview-page-number" data-deletable="true" style="position: absolute; bottom: 20px; left: 20px; font-family: 'Roboto Mono', monospace; font-size: 14px; font-weight: 700; color: #00ffff;">24</div>
+      </div>
+      `
+    },
+    {
+      id: 'trend-report-mobile',
+      name: 'Trend Report',
+      content: `
+        <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #000; position: relative; overflow: hidden; padding: 40px 20px; box-sizing: border-box; font-family: 'Arial', sans-serif;">
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Roboto+Mono:wght@400;700&display=swap');
+            .editable:hover { outline: 2px dashed #00ffff; cursor: text; }
+            .trend-item { margin-bottom: 30px; position: relative; }
+            .trend-name { font-family: 'Dela Gothic One', cursive; font-weight: 700; font-size: 18px; margin: 10px 0 5px; text-transform: uppercase; color: #00ffff; transform: skew(-5deg); }
+            .trend-description { font-family: 'Roboto Mono', monospace; font-size: 14px; color: #fff; }
+          </style>
+          <h1 class="trend-title editable deletable" contenteditable="true" data-text-id="trend-title" data-object-id="trend-title" data-deletable="true" style="font-family: 'Dela Gothic One', cursive; font-size: 36px; line-height: 1.2; margin-bottom: 20px; color: #00ffff; transform: skew(-5deg);">FUTURE FORECAST</h1>
+          <div class="trend-subtitle editable deletable" contenteditable="true" data-text-id="trend-subtitle" data-object-id="trend-subtitle" data-deletable="true" style="font-family: 'Roboto Mono', monospace; font-size: 16px; font-weight: 700; margin-bottom: 30px; color: #fff;">Emerging trends reshaping culture and style</div>
+          <div class="trend-grid" style="margin-left: 20px;">
+            <div class="trend-item">
+              <img src="/api/placeholder/315/150" alt="Trend 1" id="trendImage1" data-upload-target="true" style="width: 100%; height: 150px; object-fit: cover; mix-blend-mode: screen; clip-path: polygon(0% 0%, 100% 0%, 100% 75%, 75% 100%, 0% 100%);">
+              <div class="trend-name editable deletable" contenteditable="true" data-text-id="trend-1-name" data-object-id="trend-1-name" data-deletable="true">Biotech Couture</div>
+              <div class="trend-description editable deletable" contenteditable="true" data-text-id="trend-1-description" data-object-id="trend-1-description" data-deletable="true">Living, breathing garments grown from genetically modified organisms, merging fashion with biotechnology.</div>
+            </div>
+            <div class="trend-item" style="margin-left: -20px;">
+              <img src="/api/placeholder/315/150" alt="Trend 2" id="trendImage2" data-upload-target="true" style="width: 100%; height: 150px; object-fit: cover; mix-blend-mode: difference; clip-path: polygon(25% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 25%);">
+              <div class="trend-name editable deletable" contenteditable="true" data-text-id="trend-2-name" data-object-id="trend-2-name" data-deletable="true">Neural Aesthetics</div>
+              <div class="trend-description editable deletable" contenteditable="true" data-text-id="trend-2-description" data-object-id="trend-2-description" data-deletable="true">AI-generated art and designs that adapt in real-time to the viewer's emotional state and brain activity.</div>
+            </div>
+          </div>
+          <div class="trend-item" style="margin-left: 20px;">
+            <img src="/api/placeholder/315/150" alt="Trend 3" id="trendImage3" data-upload-target="true" style="width: 100%; height: 150px; object-fit: cover; mix-blend-mode: exclusion; clip-path: polygon(0% 0%, 75% 0%, 100% 25%, 100% 100%, 0% 100%);">
+            <div class="trend-name editable deletable" contenteditable="true" data-text-id="trend-3-name" data-object-id="trend-3-name" data-deletable="true">Quantum Fashion</div>
+            <div class="trend-description editable deletable" contenteditable="true" data-text-id="trend-3-description" data-object-id="trend-3-description" data-deletable="true">Garments existing in a state of quantum superposition, changing form and color based on observation and interaction.</div>
+          </div>
+          <div class="graphic-element editable deletable" data-background-id="trend-graphic" data-object-id="trend-graphic" data-deletable="true" style="position: absolute; top: 0; left: 0; width: 5px; height: 100%; background-color: #00ffff;"></div>
+          <div class="page-number editable deletable" contenteditable="true" data-text-id="trend-page-number" data-object-id="trend-page-number" data-deletable="true" style="position: absolute; bottom: 20px; right: 20px; font-family: 'Roboto Mono', monospace; font-size: 14px; font-weight: 700; color: #00ffff;">32</div>
+        </div>
+      `
+    }
+  ]
 }
 ];
