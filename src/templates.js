@@ -1568,5 +1568,193 @@ export const magazineTemplates = [
       `
     }
   ]
+},
+{
+  id: 'wrap-magazine-mobile',
+  name: 'Wrap Mobile',
+  templates: [
+    {
+      id: 'cover-mobile',
+      name: 'Cover',
+      content: `
+        <div id="magazine-cover" style="width: 375px; height: 812px; margin: 0 auto; background-color: #f5f3e9; position: relative; overflow: hidden; font-family: 'Arial', sans-serif;">
+        <style>
+          @import url('https://fonts.googleapis.com/css2family=Playfair+Display:wght@700&family=Work+Sans:wght@400;700&display=swap');
+          .editable:hover { outline: 2px dashed #FF6B6B; cursor: text; }
+        </style>
+        <div class="background-pattern editable deletable" data-background-id="cover-pattern" data-object-id="cover-pattern" data-deletable="true" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('data:image/svg+xml;utf8,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;100&quot; height=&quot;100&quot;><circle cx=&quot;50&quot; cy=&quot;50&quot; r=&quot;2&quot; fill=&quot;%23FF6B6B&quot; /></svg>'); background-size: 40px 40px; opacity: 0.2;"></div>
+        <img src="/api/placeholder/375/500" alt="Cover illustration" id="coverImage" data-upload-target="true" style="width: 100%; height: 500px; object-fit: cover; position: absolute; top: 50%; left: 0; transform: translateY(-50%);">
+        <div class="logo editable deletable" contenteditable="true" data-text-id="cover-logo" data-object-id="cover-logo" data-deletable="true" style="position: absolute; top: 40px; left: 40px; font-family: 'Playfair Display', serif; font-size: 48px; font-weight: 700; color: #FF6B6B; letter-spacing: 2px;">WRAP</div>
+        <h1 class="headline editable deletable" contenteditable="true" data-text-id="cover-headline" data-object-id="cover-headline" data-deletable="true" style="position: absolute; top: 100px; left: 40px; right: 40px; font-family: 'Work Sans', sans-serif; font-size: 36px; font-weight: 700; color: #333; line-height: 1.2;">The Art of Illustration</h1>
+        <p class="subheadline editable deletable" contenteditable="true" data-text-id="cover-subheadline" data-object-id="cover-subheadline" data-deletable="true" style="position: absolute; bottom: 100px; left: 40px; right: 40px; font-family: 'Work Sans', sans-serif; font-size: 18px; color: #666; line-height: 1.4;">Exploring the intersection of art, design, and everyday objects</p>
+        <div class="issue-info editable deletable" contenteditable="true" data-text-id="cover-issue-info" data-object-id="cover-issue-info" data-deletable="true" style="position: absolute; bottom: 40px; left: 40px; font-family: 'Work Sans', sans-serif; font-size: 14px; color: #666;">ISSUE 14 • SUMMER 2023 • £10</div>
+      </div>
+      `
+    },
+    {
+      id: 'contents-mobile',
+      name: 'Contents',
+      content: `
+        <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #f5f3e9; position: relative; overflow: hidden; padding: 40px 20px; box-sizing: border-box; font-family: 'Arial', sans-serif;">
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Work+Sans:wght@400;700&display=swap');
+            .editable:hover { outline: 2px dashed #FF6B6B; cursor: text; }
+            .toc-item { 
+              margin-bottom: 20px; 
+              font-size: 16px; 
+              position: relative; 
+              padding-left: 30px;
+            }
+            .toc-title { font-weight: bold; display: block; color: #333; }
+            .toc-page { font-weight: normal; color: #FF6B6B; position: absolute; left: 0; top: 0; }
+          </style>
+          <div class="background-pattern editable deletable" data-background-id="contents-pattern" data-object-id="contents-pattern" data-deletable="true" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('data:image/svg+xml;utf8,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;100&quot; height=&quot;100&quot;><rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;50&quot; height=&quot;50&quot; fill=&quot;%23FF6B6B&quot; opacity=&quot;0.1&quot; /><rect x=&quot;50&quot; y=&quot;50&quot; width=&quot;50&quot; height=&quot;50&quot; fill=&quot;%23FF6B6B&quot; opacity=&quot;0.1&quot; /></svg>'); background-size: 20px 20px;"></div>
+          <h1 id="contents" class="section-title editable deletable" contenteditable="true" data-text-id="contents-title" data-object-id="contents-title" data-deletable="true" style="font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; margin-bottom: 40px; color: #333;">Contents</h1>
+          <div id="tocContainer">
+            <div class="toc-item">
+              <span class="toc-page">04</span>
+              <span class="toc-title editable deletable" contenteditable="true" data-text-id="contents-item-1-title" data-object-id="contents-item-1-title" data-deletable="true">The Art of Everyday Objects</span>
+            </div>
+            <div class="toc-item">
+              <span class="toc-page">12</span>
+              <span class="toc-title editable deletable" contenteditable="true" data-text-id="contents-item-2-title" data-object-id="contents-item-2-title" data-deletable="true">Illustrator Spotlight: Jane Doe</span>
+            </div>
+            <div class="toc-item">
+              <span class="toc-page">20</span>
+              <span class="toc-title editable deletable" contenteditable="true" data-text-id="contents-item-3-title" data-object-id="contents-item-3-title" data-deletable="true">Patterns in Nature</span>
+            </div>
+            <div class="toc-item">
+              <span class="toc-page">28</span>
+              <span class="toc-title editable deletable" contenteditable="true" data-text-id="contents-item-4-title" data-object-id="contents-item-4-title" data-deletable="true">The Future of Print</span>
+            </div>
+          </div>
+          <div class="page-number editable deletable" contenteditable="true" data-text-id="contents-page-number" data-object-id="contents-page-number" data-deletable="true" style="position: absolute; bottom: 20px; left: 20px; font-family: 'Work Sans', sans-serif; font-size: 14px; font-weight: 700; color: #FF6B6B;">03</div>
+        </div>
+      `
+    },
+    {
+      id: 'feature-article-mobile',
+      name: 'Feature Article',
+      content: `
+        <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #f5f3e9; position: relative; overflow: hidden; padding: 40px 20px; box-sizing: border-box; font-family: 'Arial', sans-serif;">
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Work+Sans:wght@400;700&display=swap');
+          .editable:hover { outline: 2px dashed #FF6B6B; cursor: text; }
+          .editable, .deletable { position: relative; z-index: 2; }
+          img[data-upload-target="true"] { position: relative; z-index: 3; }
+          .background-pattern { z-index: 1; }
+        </style>
+        <div class="background-pattern editable deletable" data-background-id="article-pattern" data-object-id="article-pattern" data-deletable="true" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('data:image/svg+xml;utf8,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;100&quot; height=&quot;100&quot;><circle cx=&quot;50&quot; cy=&quot;50&quot; r=&quot;1&quot; fill=&quot;%23FF6B6B&quot; /></svg>'); background-size: 20px 20px; opacity: 0.1; z-index: 1;"></div>
+        <h1 class="article-title editable deletable" contenteditable="true" data-text-id="article-title" data-object-id="article-title" data-deletable="true" style="font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 700; margin-bottom: 20px; color: #333; line-height: 1.2;">The Art of Everyday Objects</h1>
+        <div class="article-subtitle editable deletable" contenteditable="true" data-text-id="article-subtitle" data-object-id="article-subtitle" data-deletable="true" style="font-family: 'Work Sans', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 30px; color: #FF6B6B;">How illustrators are transforming the mundane into the extraordinary</div>
+        <img src="/api/placeholder/335/200" alt="Feature image" id="featureImage" data-upload-target="true" style="width: calc(100% + 40px); margin-left: -20px; height: 200px; object-fit: cover; margin-bottom: 20px;">
+        <div class="article-text editable deletable" contenteditable="true" data-text-id="article-text-1" data-object-id="article-text-1" data-deletable="true" style="font-family: 'Work Sans', sans-serif; font-size: 16px; line-height: 1.6; margin-bottom: 20px; color: #333;">
+          In a world increasingly dominated by digital screens, a new wave of illustrators is finding beauty and inspiration in the objects that surround us daily. From teacups to telephones, these artists are reimagining the everyday, turning the ordinary into extraordinary works of art.
+        </div>
+        <div class="pull-quote editable deletable" contenteditable="true" data-text-id="article-pullquote" data-object-id="article-pullquote" data-deletable="true" style="font-family: 'Playfair Display', serif; font-size: 24px; line-height: 1.3; padding: 20px 0; border-top: 2px solid #FF6B6B; border-bottom: 2px solid #FF6B6B; margin: 20px 0; color: #FF6B6B; text-align: center;">
+          "The most mundane object can become a work of art when seen through an illustrator's eyes."
+        </div>
+        <div class="article-text editable deletable" contenteditable="true" data-text-id="article-text-2" data-object-id="article-text-2" data-deletable="true" style="font-family: 'Work Sans', sans-serif; font-size: 16px; line-height: 1.6; color: #333;">
+          This movement is not just about creating beautiful images; it's about changing our perception of the world around us. By focusing their artistic lens on everyday items, these illustrators invite us to see the beauty in the banal, the extraordinary in the ordinary.
+        </div>
+        <div class="page-number editable deletable" contenteditable="true" data-text-id="article-page-number" data-object-id="article-page-number" data-deletable="true" style="position: absolute; bottom: 20px; left: 20px; font-family: 'Work Sans', sans-serif; font-size: 14px; font-weight: 700; color: #FF6B6B;">04</div>
+      </div>
+      `
+    },
+    {
+      id: 'photo-editorial-mobile',
+      name: 'Photo Editorial',
+      content: `
+        <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #f5f3e9; position: relative; overflow: hidden; padding: 40px 20px; box-sizing: border-box; font-family: 'Arial', sans-serif;">
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Work+Sans:wght@400;700&display=swap');
+          .editable:hover { outline: 2px dashed #FF6B6B; cursor: text; }
+          .editable, .deletable { position: relative; z-index: 2; }
+          img[data-upload-target="true"] { position: relative; z-index: 3; }
+          .background-pattern { z-index: 1; }
+        </style>
+        <div class="background-pattern editable deletable" data-background-id="editorial-pattern" data-object-id="editorial-pattern" data-deletable="true" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('data:image/svg+xml;utf8,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;100&quot; height=&quot;100&quot;><path d=&quot;M0 0L100 100M100 0L0 100&quot; stroke=&quot;%23FF6B6B&quot; stroke-width=&quot;1&quot; /></svg>'); background-size: 20px 20px; opacity: 0.1; z-index: 1;"></div>
+        <h1 class="editorial-title editable deletable" contenteditable="true" data-text-id="editorial-title" data-object-id="editorial-title" data-deletable="true" style="font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 700; color: #333; margin-bottom: 20px;">Patterns in Nature</h1>
+        <div class="editorial-subtitle editable deletable" contenteditable="true" data-text-id="editorial-subtitle" data-object-id="editorial-subtitle" data-deletable="true" style="font-family: 'Work Sans', sans-serif; font-size: 18px; font-weight: 700; color: #FF6B6B; margin-bottom: 30px;">A visual exploration of nature's intricate designs</div>
+        <img src="/api/placeholder/335/250" alt="Editorial photo 1" id="editorialImage1" data-upload-target="true" style="width: calc(100% + 40px); margin-left: -20px; height: 250px; object-fit: cover; margin-bottom: 20px;">
+        <div class="caption editable deletable" contenteditable="true" data-text-id="photo-caption-1" data-object-id="photo-caption-1" data-deletable="true" style="font-family: 'Work Sans', sans-serif; font-size: 14px; color: #666; margin-bottom: 30px; text-align: center;">The mesmerizing spiral patterns of a sunflower's seed head</div>
+        <img src="/api/placeholder/335/250" alt="Editorial photo 2" id="editorialImage2" data-upload-target="true" style="width: calc(100% + 40px); margin-left: -20px; height: 250px; object-fit: cover; margin-bottom: 20px;">
+        <div class="caption editable deletable" contenteditable="true" data-text-id="photo-caption-2" data-object-id="photo-caption-2" data-deletable="true" style="font-family: 'Work Sans', sans-serif; font-size: 14px; color: #666; margin-bottom: 30px; text-align: center;">Intricate veins of a leaf reveal nature's complex network</div>
+        <div class="editorial-text editable deletable" contenteditable="true" data-text-id="editorial-text" data-object-id="editorial-text" data-deletable="true" style="font-family: 'Work Sans', sans-serif; font-size: 16px; color: #333; line-height: 1.6; margin-top: 30px;">
+          Nature is the ultimate artist, creating intricate patterns and designs that have inspired human creativity for millennia. In this photo series, we explore the hidden geometries and mesmerizing structures found in the natural world, revealing the art that exists all around us.
+        </div>
+        <div class="page-number editable deletable" contenteditable="true" data-text-id="editorial-page-number" data-object-id="editorial-page-number" data-deletable="true" style="position: absolute; bottom: 20px; left: 20px; font-family: 'Work Sans', sans-serif; font-size: 14px; font-weight: 700; color: #FF6B6B;">20</div>
+      </div>
+      `
+    },
+    {
+      id: 'interview-mobile',
+      name: 'Interview',
+      content: `
+      <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #f5f3e9; position: relative; overflow: hidden; padding: 40px 20px; box-sizing: border-box; font-family: 'Arial', sans-serif;">
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Work+Sans:wght@400;700&display=swap');
+          .editable:hover { outline: 2px dashed #FF6B6B; cursor: text; }
+          .editable, .deletable { position: relative; z-index: 2; }
+          img[data-upload-target="true"] { position: relative; z-index: 3; }
+          .background-pattern { z-index: 1; }
+          .question { font-weight: 700; color: #FF6B6B; margin-top: 15px; }
+          .answer { margin-bottom: 15px; }
+        </style>
+        <div class="background-pattern editable deletable" data-background-id="interview-pattern" data-object-id="interview-pattern" data-deletable="true" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('data:image/svg+xml;utf8,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;100&quot; height=&quot;100&quot;><path d=&quot;M0 0L100 100M100 0L0 100&quot; stroke=&quot;%23FF6B6B&quot; stroke-width=&quot;1&quot; /></svg>'); background-size: 20px 20px; opacity: 0.1;"></div>
+        <h1 class="interview-title editable deletable" contenteditable="true" data-text-id="interview-title" data-object-id="interview-title" data-deletable="true" style="font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 700; margin-bottom: 20px; color: #333;">The Art of Illustration</h1>
+        <div class="interview-subtitle editable deletable" contenteditable="true" data-text-id="interview-subtitle" data-object-id="interview-subtitle" data-deletable="true" style="font-family: 'Work Sans', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 30px; color: #FF6B6B;">A conversation with renowned illustrator Jane Smith</div>
+        <img src="/api/placeholder/335/200" alt="Interviewee portrait" id="interviewImage" data-upload-target="true" style="width: calc(100% + 40px); margin-left: -20px; height: 200px; object-fit: cover; margin-bottom: 20px;">
+        <div class="interview-text" style="font-family: 'Work Sans', sans-serif; font-size: 16px; line-height: 1.6;">
+          <div class="question editable deletable" contenteditable="true" data-text-id="interview-question-1" data-object-id="interview-question-1" data-deletable="true">WRAP: How would you describe your illustration style?</div>
+          <div class="answer editable deletable" contenteditable="true" data-text-id="interview-answer-1" data-object-id="interview-answer-1" data-deletable="true">JANE: I'd say my style is a blend of whimsical and geometric. I love playing with bold colors and patterns, but always with a touch of hand-drawn imperfection to keep things organic and relatable.</div>
+          <div class="question editable deletable" contenteditable="true" data-text-id="interview-question-2" data-object-id="interview-question-2" data-deletable="true">WRAP: What inspires your work?</div>
+          <div class="answer editable deletable" contenteditable="true" data-text-id="interview-answer-2" data-object-id="interview-answer-2" data-deletable="true">JANE: Everyday objects and nature are my biggest inspirations. I find beauty in the simplest things – a well-designed chair, the pattern on a leaf, or the way light falls on a building. It's about finding the extraordinary in the ordinary.</div>
+        </div>
+        <div class="pull-quote editable deletable" contenteditable="true" data-text-id="interview-pullquote" data-object-id="interview-pullquote" data-deletable="true" style="font-family: 'Playfair Display', serif; font-size: 24px; line-height: 1.3; padding: 20px 0; border-top: 2px solid #FF6B6B; border-bottom: 2px solid #FF6B6B; margin: 20px 0; color: #FF6B6B; text-align: center;">
+          "Illustration is about telling stories without words."
+        </div>
+        <div class="page-number editable deletable" contenteditable="true" data-text-id="interview-page-number" data-object-id="interview-page-number" data-deletable="true" style="position: absolute; bottom: 20px; left: 20px; font-family: 'Work Sans', sans-serif; font-size: 14px; font-weight: 700; color: #FF6B6B;">12</div>
+      </div>
+      `
+    },
+    {
+      id: 'trend-report-mobile',
+      name: 'Trend Report',
+      content: `
+        <div id="magazine-page" style="width: 375px; min-height: 812px; margin: 0 auto; background-color: #f5f3e9; position: relative; overflow: hidden; padding: 40px 20px; box-sizing: border-box; font-family: 'Arial', sans-serif;">
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Work+Sans:wght@400;700&display=swap');
+          .editable:hover { outline: 2px dashed #FF6B6B; cursor: text; }
+          .editable, .deletable { position: relative; z-index: 2; }
+          img[data-upload-target="true"] { position: relative; z-index: 3; }
+          .background-pattern { z-index: 1; }
+          .trend-item { margin-bottom: 30px; }
+          .trend-name { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 20px; margin: 10px 0 5px; color: #FF6B6B; }
+          .trend-description { font-family: 'Work Sans', sans-serif; font-size: 16px; color: #333; }
+        </style>
+        <div class="background-pattern editable deletable" data-background-id="trend-pattern" data-object-id="trend-pattern" data-deletable="true" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('data:image/svg+xml;utf8,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;100&quot; height=&quot;100&quot;><rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;50&quot; height=&quot;50&quot; fill=&quot;%23FF6B6B&quot; opacity=&quot;0.1&quot; /><rect x=&quot;50&quot; y=&quot;50&quot; width=&quot;50&quot; height=&quot;50&quot; fill=&quot;%23FF6B6B&quot; opacity=&quot;0.1&quot; /></svg>'); background-size: 20px 20px;"></div>
+        <h1 class="trend-title editable deletable" contenteditable="true" data-text-id="trend-title" data-object-id="trend-title" data-deletable="true" style="font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 700; margin-bottom: 20px; color: #333;">Illustration Trends</h1>
+        <div class="trend-subtitle editable deletable" contenteditable="true" data-text-id="trend-subtitle" data-object-id="trend-subtitle" data-deletable="true" style="font-family: 'Work Sans', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 30px; color: #FF6B6B;">What's shaping the world of illustration in 2023</div>
+        <div class="trend-grid">
+          <div class="trend-item">
+            <img src="/api/placeholder/335/150" alt="Trend 1" id="trendImage1" data-upload-target="true" style="width: 100%; height: 150px; object-fit: cover;">
+            <div class="trend-name editable deletable" contenteditable="true" data-text-id="trend-1-name" data-object-id="trend-1-name" data-deletable="true">Maximalist Patterns</div>
+            <div class="trend-description editable deletable" contenteditable="true" data-text-id="trend-1-description" data-object-id="trend-1-description" data-deletable="true">Bold, intricate patterns that celebrate complexity and visual abundance.</div>
+          </div>
+          <div class="trend-item">
+            <img src="/api/placeholder/335/150" alt="Trend 2" id="trendImage2" data-upload-target="true" style="width: 100%; height: 150px; object-fit: cover;">
+            <div class="trend-name editable deletable" contenteditable="true" data-text-id="trend-2-name" data-object-id="trend-2-name" data-deletable="true">Nostalgic Tech</div>
+            <div class="trend-description editable deletable" contenteditable="true" data-text-id="trend-2-description" data-object-id="trend-2-description" data-deletable="true">Retro-futuristic illustrations that blend old and new technological aesthetics.</div>
+          </div>
+        </div>
+        <div class="trend-quote editable deletable" contenteditable="true" data-text-id="trend-quote" data-object-id="trend-quote" data-deletable="true" style="font-family: 'Playfair Display', serif; font-size: 24px; line-height: 1.3; padding: 20px 0; border-top: 2px solid #FF6B6B; border-bottom: 2px solid #FF6B6B; margin: 20px 0; color: #FF6B6B; text-align: center;">
+          "Illustration is not just about creating images, it's about crafting visual experiences."
+        </div>
+        <div class="page-number editable deletable" contenteditable="true" data-text-id="trend-page-number" data-object-id="trend-page-number" data-deletable="true" style="position: absolute; bottom: 20px; left: 20px; font-family: 'Work Sans', sans-serif; font-size: 14px; font-weight: 700; color: #FF6B6B;">28</div>
+      </div>
+      `
+    }
+  ]
 }
 ];
