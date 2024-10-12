@@ -3,7 +3,7 @@ import React from 'react';
 function Layout({ templates, onTemplateSelect }) {
   return (
     <div className="layout-section">
-      <h3>Layout</h3>
+      <h2>Layout</h2>
       <ul className="template-list">
         {templates.map((template, index) => (
           <li key={template.uniqueId} className="template-item">

@@ -3,6 +3,8 @@ import { useAuth } from '../AuthContext';
 
 function RightPanel({ selectedText, selectedBackground, onTextStyleChange, onBackgroundStyleChange }) {
   const { user, login, logout } = useAuth();
+  const [shadowOffset, setShadowOffset] = useState(2);
+  const [shadowColor, setShadowColor] = useState('#000000');
 
   const handleAuthAction = () => {
     if (user) {
@@ -19,9 +21,6 @@ function RightPanel({ selectedText, selectedBackground, onTextStyleChange, onBac
     }
   };
 
-  const [shadowOffset, setShadowOffset] = useState(2);
-  const [shadowColor, setShadowColor] = useState('#000000');
-
   const handleShadowChange = (offset, color) => {
     const shadowStyle = `${offset}px ${offset}px ${offset}px ${color}`;
     onTextStyleChange({ textShadow: shadowStyle });
@@ -33,88 +32,98 @@ function RightPanel({ selectedText, selectedBackground, onTextStyleChange, onBac
         <button onClick={handleAuthAction} className="auth-button">
           {user ? 'Logout' : 'Login'}
         </button>
-        {user && (
-          <button onClick={handleViewGallery} className="view-gallery-button">
-            View Gallery
-          </button>
-        )}
+        <button onClick={handleViewGallery} className="view-gallery-button">
+          View Gallery
+        </button>
       </div>
       
       {selectedText && (
         <>
           <h2>Text Properties</h2>
-          <label>
-            Font
-            <select onChange={(e) => onTextStyleChange({ fontFamily: e.target.value })}>
-              <option value="Arial">Arial</option>
-              <option value="Times New Roman">Times New Roman</option>
-              <option value="Courier">Courier</option>
-            </select>
-          </label>
-          <label>
-            Size
-            <input 
-              type="number" 
-              defaultValue={24} 
-              onChange={(e) => onTextStyleChange({ fontSize: `${e.target.value}px` })}
-            />
-          </label>
-          <label>
-            Color
-            <input 
-              type="color" 
-              defaultValue="#000000" 
-              onChange={(e) => onTextStyleChange({ color: e.target.value })}
-            />
-          </label>
-          <label>
-            Stroke Color
-            <input 
-              type="color" 
-              defaultValue="#000000" 
-              onChange={(e) => onTextStyleChange({ WebkitTextStrokeColor: e.target.value })}
-            />
-          </label>
-          <label>
-            Stroke Width
-            <input 
-              type="number" 
-              defaultValue={0} 
-              onChange={(e) => onTextStyleChange({ WebkitTextStrokeWidth: `${e.target.value}px` })}
-            />
-          </label>
-          <label>
-            Shadow Offset
-            <input 
-              type="number" 
-              value={shadowOffset}
-              onChange={(e) => {
-                const newOffset = e.target.value;
-                setShadowOffset(newOffset);
-                handleShadowChange(newOffset, shadowColor);
-              }}
-            />
-          </label>
-          <label>
-            Shadow Color
-            <input 
-              type="color" 
-              value={shadowColor}
-              onChange={(e) => {
-                const newColor = e.target.value;
-                setShadowColor(newColor);
-                handleShadowChange(shadowOffset, newColor);
-              }}
-            />
-          </label>
-          <label>
-            Background Color
-            <input 
-              type="color" 
-              defaultValue="#ffffff" 
-              onChange={(e) => onTextStyleChange({ backgroundColor: e.target.value })}
-            />
-          </label>
+          <div className="property-group">
+            <h3>Font</h3>
+            <label>
+              Family
+              <select onChange={(e) => onTextStyleChange({ fontFamily: e.target.value })}>
+                <option value="Arial">Arial</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Courier">Courier</option>
+              </select>
+            </label>
+            <label>
+              Size
+              <input 
+                type="number" 
+                defaultValue={24} 
+                onChange={(e) => onTextStyleChange({ fontSize: `${e.target.value}px` })}
+              />
+            </label>
+            <label>
+              Color
+              <input 
+                type="color" 
+                defaultValue="#000000" 
+                onChange={(e) => onTextStyleChange({ color: e.target.value })}
+              />
+            </label>
+          </div>
+          <div className="property-group">
+            <h3>Stroke</h3>
+            <label>
+              Color
+              <input 
+                type="color" 
+                defaultValue="#000000" 
+                onChange={(e) => onTextStyleChange({ WebkitTextStrokeColor: e.target.value })}
+              />
+            </label>
+            <label>
+              Width
+              <input 
+                type="number" 
+                defaultValue={0} 
+                onChange={(e) => onTextStyleChange({ WebkitTextStrokeWidth: `${e.target.value}px` })}
+              />
+            </label>
+          </div>
+          <div className="property-group">
+            <h3>Drop Shadow</h3>
+            <label>
+              Offset
+              <input 
+                type="number" 
+                value={shadowOffset}
+                onChange={(e) => {
+                  const newOffset = e.target.value;
+                  setShadowOffset(newOffset);
+                  handleShadowChange(newOffset, shadowColor);
+                }}
+              />
+            </label>
+            <label>
+              Color
+              <input 
+                type="color" 
+                value={shadowColor}
+                onChange={(e) => {
+                  const newColor = e.target.value;
+                  setShadowColor(newColor);
+                  handleShadowChange(shadowOffset, newColor);
+                }}
+              />
+            </label>
+          </div>
+          <div className="property-group">
+            <h3>Background</h3>
+            <label>
+              Color
+              <input 
+                type="color" 
+                defaultValue="#ffffff" 
+                onChange={(e) => onTextStyleChange({ backgroundColor: e.target.value })}
+              />
+            </label>
+          </div>
         </>
       )}
       
@@ -122,7 +131,7 @@ function RightPanel({ selectedText, selectedBackground, onTextStyleChange, onBac
         <>
           <h2>Background Properties</h2>
           <label>
-            Background Color
+            Color
             <input 
               type="color" 
               defaultValue="#ffffff" 
