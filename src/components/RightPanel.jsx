@@ -29,11 +29,13 @@ function RightPanel({ selectedText, selectedBackground, onTextStyleChange, onBac
   return (
     <div className="floating-panel right-panel">
       <div className="auth-buttons">
+      {user && (
+          <button onClick={handleViewGallery} className="view-gallery-button">
+            View Gallery
+          </button>
+        )}
         <button onClick={handleAuthAction} className="auth-button">
           {user ? 'Logout' : 'Login'}
-        </button>
-        <button onClick={handleViewGallery} className="view-gallery-button">
-          View Gallery
         </button>
       </div>
       

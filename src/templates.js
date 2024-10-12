@@ -1,7 +1,7 @@
 export const magazineTemplates = [
   {
-    id: 'id-magazine-mobile',
-    name: 'i-D Magazine Mobile',
+    id: 'edge-mobile',
+    name: 'Edge',
     templates: [
       {
         id: 'cover-mobile',
@@ -171,8 +171,8 @@ export const magazineTemplates = [
     ]
   },
   {
-    id: 'ray-gun-magazine-mobile',
-    name: 'Ray Gun Magazine Mobile',
+    id: 'chaos-mobile',
+    name: 'Chaos',
     templates: [
       {
         id: 'cover-mobile',
@@ -346,8 +346,8 @@ export const magazineTemplates = [
     ]
   },
   {
-    id: 'apartamento-magazine-mobile',
-    name: 'Apartamento Magazine Mobile',
+    id: 'abode-mobile',
+    name: 'Abode',
     templates: [
       {
         id: 'cover-mobile',
@@ -520,8 +520,8 @@ export const magazineTemplates = [
     ]
   },
   {
-    id: 'the-face-magazine-mobile',
-    name: 'The Face Magazine Mobile',
+    id: 'trend-mobile',
+    name: 'Trend',
     templates: [
       {
         id: 'cover-mobile',
@@ -697,8 +697,8 @@ export const magazineTemplates = [
     ]
   },
   {
-    id: 'kinfolk-magazine-mobile',
-    name: 'Kinfolk Magazine Mobile',
+    id: 'calm-mobile',
+    name: 'Calm',
     templates: [
       {
         id: 'cover-mobile',
@@ -869,8 +869,8 @@ export const magazineTemplates = [
     ]
   },
   {
-    id: 'nylon-magazine-mobile',
-    name: 'Nylon Magazine Mobile',
+    id: 'pop-mobile',
+    name: 'Pop',
     templates: [
       {
         id: 'cover-mobile',
@@ -1051,8 +1051,8 @@ export const magazineTemplates = [
   ]
 },
 {
-  id: 'foam-magazine-mobile',
-  name: 'Foam Magazine Mobile',
+  id: 'lens-mobile',
+  name: 'Lens',
   templates: [
     {
       id: 'cover-mobile',
@@ -1228,8 +1228,8 @@ export const magazineTemplates = [
   ]
 },
 {
-  id: 'emigre-magazine-mobile',
-  name: 'Emigre Magazine Mobile',
+  id: 'epitome-mobile',
+  name: 'Epitome',
   templates: [
     {
       id: 'cover-mobile',
@@ -1401,8 +1401,8 @@ export const magazineTemplates = [
   ]
 },
 {
-  id: 'dazed-magazine-mobile',
-  name: 'Dazed Mobile',
+  id: 'rebel-mobile',
+  name: 'Rebel',
   templates: [
     {
       id: 'cover-mobile',
@@ -1570,8 +1570,8 @@ export const magazineTemplates = [
   ]
 },
 {
-  id: 'wrap-magazine-mobile',
-  name: 'Wrap Mobile',
+  id: 'pattern-mobile',
+  name: 'Pattern',
   templates: [
     {
       id: 'cover-mobile',

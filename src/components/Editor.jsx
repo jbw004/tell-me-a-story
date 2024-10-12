@@ -67,7 +67,7 @@ function Editor({
           />
         ))
       ) : (
-        <div className="placeholder-text">Select a template to start editing</div>
+        <div className="placeholder-text">Select a style & template to start editing...</div>
       )}
     </div>
   );

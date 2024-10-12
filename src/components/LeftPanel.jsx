@@ -13,7 +13,7 @@ function LeftPanel({ magazines, onMagazineSelect, selectedMagazine, onTemplateSe
 
   return (
     <div className="LeftPanel">
-      <h2>Magazines</h2>
+      <h2>Styles</h2>
       {magazines.map(magazine => (
         <button
           key={magazine.id}
