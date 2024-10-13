@@ -30,6 +30,7 @@ function EditorPage() {
   const [showDiscardConfirmation, setShowDiscardConfirmation] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [showSaveNotification, setShowSaveNotification] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
 
 
@@ -82,8 +83,10 @@ function EditorPage() {
   };
 
   const handleSaveDraft = async () => {
-    if (user) {
-      const draftData = {
+    if (user && !isSaving) {
+      setIsSaving(true);
+      try {
+        const draftData = {
         templates: selectedTemplates.map(template => ({
           ...template,
           content: templateRefs.current[template.uniqueId]?.innerHTML || template.content
@@ -93,10 +96,17 @@ function EditorPage() {
         backgroundStyles,
       };
       await saveDraft(user.uid, draftData);
-      setShowSaveNotification(true);
-      
-      // Hide the notification after 2 seconds
-      setTimeout(() => setShowSaveNotification(false), 2000);
+        setShowSaveNotification(true);
+        
+        // Hide the notification after 2 seconds
+        setTimeout(() => setShowSaveNotification(false), 2000);
+      } catch (error) {
+        console.error("Error saving draft:", error);
+        // Optionally show an error notification here
+      } finally {
+        // Re-enable the button after a short delay
+        setTimeout(() => setIsSaving(false), 1000);
+      }
     }
   };
 
@@ -356,7 +366,8 @@ function EditorPage() {
               onSaveDraft={handleSaveDraft}
               onDiscardDraft={() => setShowDiscardConfirmation(true)}
               user={user}
-              showSaveNotification={showSaveNotification}  // Pass the state here
+              showSaveNotification={showSaveNotification}
+              isSaving={isSaving}
             />
             <RightPanel 
               selectedText={selectedText}

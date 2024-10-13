@@ -4,7 +4,7 @@ import ExportComponent from './ExportComponent';  // Import the existing ExportC
 import SaveNotification from './SaveNotification';  // Import the SaveNotification component
 
 
-function LeftPanel({ magazines, onMagazineSelect, selectedMagazine, onTemplateSelect, selectedTemplates, templates, templateRefs, onExportStart, onExportEnd, onSaveDraft, onDiscardDraft, user, showSaveNotification }) {
+function LeftPanel({ magazines, onMagazineSelect, selectedMagazine, onTemplateSelect, selectedTemplates, templates, templateRefs, onExportStart, onExportEnd, onSaveDraft, onDiscardDraft, user, showSaveNotification, isSaving }) {
   const handleNewTemplateSelect = (template) => {
     onTemplateSelect(template, false);
   };
@@ -48,10 +48,18 @@ function LeftPanel({ magazines, onMagazineSelect, selectedMagazine, onTemplateSe
           />
           {user && (
             <>
-              <button onClick={onSaveDraft} className="save-draft-button">
-                Save as Draft
+              <button 
+                onClick={onSaveDraft} 
+                className={`save-draft-button ${isSaving ? 'saving' : ''}`}
+                disabled={isSaving}
+              >
+                {isSaving ? 'Saving...' : 'Save as Draft'}
               </button>
-              <button onClick={onDiscardDraft} className="discard-draft-button">
+              <button 
+                onClick={onDiscardDraft} 
+                className="discard-draft-button"
+                disabled={isSaving}
+              >
                 Discard Draft
               </button>
               {showSaveNotification && (

@@ -657,3 +657,14 @@
   top: 100px;  /* Adjust this value based on your layout */
   left: 20px;  /* Adjust this value based on your layout */
 }
+
+.save-draft-button:disabled,
+.discard-draft-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.save-draft-button.saving {
+  background-color: #cccccc;
+  color: #666666;
+}
