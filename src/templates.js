@@ -1612,19 +1612,19 @@ export const magazineTemplates = [
           <h1 id="contents" class="section-title editable deletable" contenteditable="true" data-text-id="contents-title" data-object-id="contents-title" data-deletable="true" style="font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; margin-bottom: 40px; color: #333;">Contents</h1>
           <div id="tocContainer">
             <div class="toc-item">
-              <span class="toc-page">04</span>
+              <span class="toc-page editable deletable" contenteditable="true" data-text-id="contents-item-1-page" data-object-id="contents-item-1-page" data-deletable="true">04</span>
               <span class="toc-title editable deletable" contenteditable="true" data-text-id="contents-item-1-title" data-object-id="contents-item-1-title" data-deletable="true">The Art of Everyday Objects</span>
             </div>
             <div class="toc-item">
-              <span class="toc-page">12</span>
+              <span class="toc-page editable deletable" contenteditable="true" data-text-id="contents-item-2-page" data-object-id="contents-item-2-page" data-deletable="true">12</span>
               <span class="toc-title editable deletable" contenteditable="true" data-text-id="contents-item-2-title" data-object-id="contents-item-2-title" data-deletable="true">Illustrator Spotlight: Jane Doe</span>
             </div>
             <div class="toc-item">
-              <span class="toc-page">20</span>
+              <span class="toc-page editable deletable" contenteditable="true" data-text-id="contents-item-3-page" data-object-id="contents-item-3-page" data-deletable="true">20</span>
               <span class="toc-title editable deletable" contenteditable="true" data-text-id="contents-item-3-title" data-object-id="contents-item-3-title" data-deletable="true">Patterns in Nature</span>
             </div>
             <div class="toc-item">
-              <span class="toc-page">28</span>
+              <span class="toc-page editable deletable" contenteditable="true" data-text-id="contents-item-4-page" data-object-id="contents-item-4-page" data-deletable="true">28</span>
               <span class="toc-title editable deletable" contenteditable="true" data-text-id="contents-item-4-title" data-object-id="contents-item-4-title" data-deletable="true">The Future of Print</span>
             </div>
           </div>
