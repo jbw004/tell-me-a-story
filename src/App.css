@@ -604,3 +604,30 @@
   justify-content: center;
   align-items: center;
 }
+
+/* In App.css */
+
+.save-draft-button,
+.discard-draft-button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.save-draft-button:hover,
+.discard-draft-button:hover {
+  background-color: #e0e0e0;
+}
+
+.discard-draft-button {
+  background-color: #ffeeee;
+}
+
+.discard-draft-button:hover {
+  background-color: #ffdddd;
+}

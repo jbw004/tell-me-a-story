@@ -1,9 +1,8 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';  // Add GoogleAuthProvider here
-import { getDatabase } from 'firebase/database';
+import { getDatabase, ref, set, get, remove, push, runTransaction, serverTimestamp } from 'firebase/database';
 import { getAnalytics } from "firebase/analytics";
 import { getStorage } from "firebase/storage";
-import { ref, remove } from 'firebase/database';
 import { ref as storageRef, listAll, deleteObject } from 'firebase/storage';
 
 export const deleteMagazine = async (userId, magazineId) => {
@@ -19,6 +18,25 @@ export const deleteMagazine = async (userId, magazineId) => {
   const listResults = await listAll(magazineStorageRef);
   const deletePromises = listResults.items.map(item => deleteObject(item));
   await Promise.all(deletePromises);
+};
+
+export const saveDraft = async (userId, draftData) => {
+  const db = getDatabase();
+  const draftRef = ref(db, `users/${userId}/draft`);
+  await set(draftRef, draftData);
+};
+
+export const loadDraft = async (userId) => {
+  const db = getDatabase();
+  const draftRef = ref(db, `users/${userId}/draft`);
+  const snapshot = await get(draftRef);
+  return snapshot.val();
+};
+
+export const deleteDraft = async (userId) => {
+  const db = getDatabase();
+  const draftRef = ref(db, `users/${userId}/draft`);
+  await remove(draftRef);
 };
 
 const firebaseConfig = {

@@ -8,6 +8,9 @@ import { magazineTemplates } from '../templates.js';
 import { v4 as uuidv4 } from 'uuid';
 import useMobileDetect from '../useMobileDetect';
 import MobileWarningModal from './MobileWarningModal';
+import { useAuth } from '../AuthContext';
+import { saveDraft, loadDraft, deleteDraft } from '../firebase';
+import ConfirmationModal from './ConfirmationModal';
 
 function EditorPage() {
   const [selectedMagazine, setSelectedMagazine] = useState(null);
@@ -20,6 +23,11 @@ function EditorPage() {
   const [selectedBackground, setSelectedBackground] = useState(null);
   const [backgroundStyles, setBackgroundStyles] = useState({});
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
+  const [showDiscardConfirmation, setShowDiscardConfirmation] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
 
   // ... (keep all the handler functions from the original App component)
 
@@ -31,6 +39,70 @@ function EditorPage() {
       setShowMobileWarning(true);
     }
   }, [isMobile]);
+
+  useEffect(() => {
+    if (user) {
+      loadUserDraft();
+    } else {
+      setIsLoading(false);
+    }
+  }, [user]);
+
+  const loadUserDraft = async () => {
+    setIsLoading(true);
+    if (user) {
+      try {
+        const draftData = await loadDraft(user.uid);
+        if (draftData) {
+          setSelectedTemplates(draftData.templates || []);
+          setUploadedImages(draftData.uploadedImages || {});
+          setTextStyles(draftData.textStyles || {});
+          setBackgroundStyles(draftData.backgroundStyles || {});
+        } else {
+          // If no draft, initialize with empty data
+          setSelectedTemplates([]);
+          setUploadedImages({});
+          setTextStyles({});
+          setBackgroundStyles({});
+        }
+      } catch (error) {
+        console.error("Error loading draft:", error);
+        // Initialize with empty data if there's an error
+        setSelectedTemplates([]);
+        setUploadedImages({});
+        setTextStyles({});
+        setBackgroundStyles({});
+      }
+    }
+    setIsLoading(false);
+  };
+
+  const handleSaveDraft = async () => {
+    if (user) {
+      const draftData = {
+        templates: selectedTemplates.map(template => ({
+          ...template,
+          content: templateRefs.current[template.uniqueId]?.innerHTML || template.content
+        })),
+        uploadedImages,
+        textStyles,
+        backgroundStyles,
+      };
+      await saveDraft(user.uid, draftData);
+      setShowSaveConfirmation(true);
+    }
+  };
+
+  const handleDiscardDraft = async () => {
+    if (user) {
+      await deleteDraft(user.uid);
+      setSelectedTemplates([]);
+      setUploadedImages({});
+      setTextStyles({});
+      setBackgroundStyles({});
+      setShowDiscardConfirmation(false);
+    }
+  };
 
   const handleExportStart = useCallback(() => {
     setIsExporting(true);
@@ -243,43 +315,62 @@ function EditorPage() {
         open={showMobileWarning} 
         onClose={() => setShowMobileWarning(false)} 
       />
-    <div className="main-content" style={{ paddingTop: '29px' }}>
-      <Editor 
-        templates={selectedTemplates}
-        onImageUpload={handleImageUpload}
-        uploadedImages={uploadedImages}
-        onReorderTemplates={handleReorderTemplates}
-        onDeleteTemplate={handleDeleteTemplate}
-        registerTemplateRef={registerTemplateRef}
-        onTextSelect={handleTextSelect}
-        onBackgroundSelect={handleBackgroundSelect}
-        textStyles={textStyles}
-        backgroundStyles={backgroundStyles}
-        onObjectDelete={handleObjectDelete}
-        isExporting={isExporting}
-        onAddTocItem={handleAddTocItem}
-        onRemoveTocItem={handleRemoveTocItem}
-      />
-      <div className="editor-panels">
-        <LeftPanel 
-          magazines={magazineTemplates} 
-          onMagazineSelect={handleMagazineSelect}
-          selectedMagazine={selectedMagazine}
-          onTemplateSelect={handleTemplateSelect}
-          selectedTemplates={selectedTemplates}
-          templates={selectedTemplates}
-          templateRefs={templateRefs}
-          onExportStart={handleExportStart}
-          onExportEnd={handleExportEnd}
-        />
-        <RightPanel 
-            selectedText={selectedText}
-            selectedBackground={selectedBackground}
-            onTextStyleChange={handleTextStyleChange}
-            onBackgroundStyleChange={handleBackgroundStyleChange}
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : (
+        <div className="main-content" style={{ paddingTop: '29px' }}>
+          <Editor 
+            templates={selectedTemplates}
+            onImageUpload={handleImageUpload}
+            uploadedImages={uploadedImages}
+            onReorderTemplates={handleReorderTemplates}
+            onDeleteTemplate={handleDeleteTemplate}
+            registerTemplateRef={registerTemplateRef}
+            onTextSelect={handleTextSelect}
+            onBackgroundSelect={handleBackgroundSelect}
+            textStyles={textStyles}
+            backgroundStyles={backgroundStyles}
+            onObjectDelete={handleObjectDelete}
+            isExporting={isExporting}
+            onAddTocItem={handleAddTocItem}
+            onRemoveTocItem={handleRemoveTocItem}
           />
-      </div>
-    </div>
+          <div className="editor-panels">
+            <LeftPanel 
+              magazines={magazineTemplates} 
+              onMagazineSelect={handleMagazineSelect}
+              selectedMagazine={selectedMagazine}
+              onTemplateSelect={handleTemplateSelect}
+              selectedTemplates={selectedTemplates}
+              templates={selectedTemplates}
+              templateRefs={templateRefs}
+              onExportStart={handleExportStart}
+              onExportEnd={handleExportEnd}
+              onSaveDraft={handleSaveDraft}
+              onDiscardDraft={() => setShowDiscardConfirmation(true)}
+              user={user}
+            />
+            <RightPanel 
+              selectedText={selectedText}
+              selectedBackground={selectedBackground}
+              onTextStyleChange={handleTextStyleChange}
+              onBackgroundStyleChange={handleBackgroundStyleChange}
+            />
+          </div>
+        </div>
+      )}
+      <ConfirmationModal
+        isOpen={showSaveConfirmation}
+        onClose={() => setShowSaveConfirmation(false)}
+        onConfirm={() => setShowSaveConfirmation(false)}
+        message="Your progress has been saved!"
+      />
+      <ConfirmationModal
+        isOpen={showDiscardConfirmation}
+        onClose={() => setShowDiscardConfirmation(false)}
+        onConfirm={handleDiscardDraft}
+        message="Are you sure you want to discard your draft? This action cannot be undone."
+      />
     </>
   );
 }

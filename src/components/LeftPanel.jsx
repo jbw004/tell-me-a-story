@@ -2,7 +2,7 @@ import React from 'react';
 import Layout from './Layout';
 import ExportComponent from './ExportComponent';  // Import the existing ExportComponent
 
-function LeftPanel({ magazines, onMagazineSelect, selectedMagazine, onTemplateSelect, selectedTemplates, templates, templateRefs, onExportStart, onExportEnd }) {
+function LeftPanel({ magazines, onMagazineSelect, selectedMagazine, onTemplateSelect, selectedTemplates, templates, templateRefs, onExportStart, onExportEnd, onSaveDraft, onDiscardDraft, user }) {
   const handleNewTemplateSelect = (template) => {
     onTemplateSelect(template, false);
   };
@@ -44,6 +44,16 @@ function LeftPanel({ magazines, onMagazineSelect, selectedMagazine, onTemplateSe
             onExportStart={onExportStart}
             onExportEnd={onExportEnd}
           />
+          {user && (
+            <>
+              <button onClick={onSaveDraft} className="save-draft-button">
+                Save as Draft
+              </button>
+              <button onClick={onDiscardDraft} className="discard-draft-button">
+                Discard Draft
+              </button>
+            </>
+          )}
         </>
       )}
     </div>

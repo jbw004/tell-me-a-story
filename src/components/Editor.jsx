@@ -2,20 +2,20 @@ import React, { useState, useCallback } from 'react';
 import Canvas from './Canvas';
 
 function Editor({ 
-  templates, 
+  templates = [],  // Provide default empty array
   onImageUpload, 
-  uploadedImages, 
+  uploadedImages = {},  // Provide default empty object
   onReorderTemplates, 
   onDeleteTemplate, 
   registerTemplateRef,
   onTextSelect,
-  onBackgroundSelect,  // New prop
-  textStyles,
-  backgroundStyles,  // New prop
-  onObjectDelete, // New prop for object deletion
+  onBackgroundSelect,
+  textStyles = {},  // Provide default empty object
+  backgroundStyles = {},  // Provide default empty object
+  onObjectDelete,
   isExporting,
-  onAddTocItem,  // New prop
-  onRemoveTocItem  // New prop
+  onAddTocItem,
+  onRemoveTocItem
 }) {
   const [templateHeights, setTemplateHeights] = useState({});
 
@@ -48,23 +48,23 @@ function Editor({
       {templates.length > 0 ? (
         templates.map((template) => (
           <Canvas
-            key={template.uniqueId}
-            template={template}
-            onImageUpload={onImageUpload}
-            onHeightChange={handleTemplateHeightChange}
-            onReorder={handleReorder}
-            onDelete={onDeleteTemplate}
-            uploadedImages={uploadedImages[template.uniqueId] || {}}
-            registerRef={registerTemplateRef}
-            onTextSelect={(textId, text) => onTextSelect(template.uniqueId, textId, text)}
-            onBackgroundSelect={(backgroundId) => onBackgroundSelect(template.uniqueId, backgroundId)}  // New prop
-            textStyles={textStyles[template.uniqueId] || {}}
-            backgroundStyles={backgroundStyles[template.uniqueId] || {}}  // New prop
-            onObjectDelete={(objectId) => onObjectDelete(template.uniqueId, objectId)}
-            isExporting={isExporting}
-            onAddTocItem={() => onAddTocItem(template.uniqueId)}
-            onRemoveTocItem={() => onRemoveTocItem(template.uniqueId)}
-          />
+          key={template.uniqueId || template.id} // Added fallback to template.id
+          template={template}
+          onImageUpload={onImageUpload}
+          onHeightChange={handleTemplateHeightChange}
+          onReorder={handleReorder}
+          onDelete={onDeleteTemplate}
+          uploadedImages={uploadedImages[template.uniqueId] || {}}
+          registerRef={registerTemplateRef}
+          onTextSelect={(textId, text) => onTextSelect(template.uniqueId, textId, text)}
+          onBackgroundSelect={(backgroundId) => onBackgroundSelect(template.uniqueId, backgroundId)}
+          textStyles={textStyles[template.uniqueId] || {}}
+          backgroundStyles={backgroundStyles[template.uniqueId] || {}}
+          onObjectDelete={(objectId) => onObjectDelete(template.uniqueId, objectId)}
+          isExporting={isExporting}
+          onAddTocItem={() => onAddTocItem(template.uniqueId)}
+          onRemoveTocItem={() => onRemoveTocItem(template.uniqueId)}
+        />
         ))
       ) : (
         <div className="placeholder-text">Select a style & template to start editing...</div>
