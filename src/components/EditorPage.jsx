@@ -11,6 +11,8 @@ import MobileWarningModal from './MobileWarningModal';
 import { useAuth } from '../AuthContext';
 import { saveDraft, loadDraft, deleteDraft } from '../firebase';
 import ConfirmationModal from './ConfirmationModal';
+import SaveNotification from './SaveNotification';
+
 
 function EditorPage() {
   const [selectedMagazine, setSelectedMagazine] = useState(null);
@@ -27,6 +29,8 @@ function EditorPage() {
   const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
   const [showDiscardConfirmation, setShowDiscardConfirmation] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [showSaveNotification, setShowSaveNotification] = useState(false);
+
 
 
   // ... (keep all the handler functions from the original App component)
@@ -89,7 +93,10 @@ function EditorPage() {
         backgroundStyles,
       };
       await saveDraft(user.uid, draftData);
-      setShowSaveConfirmation(true);
+      setShowSaveNotification(true);
+      
+      // Hide the notification after 2 seconds
+      setTimeout(() => setShowSaveNotification(false), 2000);
     }
   };
 
@@ -349,6 +356,7 @@ function EditorPage() {
               onSaveDraft={handleSaveDraft}
               onDiscardDraft={() => setShowDiscardConfirmation(true)}
               user={user}
+              showSaveNotification={showSaveNotification}  // Pass the state here
             />
             <RightPanel 
               selectedText={selectedText}
@@ -360,17 +368,11 @@ function EditorPage() {
         </div>
       )}
       <ConfirmationModal
-        isOpen={showSaveConfirmation}
-        onClose={() => setShowSaveConfirmation(false)}
-        onConfirm={() => setShowSaveConfirmation(false)}
-        message="Your progress has been saved!"
-      />
-      <ConfirmationModal
-        isOpen={showDiscardConfirmation}
-        onClose={() => setShowDiscardConfirmation(false)}
-        onConfirm={handleDiscardDraft}
-        message="Are you sure you want to discard your draft? This action cannot be undone."
-      />
+      isOpen={showDiscardConfirmation}
+      onClose={() => setShowDiscardConfirmation(false)}
+      onConfirm={handleDiscardDraft}
+      message="Are you sure you want to discard your draft? This action cannot be undone."
+    />
     </>
   );
 }

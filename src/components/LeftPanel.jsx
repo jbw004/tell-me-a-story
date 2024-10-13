@@ -1,8 +1,10 @@
 import React from 'react';
 import Layout from './Layout';
 import ExportComponent from './ExportComponent';  // Import the existing ExportComponent
+import SaveNotification from './SaveNotification';  // Import the SaveNotification component
 
-function LeftPanel({ magazines, onMagazineSelect, selectedMagazine, onTemplateSelect, selectedTemplates, templates, templateRefs, onExportStart, onExportEnd, onSaveDraft, onDiscardDraft, user }) {
+
+function LeftPanel({ magazines, onMagazineSelect, selectedMagazine, onTemplateSelect, selectedTemplates, templates, templateRefs, onExportStart, onExportEnd, onSaveDraft, onDiscardDraft, user, showSaveNotification }) {
   const handleNewTemplateSelect = (template) => {
     onTemplateSelect(template, false);
   };
@@ -52,6 +54,12 @@ function LeftPanel({ magazines, onMagazineSelect, selectedMagazine, onTemplateSe
               <button onClick={onDiscardDraft} className="discard-draft-button">
                 Discard Draft
               </button>
+              {showSaveNotification && (
+                <SaveNotification 
+                  message="Progress saved!" 
+                  position="in-panel"
+                />
+              )}
             </>
           )}
         </>
