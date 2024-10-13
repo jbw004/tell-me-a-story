@@ -1307,7 +1307,6 @@ export const magazineTemplates = [
           <div class="article-text editable deletable" contenteditable="true" data-text-id="article-text-2" data-object-id="article-text-2" data-deletable="true" style="font-family: 'Helvetica', sans-serif; font-size: 14px; line-height: 1.6;">
             As we delve deeper into this digital renaissance, questions arise: How will emerging technologies like AI and VR further transform type design? What does this mean for the future of readability and visual communication? Join us as we explore these questions and more in our feature article.
           </div>
-          <div class="graphic-element editable deletable" data-background-id="article-graphic" data-object-id="article-graphic" data-deletable="true" style="position: absolute; bottom: 40px; right: 20px; width: 100px; height: 100px; border: 5px solid #ff3300; border-radius: 50%; transform: rotate(45deg);"></div>
         </div>
       `
     },
@@ -1329,7 +1328,6 @@ export const magazineTemplates = [
           <div class="editorial-text editable deletable" contenteditable="true" data-text-id="editorial-text" data-object-id="editorial-text" data-deletable="true" style="font-family: 'Helvetica', sans-serif; font-size: 14px; color: #fff; line-height: 1.6; margin-top: 30px;">
             In this visual exploration, we deconstruct the elements of digital design, examining how typography, imagery, and code intertwine to create a new visual language for the digital age.
           </div>
-          <div class="graphic-element editable deletable" data-background-id="editorial-graphic" data-object-id="editorial-graphic" data-deletable="true" style="position: absolute; top: 60px; right: 20px; width: 80px; height: 80px; border: 3px solid #ff3300; transform: rotate(45deg);"></div>
         </div>
       `
     },
@@ -1356,7 +1354,6 @@ export const magazineTemplates = [
           <div class="pull-quote editable deletable" contenteditable="true" data-text-id="interview-pullquote" data-object-id="interview-pullquote" data-deletable="true" style="font-family: 'Archivo Black', sans-serif; font-size: 24px; line-height: 1.2; padding: 20px 0; border-left: 5px solid #ff3300; margin: 20px 0; padding-left: 20px; transform: rotate(-2deg);">
             "The future of type is fluid, responsive, and alive."
           </div>
-          <div class="graphic-element editable deletable" data-background-id="interview-graphic" data-object-id="interview-graphic" data-deletable="true" style="position: absolute; top: 60px; right: 20px; width: 80px; height: 80px; border: 3px solid #ff3300; transform: rotate(45deg);"></div>
         </div>
       `
     },
@@ -1394,7 +1391,6 @@ export const magazineTemplates = [
             <div class="trend-name editable deletable" contenteditable="true" data-text-id="trend-3-name" data-object-id="trend-3-name" data-deletable="true">AI-Generated Fonts</div>
             <div class="trend-description editable deletable" contenteditable="true" data-text-id="trend-3-description" data-object-id="trend-3-description" data-deletable="true">Machine learning algorithms creating unique typefaces based on vast datasets of existing designs.</div>
           </div>
-          <div class="graphic-element editable deletable" data-background-id="trend-graphic" data-object-id="trend-graphic" data-deletable="true" style="position: absolute; bottom: 40px; left: 20px; width: 100px; height: 5px; background-color: #ff3300; transform: rotate(-45deg);"></div>
         </div>
       `
     }
