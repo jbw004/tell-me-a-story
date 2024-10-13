@@ -1,16 +1,29 @@
 import React, { useState } from 'react';
 import { useAuth } from '../AuthContext';
+import ConfirmationModal from './ConfirmationModal';
 
 function RightPanel({ selectedText, selectedBackground, onTextStyleChange, onBackgroundStyleChange }) {
   const { user, login, logout } = useAuth();
   const [shadowOffset, setShadowOffset] = useState(2);
   const [shadowColor, setShadowColor] = useState('#000000');
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const handleAuthAction = () => {
     if (user) {
-      logout();
+      setShowLogoutModal(true);
     } else {
       login();
+    }
+  };
+
+  const confirmLogout = async () => {
+    try {
+      await logout();
+      setShowLogoutModal(false);
+      window.location.href = 'https://tellmeastory.press';
+    } catch (error) {
+      console.error('Logout failed', error);
+      // Handle logout error (show an error message to the user)
     }
   };
 
@@ -153,6 +166,13 @@ function RightPanel({ selectedText, selectedBackground, onTextStyleChange, onBac
           </label>
         </>
       )}
+
+      <ConfirmationModal
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        onConfirm={confirmLogout}
+        message="Are you sure you want to log out? Any unsaved progress will be lost."
+      />
     </div>
   );
 }
