@@ -5,8 +5,10 @@ import { getStorage, ref as storageRef, getDownloadURL } from 'firebase/storage'
 import { Oval } from 'react-loader-spinner';
 import ExportedMagazineView from './ExportedMagazineView';
 import { useAuth } from '../AuthContext';
-import { deleteMagazine } from '../firebase';
+import { deleteMagazine, moveMagazineToDraft } from '../firebase';
 import { ChevronLeft, ChevronRight } from 'lucide-react';  // Assuming you're using lucide-react for icons
+import ConfirmationModal from './ConfirmationModal';
+
 
 const MagazineCarousel = () => {
   const [magazines, setMagazines] = useState([]);
@@ -17,8 +19,28 @@ const MagazineCarousel = () => {
   const navigate = useNavigate();
   const { userId, magazineId } = useParams();
   const { user } = useAuth();
+  const [showEditConfirmation, setShowEditConfirmation] = useState(false);
+  const [magazineToEdit, setMagazineToEdit] = useState(null);
 
   const isOwner = user && user.uid === userId;
+
+  const handleEdit = (magazine) => {
+    setMagazineToEdit(magazine);
+    setShowEditConfirmation(true);
+  };
+
+  const confirmEdit = async () => {
+    if (magazineToEdit) {
+      try {
+        await moveMagazineToDraft(userId, magazineToEdit.id);
+        navigate('/', { state: { fromEdit: true, editedMagazineId: magazineToEdit.id } });
+      } catch (error) {
+        console.error("Error moving magazine to draft:", error);
+        // Handle error (show error message to user)
+      }
+    }
+    setShowEditConfirmation(false);
+  };
 
 
   useEffect(() => {
@@ -171,6 +193,7 @@ const MagazineCarousel = () => {
           onViewFull={toggleFullMagazine}
           showFull={false}
           onDelete={isOwner ? () => handleDelete(magazines[currentIndex].id) : null}
+          onEdit={isOwner ? () => handleEdit(magazines[currentIndex]) : null}
           isOwner={isOwner} // Pass isOwner as a prop
         />
         {magazines.length > 1 && (
@@ -217,9 +240,16 @@ const MagazineCarousel = () => {
             onViewFull={toggleFullMagazine}
             showFull={true}
             onDelete={isOwner ? () => handleDelete(magazines[currentIndex].id) : null}
+            onEdit={isOwner ? () => handleEdit(magazines[currentIndex]) : null}
             isOwner={isOwner} // Pass isOwner as a prop
           />
-        </div>
+          <ConfirmationModal
+        isOpen={showEditConfirmation}
+        onClose={() => setShowEditConfirmation(false)}
+        onConfirm={confirmEdit}
+        message="Editing this magazine will move it to 'draft', overriding any existing draft that you may have saved and not yet published. Would you like to proceed?"
+      />
+    </div>
       )}
     </div>
   );

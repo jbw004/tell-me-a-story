@@ -10,7 +10,7 @@ import { auth } from '../firebase'; // Make sure this path is correct
 
 
 
-const ExportComponent = ({ templates, templateRefs }) => {
+const ExportComponent = ({ templates, templateRefs, isEditing, editedMagazineId }) => {
   const [exporting, setExporting] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -225,11 +225,24 @@ const ExportComponent = ({ templates, templateRefs }) => {
     const magazinesRef = dbRef(db, `users/${user.uid}/magazines`);
 
     try {
-      const magazineId = await saveMagazine(user.uid, {
-        title: "My Magazine",
-        createdAt: serverTimestamp(),
-        userId: user.uid
-      });
+      let magazineId;
+      if (isEditing) {
+        // If editing, use the existing magazine ID
+        magazineId = editedMagazineId;
+        // Update the existing magazine instead of creating a new one
+        await set(dbRef(db, `users/${user.uid}/magazines/${magazineId}`), {
+          title: "My Magazine",
+          updatedAt: serverTimestamp(),
+          userId: user.uid
+        });
+      } else {
+        // If creating a new magazine, generate a new ID
+        magazineId = await saveMagazine(user.uid, {
+          title: "My Magazine",
+          createdAt: serverTimestamp(),
+          userId: user.uid
+        });
+      }
     
       // Save each template separately
       for (let i = 0; i < processedTemplates.length; i++) {
@@ -240,12 +253,13 @@ const ExportComponent = ({ templates, templateRefs }) => {
         const contentRef = storageRef(storage, `users/${user.uid}/magazines/${magazineId}/templates/${i}/content`);
         await uploadString(contentRef, template.content, 'raw');
         const contentUrl = await getDownloadURL(contentRef);
-    
-        // Save template metadata and content URL to Realtime Database
+      
+        // Save template metadata, content URL, and HTML to Realtime Database
         await set(templateRef, {
           ...template,
-          content: null,
-          contentUrl: contentUrl
+          content: null,  // Keep this to avoid storing HTML in the main database
+          contentUrl: contentUrl,
+          htmlContent: template.content // Store the HTML content for future editing
         });
       }
     

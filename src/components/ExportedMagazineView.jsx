@@ -29,7 +29,7 @@ const Header = () => (
   </header>
 );
 
-const ExportedMagazineView = ({ templates, onViewFull, showFull, onDelete, isOwner }) => {
+const ExportedMagazineView = ({ templates, onViewFull, showFull, onDelete, onEdit, isOwner }) => {
   const [loadedTemplates, setLoadedTemplates] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -121,6 +121,28 @@ const ExportedMagazineView = ({ templates, onViewFull, showFull, onDelete, isOwn
       </button>
     )
   );
+
+  const EditButton = () => (
+    isOwner && onEdit && (  // Add a check for onEdit
+      <button 
+        onClick={onEdit}
+        style={{
+          position: 'absolute',
+          top: '20px',
+          right: showFull ? '140px' : '80px',
+          zIndex: 1000,
+          background: 'blue',
+          color: 'white',
+          border: 'none',
+          padding: '5px 10px',
+          borderRadius: '5px',
+          cursor: 'pointer',
+        }}
+      >
+        Edit
+      </button>
+    )
+  );
   
   const CoverCard = () => (
     <div 
@@ -156,6 +178,7 @@ const ExportedMagazineView = ({ templates, onViewFull, showFull, onDelete, isOwn
         Click to view full magazine
       </div>
       <DeleteButton />
+      <EditButton />
     </div>
   );
 

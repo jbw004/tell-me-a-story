@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import LeftPanel from './LeftPanel';
 import RightPanel from './RightPanel';
 import Editor from './Editor';
@@ -31,6 +31,9 @@ function EditorPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [showSaveNotification, setShowSaveNotification] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedMagazineId, setEditedMagazineId] = useState(null);
+  const location = useLocation();
 
 
 
@@ -48,10 +51,18 @@ function EditorPage() {
   useEffect(() => {
     if (user) {
       loadUserDraft();
+      
+      // Optional: Check if we've just moved a published magazine to draft
+      if (location.state?.fromEdit) {
+        // You could show a message here, or perform any one-time actions
+        console.log('Editing published magazine');
+        // Clear the location state to prevent this from running on subsequent renders
+        window.history.replaceState({}, document.title);
+      }
     } else {
       setIsLoading(false);
     }
-  }, [user]);
+  }, [user, location]);
 
   const loadUserDraft = async () => {
     setIsLoading(true);
