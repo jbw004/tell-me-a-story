@@ -49,50 +49,61 @@ function EditorPage() {
   }, [isMobile]);
 
   useEffect(() => {
-    if (user) {
-      loadUserDraft();
-      
-      // Optional: Check if we've just moved a published magazine to draft
-      if (location.state?.fromEdit) {
-        // You could show a message here, or perform any one-time actions
-        console.log('Editing published magazine');
-        // Clear the location state to prevent this from running on subsequent renders
-        window.history.replaceState({}, document.title);
-      }
-    } else {
-      setIsLoading(false);
-    }
-  }, [user, location]);
-
-  const loadUserDraft = async () => {
-    setIsLoading(true);
-    if (user) {
-      try {
-        const draftData = await loadDraft(user.uid);
-        if (draftData) {
-          setSelectedTemplates(draftData.templates || []);
-          setUploadedImages(draftData.uploadedImages || {});
-          setTextStyles(draftData.textStyles || {});
-          setBackgroundStyles(draftData.backgroundStyles || {});
-        } else {
-          // If no draft, initialize with empty data
+    const handleUserLogin = async () => {
+      setIsLoading(true);
+      if (user) {
+        try {
+          // First, try to load existing draft
+          const draftData = await loadDraft(user.uid);
+          if (draftData) {
+            // Existing draft found, load it
+            setSelectedTemplates(draftData.templates || []);
+            setUploadedImages(draftData.uploadedImages || {});
+            setTextStyles(draftData.textStyles || {});
+            setBackgroundStyles(draftData.backgroundStyles || {});
+          } else {
+            // No existing draft, check if there's unsaved work
+            if (selectedTemplates.length > 0) {
+              // Save current state as new draft
+              const currentState = {
+                templates: selectedTemplates,
+                uploadedImages,
+                textStyles,
+                backgroundStyles
+              };
+              await saveDraft(user.uid, currentState);
+              console.log('New draft saved for user');
+            } else {
+              // No existing draft and no unsaved work, initialize empty state
+              setSelectedTemplates([]);
+              setUploadedImages({});
+              setTextStyles({});
+              setBackgroundStyles({});
+            }
+          }
+        } catch (error) {
+          console.error("Error handling user login:", error);
+          // Initialize with empty data if there's an error
           setSelectedTemplates([]);
           setUploadedImages({});
           setTextStyles({});
           setBackgroundStyles({});
         }
-      } catch (error) {
-        console.error("Error loading draft:", error);
-        // Initialize with empty data if there's an error
+      } else {
+        // User is not logged in, reset to empty state
         setSelectedTemplates([]);
         setUploadedImages({});
         setTextStyles({});
         setBackgroundStyles({});
       }
-    }
-    setIsLoading(false);
-  };
+      setIsLoading(false);
+    };
+  
+    handleUserLogin();
+  }, [user]);
 
+  const [initialLoginHandled, setInitialLoginHandled] = useState(false);
+  
   const handleSaveDraft = async () => {
     if (user && !isSaving) {
       setIsSaving(true);
