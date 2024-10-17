@@ -2,6 +2,14 @@ import React, { useState } from 'react';
 import { useAuth } from '../AuthContext';
 import ConfirmationModal from './ConfirmationModal';
 
+const googleFonts = [
+  'Arial', 'Roboto', 'Open Sans', 'Lato', 'Montserrat', 'Oswald', 'Source Sans Pro', 
+  'Raleway', 'Merriweather', 'PT Sans', 'Nunito', 'Playfair Display', 'Poppins', 
+  'Roboto Condensed', 'Ubuntu', 'Noto Sans', 'Roboto Slab', 'Quicksand', 
+  'Titillium Web', 'Rubik', 'Work Sans', 'Fira Sans', 'Nunito Sans', 'Barlow', 
+  'Inconsolata', 'Libre Franklin', 'Crimson Text', 'Mulish', 'Karla', 'Inter'
+];
+
 function RightPanel({ selectedText, selectedBackground, onTextStyleChange, onBackgroundStyleChange }) {
   const { user, login, logout } = useAuth();
   const [shadowOffset, setShadowOffset] = useState(2);
@@ -59,11 +67,14 @@ function RightPanel({ selectedText, selectedBackground, onTextStyleChange, onBac
             <h3>Font</h3>
             <label>
               Family
-              <select onChange={(e) => onTextStyleChange({ fontFamily: e.target.value })}>
-                <option value="Arial">Arial</option>
-                <option value="Times New Roman">Times New Roman</option>
-                <option value="Courier">Courier</option>
-              </select>
+              <select 
+                  onChange={(e) => onTextStyleChange({ fontFamily: e.target.value })}
+                  value={selectedText.fontFamily || 'Arial'}
+                >
+                  {googleFonts.map(font => (
+                    <option key={font} value={font}>{font}</option>
+                  ))}
+            </select>
             </label>
             <label>
               Size
