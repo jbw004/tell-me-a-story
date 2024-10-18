@@ -155,7 +155,7 @@ const MagazineCarousel = () => {
   };
 
   if (magazines.length === 0) {
-    return <div>No magazines found.</div>;
+    return <div>Loading...</div>;
   }
 
   if (isLoading) {
