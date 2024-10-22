@@ -14,7 +14,8 @@ const MagazineCarousel = () => {
   const [magazines, setMagazines] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showFullMagazine, setShowFullMagazine] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);  // Start with loading true
+  const [hasAttemptedLoad, setHasAttemptedLoad] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const { userId, magazineId } = useParams();
@@ -48,6 +49,7 @@ const MagazineCarousel = () => {
       if (!userId) {
         setError("No userId provided in URL");
         setIsLoading(false);
+        setHasAttemptedLoad(true);
         return;
       }
     
@@ -109,6 +111,7 @@ const MagazineCarousel = () => {
         console.error("Error fetching magazines:", err);
       } finally {
         setIsLoading(false);
+        setHasAttemptedLoad(true);
       }
     };
 
@@ -154,13 +157,17 @@ const MagazineCarousel = () => {
     setShowFullMagazine(!showFullMagazine);
   };
 
-  if (magazines.length === 0) {
-    return <div>Loading...</div>;
-  }
-
+  // Loading state
   if (isLoading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '100vh',
+        flexDirection: 'column',
+        gap: '20px'
+      }}>
         <Oval
           height={80}
           width={80}
@@ -173,16 +180,41 @@ const MagazineCarousel = () => {
           strokeWidth={2}
           strokeWidthSecondary={2}
         />
+        <div style={{ 
+          color: '#666', 
+          fontSize: '16px',
+          textAlign: 'center'
+        }}>
+          Loading gallery contents...
+        </div>
       </div>
     );
   }
 
+  // Error state
   if (error) {
-    return <div style={{ textAlign: 'center', marginTop: '20px' }}>{error}</div>;
+    return (
+      <div style={{ 
+        textAlign: 'center', 
+        marginTop: '20px',
+        color: '#666'
+      }}>
+        {error}
+      </div>
+    );
   }
 
-  if (magazines.length === 0) {
-    return <div style={{ textAlign: 'center', marginTop: '20px' }}>No magazines found.</div>;
+  // No magazines state (only show after loading is complete)
+  if (hasAttemptedLoad && magazines.length === 0) {
+    return (
+      <div style={{ 
+        textAlign: 'center', 
+        marginTop: '20px',
+        color: '#666'
+      }}>
+        No magazines found.
+      </div>
+    );
   }
 
   return (
