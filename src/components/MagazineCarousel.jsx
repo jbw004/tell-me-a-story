@@ -204,15 +204,42 @@ const MagazineCarousel = () => {
     );
   }
 
-  // No magazines state (only show after loading is complete)
+  // Empty state with contextual messaging
   if (hasAttemptedLoad && magazines.length === 0) {
     return (
       <div style={{ 
-        textAlign: 'center', 
-        marginTop: '20px',
-        color: '#666'
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '50vh',
+        padding: '20px',
+        textAlign: 'center'
       }}>
-        No magazines found.
+        {isOwner ? (
+          <>
+            <div style={{ 
+              fontSize: '18px',
+              color: '#333',
+              marginBottom: '12px'
+            }}>
+              You haven't published any magazines yet!
+            </div>
+            <div style={{ 
+              fontSize: '16px',
+              color: '#666'
+            }}>
+              Create and publish your first magazine to see it here.
+            </div>
+          </>
+        ) : (
+          <div style={{ 
+            fontSize: '16px',
+            color: '#666'
+          }}>
+            This gallery is empty.
+          </div>
+        )}
       </div>
     );
   }
