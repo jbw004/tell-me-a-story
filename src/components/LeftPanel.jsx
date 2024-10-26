@@ -2,6 +2,8 @@ import React from 'react';
 import Layout from './Layout';
 import ExportComponent from './ExportComponent';  // Import the existing ExportComponent
 import SaveNotification from './SaveNotification';  // Import the SaveNotification component
+import TemplatePreviewTooltip from './TemplatePreviewTooltip';
+
 
 
 function LeftPanel({ magazines, onMagazineSelect, selectedMagazine, onTemplateSelect, selectedTemplates, templates, templateRefs, onExportStart, onExportEnd, onSaveDraft, onDiscardDraft, user, showSaveNotification, isSaving }) {
@@ -30,9 +32,15 @@ function LeftPanel({ magazines, onMagazineSelect, selectedMagazine, onTemplateSe
         <div>
           <h2>Templates</h2>
           {selectedMagazine.templates.map(template => (
-            <button key={template.id} onClick={() => handleNewTemplateSelect(template)}>
-              {template.name}
-            </button>
+            <TemplatePreviewTooltip 
+              key={template.id}
+              templateName={template.name}
+              magazineStyle={selectedMagazine.name}
+            >
+              <button onClick={() => handleNewTemplateSelect(template)}>
+                {template.name}
+              </button>
+            </TemplatePreviewTooltip>
           ))}
         </div>
       )}
