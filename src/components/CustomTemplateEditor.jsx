@@ -12,12 +12,10 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   import.meta.url,
 ).toString();
 
-// New components for the panels
 const LeftPanel = () => {
   return (
     <div className="LeftPanel">
       <h2>Tools</h2>
-      {/* We'll add specific controls for custom templates here */}
       <div className="tool-section">
         <h3>Interactive Elements</h3>
         <button className="tool-button">Add Instagram Link</button>
@@ -32,7 +30,6 @@ const RightPanel = () => {
   return (
     <div className="floating-panel right-panel">
       <h2>Properties</h2>
-      {/* We'll add properties for selected interactive elements here */}
       <div className="property-group">
         <label>URL</label>
         <input type="text" placeholder="Enter link URL..." />
@@ -111,86 +108,100 @@ const CustomTemplateEditor = () => {
     setPdfError('Failed to load PDF document. Please try uploading again.');
   };
 
-  // Use inline styles for critical layout properties to ensure they're applied
-  const containerStyle = {
-    minHeight: '100vh',
-    width: '100%',
-    display: 'flex',
-    position: 'relative',
-    paddingTop: '29px' // Match EditorPage padding
-  };
-
-  const mainContentStyle = {
-    flex: 1,
-    marginLeft: '290px',  // Match LeftPanel width + padding
-    marginRight: '290px', // Match RightPanel width + padding
-    overflow: 'auto',
-    padding: '20px',
-    display: 'flex',  // Add this
-    justifyContent: 'center'  // Add this
-  };
-
   return (
-    <div style={containerStyle}>
+    <div className="App">
       <LeftPanel />
       
-      <div style={mainContentStyle}>
-        {isLoading && <div className="text-center py-4">Uploading PDF...</div>}
-        {!pdfFile ? (
-          <div 
-            {...getRootProps()} 
-            className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-blue-500"
-          >
-            <input {...getInputProps()} />
-            {isDragActive ? (
-              <p>Drop the PDF file here...</p>
-            ) : (
-              <p>Drag and drop a PDF file here, or click to select one</p>
-            )}
-            {error && (
-              <p className="text-red-500 mt-2">{error}</p>
-            )}
-          </div>
-        ) : (
-          <div className="flex flex-col items-center w-full max-w-[700px]">
-            <Document
-              file={pdfFile}
-              onLoadSuccess={onDocumentLoadSuccess}
-              onLoadError={onDocumentLoadError}
-              loading={<div className="text-center py-4">Loading PDF...</div>}
+      <div className="main-content">
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'flex-start',
+          minHeight: '100%',
+          width: '100%',
+          padding: '20px 0'
+        }}>
+          {isLoading ? (
+            <div className="text-center py-4">Uploading PDF...</div>
+          ) : !pdfFile ? (
+            <div 
+              {...getRootProps()} 
+              style={{
+                width: '700px',
+                border: '2px dashed #cccccc',
+                borderRadius: '8px',
+                padding: '2rem',
+                textAlign: 'center',
+                cursor: 'pointer',
+                backgroundColor: 'white'
+              }}
+              onMouseOver={(e) => e.currentTarget.style.borderColor = '#6200ee'}
+              onMouseOut={(e) => e.currentTarget.style.borderColor = '#cccccc'}
             >
-              {pdfError ? (
-                <div className="text-red-500 text-center py-4">{pdfError}</div>
+              <input {...getInputProps()} />
+              {isDragActive ? (
+                <p>Drop the PDF file here...</p>
               ) : (
-                Array.from(new Array(numPages), (el, index) => (
-                  <div 
-                    key={`page_${index + 1}`} 
-                    style={{ 
-                      marginBottom: '2rem',
-                      display: 'flex',
-                      flexDirection: 'column', // Change to column to stack page and number
-                      alignItems: 'center'     // Center both page and number
-                    }}
-                  >
-                    <Page
-                      pageNumber={index + 1}
-                      renderTextLayer={false}
-                      renderAnnotationLayer={false}
-                      width={700}
-                    />
-                    <div style={{ 
-                      marginTop: '0.5rem',
-                      fontSize: '0.875rem',
-                      color: '#6b7280'
-                    }}>
-                      Page {index + 1} of {numPages}
-                    </div>
-                  </div>
-                ))
+                <p>Drag and drop a PDF file here, or click to select one</p>
               )}
-            </Document>
-          </div>
-        )}
+              {error && (
+                <p style={{ color: '#ff0000', marginTop: '0.5rem' }}>{error}</p>
+              )}
+            </div>
+          ) : (
+            <div style={{
+              width: '700px',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center'
+            }}>
+              <Document
+                file={pdfFile}
+                onLoadSuccess={onDocumentLoadSuccess}
+                onLoadError={onDocumentLoadError}
+                loading={<div className="text-center py-4">Loading PDF...</div>}
+              >
+                {pdfError ? (
+                  <div style={{ color: '#ff0000', textAlign: 'center', padding: '1rem 0' }}>
+                    {pdfError}
+                  </div>
+                ) : (
+                  Array.from(new Array(numPages), (el, index) => (
+                    <div 
+                      key={`page_${index + 1}`} 
+                      style={{
+                        marginBottom: '2rem',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center'
+                      }}
+                    >
+                      <div style={{
+                        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+                        borderRadius: '8px',
+                        overflow: 'hidden'
+                      }}>
+                        <Page
+                          pageNumber={index + 1}
+                          renderTextLayer={false}
+                          renderAnnotationLayer={false}
+                          width={700}
+                        />
+                      </div>
+                      <div style={{
+                        marginTop: '0.5rem',
+                        fontSize: '0.875rem',
+                        color: '#6b7280'
+                      }}>
+                        Page {index + 1} of {numPages}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </Document>
+            </div>
+          )}
+        </div>
       </div>
 
       <RightPanel />
