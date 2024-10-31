@@ -12,6 +12,35 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   import.meta.url,
 ).toString();
 
+// New components for the panels
+const LeftPanel = () => {
+  return (
+    <div className="LeftPanel">
+      <h2>Tools</h2>
+      {/* We'll add specific controls for custom templates here */}
+      <div className="tool-section">
+        <h3>Interactive Elements</h3>
+        <button className="tool-button">Add Instagram Link</button>
+        <button className="tool-button">Add Spotify Link</button>
+        <button className="tool-button">Add Donation Link</button>
+      </div>
+    </div>
+  );
+};
+
+const RightPanel = () => {
+  return (
+    <div className="floating-panel right-panel">
+      <h2>Properties</h2>
+      {/* We'll add properties for selected interactive elements here */}
+      <div className="property-group">
+        <label>URL</label>
+        <input type="text" placeholder="Enter link URL..." />
+      </div>
+    </div>
+  );
+};
+
 const CustomTemplateEditor = () => {
   const [pdfFile, setPdfFile] = useState(null);
   const [numPages, setNumPages] = useState(null);
@@ -84,31 +113,28 @@ const CustomTemplateEditor = () => {
 
   // Use inline styles for critical layout properties to ensure they're applied
   const containerStyle = {
-    height: '100vh',
+    minHeight: '100vh',
     width: '100%',
     display: 'flex',
-    flexDirection: 'column',
-    overflow: 'hidden'
+    position: 'relative',
+    paddingTop: '29px' // Match EditorPage padding
   };
 
-  const scrollContainerStyle = {
+  const mainContentStyle = {
     flex: 1,
+    marginLeft: '290px',  // Match LeftPanel width + padding
+    marginRight: '290px', // Match RightPanel width + padding
     overflow: 'auto',
-    padding: '1rem'
-  };
-
-  const pageContainerStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
-    maxWidth: '800px',
-    margin: '0 auto'
+    padding: '20px',
+    display: 'flex',  // Add this
+    justifyContent: 'center'  // Add this
   };
 
   return (
     <div style={containerStyle}>
-      <div style={scrollContainerStyle}>
+      <LeftPanel />
+      
+      <div style={mainContentStyle}>
         {isLoading && <div className="text-center py-4">Uploading PDF...</div>}
         {!pdfFile ? (
           <div 
@@ -126,7 +152,7 @@ const CustomTemplateEditor = () => {
             )}
           </div>
         ) : (
-          <div style={pageContainerStyle}>
+          <div className="flex flex-col items-center w-full max-w-[700px]">
             <Document
               file={pdfFile}
               onLoadSuccess={onDocumentLoadSuccess}
@@ -139,7 +165,12 @@ const CustomTemplateEditor = () => {
                 Array.from(new Array(numPages), (el, index) => (
                   <div 
                     key={`page_${index + 1}`} 
-                    style={{ marginBottom: '2rem' }}
+                    style={{ 
+                      marginBottom: '2rem',
+                      display: 'flex',
+                      flexDirection: 'column', // Change to column to stack page and number
+                      alignItems: 'center'     // Center both page and number
+                    }}
                   >
                     <Page
                       pageNumber={index + 1}
@@ -147,7 +178,11 @@ const CustomTemplateEditor = () => {
                       renderAnnotationLayer={false}
                       width={700}
                     />
-                    <div className="text-center text-sm text-gray-500 mt-2">
+                    <div style={{ 
+                      marginTop: '0.5rem',
+                      fontSize: '0.875rem',
+                      color: '#6b7280'
+                    }}>
                       Page {index + 1} of {numPages}
                     </div>
                   </div>
@@ -157,6 +192,8 @@ const CustomTemplateEditor = () => {
           </div>
         )}
       </div>
+
+      <RightPanel />
     </div>
   );
 };
