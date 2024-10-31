@@ -4,6 +4,7 @@ import { AuthProvider } from './AuthContext';
 import Header from './components/Header';
 import EditorPage from './components/EditorPage';
 import MagazineCarousel from './components/MagazineCarousel';
+import CustomTemplateEditor from './components/CustomTemplateEditor'; // Add this import
 import './App.css';
 
 // This component will contain the routes and conditionally render the Header
@@ -19,6 +20,7 @@ const AppRoutes = () => {
         <Route path="/gallery" element={<MagazineCarousel />} />
         <Route path="/gallery/:userId" element={<MagazineCarousel />} />
         <Route path="/gallery/:userId/:magazineId" element={<MagazineCarousel />} />
+        <Route path="/custom-template" element={<CustomTemplateEditor />} />
       </Routes>
     </div>
   );

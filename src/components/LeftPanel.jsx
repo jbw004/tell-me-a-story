@@ -3,10 +3,14 @@ import Layout from './Layout';
 import ExportComponent from './ExportComponent';  // Import the existing ExportComponent
 import SaveNotification from './SaveNotification';  // Import the SaveNotification component
 import TemplatePreviewTooltip from './TemplatePreviewTooltip';
+import { useNavigate } from 'react-router-dom'; // Add this import
+
 
 
 
 function LeftPanel({ magazines, onMagazineSelect, selectedMagazine, onTemplateSelect, selectedTemplates, templates, templateRefs, onExportStart, onExportEnd, onSaveDraft, onDiscardDraft, user, showSaveNotification, isSaving }) {
+  const navigate = useNavigate(); // Add this
+  
   const handleNewTemplateSelect = (template) => {
     onTemplateSelect(template, false);
   };
@@ -17,6 +21,16 @@ function LeftPanel({ magazines, onMagazineSelect, selectedMagazine, onTemplateSe
 
   return (
     <div className="LeftPanel">
+      {user && (
+        <div className="custom-template-section">
+          <button 
+            onClick={() => navigate('/custom-template')}
+            className="custom-template-button"
+          >
+            Create Custom Template
+          </button>
+        </div>
+      )}
       <h2>Styles</h2>
       {magazines.map(magazine => (
         <button

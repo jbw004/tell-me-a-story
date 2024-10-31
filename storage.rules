@@ -1,10 +1,21 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
+    // Existing rules for magazines
     match /users/{userId}/magazines/{magazineId}/{allPaths=**} {
       allow read: if true;
       allow write: if request.auth != null && request.auth.uid == userId;
     }
+    
+    // New rules for custom templates
+    match /users/{userId}/custom-templates/{templateId}/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null 
+              && request.auth.uid == userId
+              && request.resource.size <= 15 * 1024 * 1024;
+    }
+    
+    // Catch-all rule for other paths
     match /{allPaths=**} {
       allow read: if true;
       allow write: if false;
