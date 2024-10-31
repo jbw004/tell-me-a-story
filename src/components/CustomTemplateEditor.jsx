@@ -1,4 +1,3 @@
-// At the top of CustomTemplateEditor.jsx, update the imports and worker configuration
 import React, { useState, useCallback } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
@@ -8,7 +7,6 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../firebase';
 import { useAuth } from '../AuthContext';
 
-// Important: Set worker here
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.js',
   import.meta.url,
@@ -17,7 +15,6 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 const CustomTemplateEditor = () => {
   const [pdfFile, setPdfFile] = useState(null);
   const [numPages, setNumPages] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [pdfError, setPdfError] = useState(null);
@@ -32,13 +29,11 @@ const CustomTemplateEditor = () => {
     const file = acceptedFiles[0];
     setPdfError(null);
     
-    // Validate file type
     if (file.type !== 'application/pdf') {
       setError('Please upload a PDF file');
       return;
     }
 
-    // Validate file size (15MB limit)
     if (file.size > 15 * 1024 * 1024) {
       setError('File size must be less than 15MB');
       return;
@@ -48,7 +43,6 @@ const CustomTemplateEditor = () => {
     setError(null);
 
     try {
-      // Create a temporary URL for preview
       const fileUrl = URL.createObjectURL(file);
       setPdfFile(fileUrl);
       
@@ -88,74 +82,81 @@ const CustomTemplateEditor = () => {
     setPdfError('Failed to load PDF document. Please try uploading again.');
   };
 
-  const changePage = (offset) => {
-    setCurrentPage(prevPage => {
-      const newPage = prevPage + offset;
-      return Math.min(Math.max(1, newPage), numPages);
-    });
+  // Use inline styles for critical layout properties to ensure they're applied
+  const containerStyle = {
+    height: '100vh',
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden'
+  };
+
+  const scrollContainerStyle = {
+    flex: 1,
+    overflow: 'auto',
+    padding: '1rem'
+  };
+
+  const pageContainerStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    width: '100%',
+    maxWidth: '800px',
+    margin: '0 auto'
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-4">
-      {isLoading && <div className="text-center py-4">Uploading PDF...</div>}
-      {!pdfFile ? (
-        <div 
-          {...getRootProps()} 
-          className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-blue-500"
-        >
-          <input {...getInputProps()} />
-          {isDragActive ? (
-            <p>Drop the PDF file here...</p>
-          ) : (
-            <p>Drag and drop a PDF file here, or click to select one</p>
-          )}
-          {error && (
-            <p className="text-red-500 mt-2">{error}</p>
-          )}
-        </div>
-      ) : (
-        <div>
-          <Document
-            file={pdfFile}
-            onLoadSuccess={onDocumentLoadSuccess}
-            onLoadError={onDocumentLoadError}
-            loading={<div>Loading PDF...</div>}
+    <div style={containerStyle}>
+      <div style={scrollContainerStyle}>
+        {isLoading && <div className="text-center py-4">Uploading PDF...</div>}
+        {!pdfFile ? (
+          <div 
+            {...getRootProps()} 
+            className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-blue-500"
           >
-            {pdfError ? (
-              <div className="text-red-500 text-center py-4">{pdfError}</div>
+            <input {...getInputProps()} />
+            {isDragActive ? (
+              <p>Drop the PDF file here...</p>
             ) : (
-              <Page 
-                pageNumber={currentPage} 
-                renderTextLayer={false}
-                renderAnnotationLayer={false}
-                className="mx-auto"
-              />
+              <p>Drag and drop a PDF file here, or click to select one</p>
             )}
-          </Document>
-          
-          {numPages > 1 && !pdfError && (
-            <div className="flex justify-center gap-4 mt-4">
-              <button 
-                onClick={() => changePage(-1)}
-                disabled={currentPage <= 1}
-                className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
-              >
-                Previous
-              </button>
-              <span className="py-2">
-                Page {currentPage} of {numPages}
-              </span>
-              <button 
-                onClick={() => changePage(1)}
-                disabled={currentPage >= numPages}
-                className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
-              >
-                Next
-              </button>
-            </div>
-          )}
-        </div>
-      )}
+            {error && (
+              <p className="text-red-500 mt-2">{error}</p>
+            )}
+          </div>
+        ) : (
+          <div style={pageContainerStyle}>
+            <Document
+              file={pdfFile}
+              onLoadSuccess={onDocumentLoadSuccess}
+              onLoadError={onDocumentLoadError}
+              loading={<div className="text-center py-4">Loading PDF...</div>}
+            >
+              {pdfError ? (
+                <div className="text-red-500 text-center py-4">{pdfError}</div>
+              ) : (
+                Array.from(new Array(numPages), (el, index) => (
+                  <div 
+                    key={`page_${index + 1}`} 
+                    style={{ marginBottom: '2rem' }}
+                  >
+                    <Page
+                      pageNumber={index + 1}
+                      renderTextLayer={false}
+                      renderAnnotationLayer={false}
+                      width={700}
+                    />
+                    <div className="text-center text-sm text-gray-500 mt-2">
+                      Page {index + 1} of {numPages}
+                    </div>
+                  </div>
+                ))
+              )}
+            </Document>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
