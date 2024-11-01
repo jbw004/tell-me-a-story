@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../AuthContext';
-import ConfirmationModal from './ConfirmationModal';
+import { useNavigate } from 'react-router-dom';
 
 const googleFonts = [
   'Arial', 'Roboto', 'Open Sans', 'Lato', 'Montserrat', 'Oswald', 'Source Sans Pro', 
@@ -11,29 +11,10 @@ const googleFonts = [
 ];
 
 function RightPanel({ selectedText, selectedBackground, onTextStyleChange, onBackgroundStyleChange }) {
-  const { user, login, logout } = useAuth();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [shadowOffset, setShadowOffset] = useState(2);
   const [shadowColor, setShadowColor] = useState('#000000');
-  const [showLogoutModal, setShowLogoutModal] = useState(false);
-
-  const handleAuthAction = () => {
-    if (user) {
-      setShowLogoutModal(true);
-    } else {
-      login();
-    }
-  };
-
-  const confirmLogout = async () => {
-    try {
-      await logout();
-      setShowLogoutModal(false);
-      window.location.href = 'https://tellmeastory.press';
-    } catch (error) {
-      console.error('Logout failed', error);
-      // Handle logout error (show an error message to the user)
-    }
-  };
 
   const handleViewGallery = () => {
     if (user) {
@@ -49,32 +30,21 @@ function RightPanel({ selectedText, selectedBackground, onTextStyleChange, onBac
 
   return (
     <div className="floating-panel right-panel">
-      <div className="auth-buttons">
-      {user && (
-          <button onClick={handleViewGallery} className="view-gallery-button">
-            View Gallery
-          </button>
-        )}
-        <button onClick={handleAuthAction} className="auth-button">
-          {user ? 'Logout' : 'Login'}
-        </button>
-      </div>
-      
       {selectedText && (
         <>
-          <h2>Text Properties</h2>
+          <h2 className="panel-header">Text Properties</h2>
           <div className="property-group">
-            <h3>Font</h3>
+            <h3 className="section-header">Font</h3>
             <label>
               Family
               <select 
-                  onChange={(e) => onTextStyleChange({ fontFamily: e.target.value })}
-                  value={selectedText.fontFamily || 'Arial'}
-                >
-                  {googleFonts.map(font => (
-                    <option key={font} value={font}>{font}</option>
-                  ))}
-            </select>
+                onChange={(e) => onTextStyleChange({ fontFamily: e.target.value })}
+                value={selectedText.fontFamily || 'Arial'}
+              >
+                {googleFonts.map(font => (
+                  <option key={font} value={font}>{font}</option>
+                ))}
+              </select>
             </label>
             <label>
               Size
@@ -93,8 +63,9 @@ function RightPanel({ selectedText, selectedBackground, onTextStyleChange, onBac
               />
             </label>
           </div>
+
           <div className="property-group">
-            <h3>Stroke</h3>
+            <h3 className="section-header">Stroke</h3>
             <label>
               Color
               <input 
@@ -112,8 +83,9 @@ function RightPanel({ selectedText, selectedBackground, onTextStyleChange, onBac
               />
             </label>
           </div>
+
           <div className="property-group">
-            <h3>Drop Shadow</h3>
+            <h3 className="section-header">Drop Shadow</h3>
             <label>
               Offset
               <input 
@@ -139,8 +111,9 @@ function RightPanel({ selectedText, selectedBackground, onTextStyleChange, onBac
               />
             </label>
           </div>
+
           <div className="property-group">
-            <h3>Background</h3>
+            <h3 className="section-header">Background</h3>
             <label>
               Color
               <input 
@@ -155,35 +128,42 @@ function RightPanel({ selectedText, selectedBackground, onTextStyleChange, onBac
       
       {selectedBackground && (
         <>
-          <h2>Background Properties</h2>
-          <label>
-            Color
-            <input 
-              type="color" 
-              defaultValue="#ffffff" 
-              onChange={(e) => onBackgroundStyleChange({ backgroundColor: e.target.value })}
-            />
-          </label>
-          <label>
-            Opacity
-            <input 
-              type="range" 
-              min="0" 
-              max="1" 
-              step="0.1" 
-              defaultValue="1"
-              onChange={(e) => onBackgroundStyleChange({ opacity: e.target.value })}
-            />
-          </label>
+          <h2 className="panel-header">Background Properties</h2>
+          <div className="property-group">
+            <label>
+              Color
+              <input 
+                type="color" 
+                defaultValue="#ffffff" 
+                onChange={(e) => onBackgroundStyleChange({ backgroundColor: e.target.value })}
+              />
+            </label>
+            <label>
+              Opacity
+              <input 
+                type="range" 
+                min="0" 
+                max="1" 
+                step="0.1" 
+                defaultValue="1"
+                onChange={(e) => onBackgroundStyleChange({ opacity: e.target.value })}
+              />
+            </label>
+          </div>
         </>
       )}
 
-      <ConfirmationModal
-        isOpen={showLogoutModal}
-        onClose={() => setShowLogoutModal(false)}
-        onConfirm={confirmLogout}
-        message="Are you sure you want to log out? Any unsaved progress will be lost."
-      />
+      {/* Gallery button at bottom */}
+      {user && (
+        <div className="action-buttons">
+          <button 
+            onClick={handleViewGallery} 
+            className="action-button view-gallery-button"
+          >
+            View Gallery
+          </button>
+        </div>
+      )}
     </div>
   );
 }

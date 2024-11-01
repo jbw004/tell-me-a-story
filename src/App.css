@@ -28,6 +28,51 @@
     display: flex;
     flex-direction: column;
   }
+
+    /* New section styling */
+  .panel-section {
+    padding: 16px;
+    border-bottom: 1px solid #f1f1f1;
+  }
+
+  .panel-section:last-child {
+    border-bottom: none;
+  }
+
+  /* Custom Template Button */
+.custom-template-button {
+  background-color: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  color: #6d28d9;
+  padding: 12px 16px;
+  width: 100%;
+  text-align: center;
+  border-radius: 8px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.custom-template-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.custom-template-button:hover {
+  background-color: #f5f3ff;
+}
+
+
+  .custom-template-button:before {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
   
   .right-panel {
     right: 20px;
@@ -36,6 +81,7 @@
     width: 250px;
     display: flex;
     flex-direction: column;
+    padding: 0; /* Remove default padding */
   }
   
   .main-canvas {
@@ -95,12 +141,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-  
-  h2 {
-    font-size: 16px;
-    margin-top: 20px;
-    margin-bottom: 10px;
   }
   
   label {
@@ -314,27 +354,34 @@
   margin-top: 20px;
 }
 
-.template-list {
-  list-style-type: none;
-  padding: 0;
+.templates-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
 }
 
 .template-item {
   margin-bottom: 10px;
 }
 
-.template-item button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  text-align: left;
+.template-item-button {
   width: 100%;
-  padding: 5px;
-  transition: background-color 0.3s;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  text-align: left;
+  margin: 4px 0;
+  display: block;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s ease;
+  color: #374151;
 }
 
-.template-item button:hover {
-  background-color: #f0f0f0;
+.template-item-button:hover {
+  background-color: #f5f5f5;
 }
 
 [data-deletable="true"].selected {
@@ -546,22 +593,76 @@
 }
 
 .view-gallery-button {
-  background-color: #007bff;
+  width: 100%;
+  padding: 10px 16px;
+  background-color: #4f46e5;
   color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
-.auth-button:hover, .view-gallery-button:hover {
+
+.auth-button:hover {
   opacity: 0.8;
 }
 
-.property-group {
-  margin-bottom: 15px;
+.view-gallery-button:hover {
+  background-color: #4338ca;
 }
 
-.property-group h3 {
+/* Property Groups */
+.property-group {
+  padding: 16px;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+/* Property Labels */
+.property-group label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
   font-size: 14px;
-  margin-bottom: 5px;
-  color: #333;
+  color: #374151;
+}
+
+/* Input Styling */
+.property-group input,
+.property-group select {
+  width: 150px;
+  padding: 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: white;
+}
+
+/* Color Input Specific Styling */
+.property-group input[type="color"] {
+  padding: 2px;
+  height: 36px;
+  cursor: pointer;
+}
+
+/* Range Input (Opacity) Styling */
+.property-group input[type="range"] {
+  height: 4px;
+  background: #e5e7eb;
+  border-radius: 2px;
+}
+
+.property-group input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: #4f46e5;
+  cursor: pointer;
+  margin-top: -6px;
 }
 
 .right-panel label {
@@ -607,33 +708,6 @@
   align-items: center;
 }
 
-/* In App.css */
-
-.save-draft-button,
-.discard-draft-button {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.save-draft-button:hover,
-.discard-draft-button:hover {
-  background-color: #e0e0e0;
-}
-
-.discard-draft-button {
-  background-color: #ffeeee;
-}
-
-.discard-draft-button:hover {
-  background-color: #ffdddd;
-}
-
 .save-notification {
   background-color: #4CAF50;
   color: white;
@@ -666,7 +740,298 @@
   cursor: not-allowed;
 }
 
+/* Style selection buttons */
+.style-button {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  text-align: left;
+  margin: 4px 0;
+  transition: all 0.2s ease;
+}
+
+.style-button:hover {
+  background-color: #f5f5f5;
+}
+
+.style-button.selected {
+  background-color: #4f46e5;
+  color: white;
+}
+
+/* Template list styling */
+.template-list {
+  margin: 0;
+  padding: 0;
+}
+
+.template-item button {
+  width: 100%;
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  transition: all 0.2s ease;
+}
+
+.template-item button:hover {
+  background-color: #f5f5f5;
+}
+
+/* Action buttons at bottom */
+.action-buttons {
+  padding: 16px;
+  position: sticky;
+  bottom: 0;
+  background-color: white;
+  border-top: 1px solid #f1f1f1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px; /* Increase space between buttons */
+}
+
+.action-button {
+  width: 100%;
+  padding: 10px 16px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.publish-button {
+  margin-bottom: 12px; /* Add extra space after publish button */
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f1f1f1; /* Add a subtle divider */
+}
+
+.publish-button:hover {
+  background-color: #4338ca;
+}
+
+.save-draft-button {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  color: #374151;
+}
+
+.save-draft-button:hover {
+  background-color: #f3f4f6;
+}
+
 .save-draft-button.saving {
-  background-color: #cccccc;
-  color: #666666;
+  background-color: #e5e7eb;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+.discard-draft-button {
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+}
+
+.discard-draft-button:hover {
+  background-color: #fee2e2;
+}
+
+/* Style headers to match the design */
+h2 {
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+
+/* Style Dropdown */
+.style-dropdown-container {
+  position: relative;
+}
+
+.style-dropdown-button {
+  width: 100%;
+  padding: 8px 12px;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent; /* Add this */
+
+}
+
+.style-dropdown-button.has-selection {
+  border-left-color: #4f46e5; /* Purple indicator when a style is selected */
+  padding-left: 9px; /* Compensate for the border to maintain alignment */
+}
+
+.style-dropdown-button:hover {
+  border-color: #d1d5db;
+}
+
+.dropdown-icon {
+  transition: transform 0.2s ease;
+}
+
+.dropdown-icon.rotate {
+  transform: rotate(180deg);
+}
+
+.style-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.style-dropdown-item {
+  width: 100%;
+  padding: 8px 12px;
+  text-align: left;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin: 0;
+  border-radius: 0;
+}
+
+.style-dropdown-item:hover {
+  background-color: #f3f4f6;
+}
+
+.style-dropdown-item.selected {
+  background-color: #4f46e5;
+  color: white;
+}
+
+/* Ensure the dropdown menu scrolls if needed */
+.style-dropdown-menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.style-dropdown-menu::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.style-dropdown-menu::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.style-dropdown-menu::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.app-header {
+  width: 100%;
+  height: 29px;
+  background-color: rgba(250, 249, 246, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  padding: 0 16px;
+}
+
+.header-left {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.logo-link {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.logo-image {
+  height: 100%;
+  width: auto;
+}
+
+.header-right {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.header-button {
+  height: 24px;
+  padding: 0 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  display: flex;
+  align-items: center;
+}
+
+.dashboard-button {
+  background-color: #4f46e5;
+  color: white;
+}
+
+.dashboard-button:hover {
+  background-color: #4338ca;
+}
+
+.logout-button {
+  background-color: #22c55e;
+  color: white;
+}
+
+.logout-button:hover {
+  background-color: #16a34a;
+}
+
+.login-button {
+  background-color: #4f46e5;
+  color: white;
+}
+
+.login-button:hover {
+  background-color: #4338ca;
+}
+
+.panel-header {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 500;
+  padding: 16px;
+  margin: 0;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.section-header {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 500;
+  margin: 0 0 12px 0;
+}
+
+/* Focus States */
+.property-group input:focus,
+.property-group select:focus {
+  outline: none;
+  border-color: #4f46e5;
 }

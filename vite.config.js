@@ -7,6 +7,11 @@ import path from 'path'
 export default defineConfig(({ command, mode }) => {
   const config = {
     plugins: [react()],
+    resolve: {
+      alias: {
+        "@": path.resolve(__dirname, "./src"),
+      },
+    },
     server: {
       headers: {
         'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
