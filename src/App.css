@@ -1035,3 +1035,85 @@ h2 {
   outline: none;
   border-color: #4f46e5;
 }
+
+/* Draggable Elements Styling */
+.draggable-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  cursor: move;
+  transition: all 0.2s ease;
+}
+
+.draggable-item:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.element-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.position-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.empty-state-message {
+  color: #6b7280;
+  font-size: 14px;
+  text-align: center;
+  padding: 16px;
+}
+
+.section-header:first-child {
+  margin-top: 0;
+}
+
+.pdf-dropzone {
+  width: 700px;
+  border: 2px dashed #cccccc;
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  background-color: white;
+}
+
+.pdf-viewer {
+  width: 700px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pdf-page-container {
+  position: relative;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.interactive-element {
+  padding: 4px;
+  border: 2px solid transparent;
+  border-radius: 4px;
+}
+
+.interactive-element.selected {
+  border-color: #4f46e5;
+}
+
+.error-message {
+  color: #ff0000;
+  margin-top: 0.5rem;
+}

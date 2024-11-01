@@ -6,37 +6,14 @@ import { useDropzone } from 'react-dropzone';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../firebase';
 import { useAuth } from '../AuthContext';
+import CustomTemplateLeftPanel from './CustomTemplateLeftPanel';
+import CustomTemplateRightPanel from './CustomTemplateRightPanel';
+
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.js',
   import.meta.url,
 ).toString();
-
-const LeftPanel = () => {
-  return (
-    <div className="LeftPanel">
-      <h2>Tools</h2>
-      <div className="tool-section">
-        <h3>Interactive Elements</h3>
-        <button className="tool-button">Add Instagram Link</button>
-        <button className="tool-button">Add Spotify Link</button>
-        <button className="tool-button">Add Donation Link</button>
-      </div>
-    </div>
-  );
-};
-
-const RightPanel = () => {
-  return (
-    <div className="floating-panel right-panel">
-      <h2>Properties</h2>
-      <div className="property-group">
-        <label>URL</label>
-        <input type="text" placeholder="Enter link URL..." />
-      </div>
-    </div>
-  );
-};
 
 const CustomTemplateEditor = () => {
   const [pdfFile, setPdfFile] = useState(null);
@@ -45,6 +22,15 @@ const CustomTemplateEditor = () => {
   const [error, setError] = useState(null);
   const [pdfError, setPdfError] = useState(null);
   const { user } = useAuth();
+  const [selectedElement, setSelectedElement] = useState(null);
+  const [elements, setElements] = useState([]);
+
+  const handleUpdateElement = (updatedElement) => {
+    setElements(prev => prev.map(elem => 
+      elem.id === updatedElement.id ? updatedElement : elem
+    ));
+    setSelectedElement(updatedElement);
+  };
 
   const onDrop = useCallback(async (acceptedFiles) => {
     if (!user) {
@@ -98,6 +84,58 @@ const CustomTemplateEditor = () => {
     maxFiles: 1
   });
 
+  // Handle interactive element drops
+  const handleElementDrop = (e, pageNumber) => {
+    e.preventDefault();
+    const elementType = e.dataTransfer.getData('elementType');
+    if (!elementType) return;
+
+    // Get position relative to the PDF page
+    const pdfPage = e.currentTarget;
+    const rect = pdfPage.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const newElement = {
+      id: Date.now().toString(),
+      type: elementType,
+      pageNumber,
+      x,
+      y,
+      url: ''
+    };
+
+    setElements(prev => [...prev, newElement]);
+    setSelectedElement(newElement);
+  };
+
+  // Handle element selection
+  const handleElementClick = (element, e) => {
+    e.stopPropagation();
+    setSelectedElement(element);
+  };
+
+  // Handle element dragging
+  const handleElementDrag = (e, element) => {
+    const pdfPage = e.currentTarget.closest('.pdf-page-container');
+    if (!pdfPage) return;
+
+    const rect = pdfPage.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    handleUpdateElement({
+      ...element,
+      x,
+      y
+    });
+  };
+
+  // Clear selection when clicking on PDF
+  const handlePDFClick = () => {
+    setSelectedElement(null);
+  };
+
   const onDocumentLoadSuccess = ({ numPages }) => {
     setNumPages(numPages);
     setPdfError(null);
@@ -110,7 +148,7 @@ const CustomTemplateEditor = () => {
 
   return (
     <div className="App">
-      <LeftPanel />
+      <CustomTemplateLeftPanel />
       
       <div className="main-content">
         <div style={{
@@ -126,17 +164,7 @@ const CustomTemplateEditor = () => {
           ) : !pdfFile ? (
             <div 
               {...getRootProps()} 
-              style={{
-                width: '700px',
-                border: '2px dashed #cccccc',
-                borderRadius: '8px',
-                padding: '2rem',
-                textAlign: 'center',
-                cursor: 'pointer',
-                backgroundColor: 'white'
-              }}
-              onMouseOver={(e) => e.currentTarget.style.borderColor = '#6200ee'}
-              onMouseOut={(e) => e.currentTarget.style.borderColor = '#cccccc'}
+              className="pdf-dropzone"
             >
               <input {...getInputProps()} />
               {isDragActive ? (
@@ -145,16 +173,11 @@ const CustomTemplateEditor = () => {
                 <p>Drag and drop a PDF file here, or click to select one</p>
               )}
               {error && (
-                <p style={{ color: '#ff0000', marginTop: '0.5rem' }}>{error}</p>
+                <p className="error-message">{error}</p>
               )}
             </div>
           ) : (
-            <div style={{
-              width: '700px',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center'
-            }}>
+            <div className="pdf-viewer">
               <Document
                 file={pdfFile}
                 onLoadSuccess={onDocumentLoadSuccess}
@@ -162,39 +185,50 @@ const CustomTemplateEditor = () => {
                 loading={<div className="text-center py-4">Loading PDF...</div>}
               >
                 {pdfError ? (
-                  <div style={{ color: '#ff0000', textAlign: 'center', padding: '1rem 0' }}>
-                    {pdfError}
-                  </div>
+                  <div className="error-message">{pdfError}</div>
                 ) : (
                   Array.from(new Array(numPages), (el, index) => (
                     <div 
                       key={`page_${index + 1}`} 
-                      style={{
-                        marginBottom: '2rem',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center'
-                      }}
+                      className="pdf-page-container"
+                      onDragOver={(e) => e.preventDefault()}
+                      onDrop={(e) => handleElementDrop(e, index + 1)}
+                      onClick={handlePDFClick}
                     >
-                      <div style={{
-                        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                        borderRadius: '8px',
-                        overflow: 'hidden'
-                      }}>
-                        <Page
-                          pageNumber={index + 1}
-                          renderTextLayer={false}
-                          renderAnnotationLayer={false}
-                          width={700}
-                        />
-                      </div>
-                      <div style={{
-                        marginTop: '0.5rem',
-                        fontSize: '0.875rem',
-                        color: '#6b7280'
-                      }}>
-                        Page {index + 1} of {numPages}
-                      </div>
+                      <Page
+                        pageNumber={index + 1}
+                        width={700}
+                        renderTextLayer={false}
+                        renderAnnotationLayer={false}
+                      />
+                      {/* Render interactive elements */}
+                      {elements
+                        .filter(elem => elem.pageNumber === index + 1)
+                        .map(elem => (
+                          <div
+                            key={elem.id}
+                            className={`interactive-element ${selectedElement?.id === elem.id ? 'selected' : ''}`}
+                            style={{
+                              left: elem.x,
+                              top: elem.y,
+                              position: 'absolute',
+                              cursor: 'move'
+                            }}
+                            onClick={(e) => handleElementClick(elem, e)}
+                            draggable
+                            onDragEnd={(e) => handleElementDrag(e, elem)}
+                          >
+                            <img 
+                              src={`/images/${elem.type}_logo.png`}
+                              alt={elem.type}
+                              style={{
+                                width: '32px',
+                                height: '32px',
+                                pointerEvents: 'none'
+                              }}
+                            />
+                          </div>
+                        ))}
                     </div>
                   ))
                 )}
@@ -204,7 +238,10 @@ const CustomTemplateEditor = () => {
         </div>
       </div>
 
-      <RightPanel />
+      <CustomTemplateRightPanel 
+        selectedElement={selectedElement}
+        onUpdateElement={handleUpdateElement}
+      />
     </div>
   );
 };
