@@ -263,8 +263,10 @@ const ExportComponent = ({ templates, templateRefs, isEditing, editedMagazineId 
         });
       }
     
-      const galleryUrl = `/gallery/${user.uid}/${magazineId}`;
-      window.open(galleryUrl, '_blank');
+      const magazineUrl = `/magazine/${user.uid}/${magazineId}`;
+      window.open(magazineUrl, '_blank');
+      navigate('/dashboard');
+      
     } catch (error) {
       console.error("Error saving magazine to Firebase:", error);
       setError("Failed to save magazine. Please try again.");
@@ -300,7 +302,7 @@ const ExportComponent = ({ templates, templateRefs, isEditing, editedMagazineId 
             strokeWidthSecondary={2}
           />
         ) : (
-          user ? 'Publish to Gallery' : 'Login to Publish'
+          user ? 'Publish' : 'Login to Publish'
         )}
       </button>
     </div>

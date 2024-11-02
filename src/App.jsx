@@ -3,24 +3,21 @@ import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-route
 import { AuthProvider } from './AuthContext';
 import Header from './components/Header';
 import EditorPage from './components/EditorPage';
-import MagazineCarousel from './components/MagazineCarousel';
-import CustomTemplateEditor from './components/CustomTemplateEditor'; // Add this import
-import MagazineDashboard from './components/MagazineDashboard'; // Add this import
+import StandaloneMagazine from './components/StandaloneMagazine';
+import CustomTemplateEditor from './components/CustomTemplateEditor';
+import MagazineDashboard from './components/MagazineDashboard';
 import './App.css';
 
-// This component will contain the routes and conditionally render the Header
 const AppRoutes = () => {
   const location = useLocation();
-  const isGalleryPage = location.pathname.startsWith('/gallery');
+  const isMagazineView = location.pathname.startsWith('/magazine/');
 
   return (
     <div className="App">
-      {!isGalleryPage && <Header />}
+      {!isMagazineView && <Header />}
       <Routes>
         <Route path="/" element={<EditorPage />} />
-        <Route path="/gallery" element={<MagazineCarousel />} />
-        <Route path="/gallery/:userId" element={<MagazineCarousel />} />
-        <Route path="/gallery/:userId/:magazineId" element={<MagazineCarousel />} />
+        <Route path="/magazine/:userId/:magazineId" element={<StandaloneMagazine />} />
         <Route path="/custom-template" element={<CustomTemplateEditor />} />
         <Route path="/dashboard" element={<MagazineDashboard />} />
       </Routes>
@@ -40,8 +37,8 @@ function App() {
 
 export default App;
 
-// This function will open the gallery in a new window
-export const openGalleryInNewWindow = (userId, magazineId) => {
-  const galleryUrl = userId ? `/gallery/${userId}${magazineId ? `/${magazineId}` : ''}` : '/gallery';
-  window.open(galleryUrl, '_blank');
+// This function will open the magazine in a new window
+export const openMagazineInNewWindow = (userId, magazineId) => {
+  const magazineUrl = `/magazine/${userId}/${magazineId}`;
+  window.open(magazineUrl, '_blank');
 };

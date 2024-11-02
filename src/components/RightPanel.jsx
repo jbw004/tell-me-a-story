@@ -16,13 +16,6 @@ function RightPanel({ selectedText, selectedBackground, onTextStyleChange, onBac
   const [shadowOffset, setShadowOffset] = useState(2);
   const [shadowColor, setShadowColor] = useState('#000000');
 
-  const handleViewGallery = () => {
-    if (user) {
-      const galleryUrl = `/gallery/${user.uid}`;
-      window.open(galleryUrl, '_blank');
-    }
-  };
-
   const handleShadowChange = (offset, color) => {
     const shadowStyle = `${offset}px ${offset}px ${offset}px ${color}`;
     onTextStyleChange({ textShadow: shadowStyle });
@@ -151,18 +144,6 @@ function RightPanel({ selectedText, selectedBackground, onTextStyleChange, onBac
             </label>
           </div>
         </>
-      )}
-
-      {/* Gallery button at bottom */}
-      {user && (
-        <div className="action-buttons">
-          <button 
-            onClick={handleViewGallery} 
-            className="action-button view-gallery-button"
-          >
-            View Gallery
-          </button>
-        </div>
       )}
     </div>
   );

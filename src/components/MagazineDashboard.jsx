@@ -56,7 +56,7 @@ const MagazineDashboard = () => {  // Remove userId prop
   const MagazineCard = ({ magazine }) => (
     <div 
       className="canvas-wrapper"
-      onClick={() => navigate(`/gallery/${userId}/${magazine.id}`)}
+      onClick={() => navigate(`/magazine/${user.uid}/${magazine.id}`)}
     >
       <div className="canvas-item hover:shadow-lg transition-shadow duration-200 cursor-pointer">
         <div className="p-4 w-full">

@@ -552,10 +552,6 @@
   background-color: #3700b3;
 }
 
-.magazine-carousel::-webkit-scrollbar {
-  display: none;
-}
-
 .auth-button {
   position: absolute;
   top: 10px;
@@ -579,7 +575,7 @@
   margin-bottom: 20px;
 }
 
-.auth-button, .view-gallery-button {
+.auth-button {
   padding: 10px 15px;
   border: none;
   border-radius: 5px;
@@ -592,26 +588,8 @@
   font-size: 14px;
 }
 
-.view-gallery-button {
-  width: 100%;
-  padding: 10px 16px;
-  background-color: #4f46e5;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-
 .auth-button:hover {
   opacity: 0.8;
-}
-
-.view-gallery-button:hover {
-  background-color: #4338ca;
 }
 
 /* Property Groups */
