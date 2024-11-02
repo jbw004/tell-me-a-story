@@ -8,6 +8,8 @@ import { storage } from '../firebase';
 import { useAuth } from '../AuthContext';
 import CustomTemplateLeftPanel from './CustomTemplateLeftPanel';
 import CustomTemplateRightPanel from './CustomTemplateRightPanel';
+import { saveCustomTemplateDraft, loadCustomTemplateDraft } from '../firebase';
+
 
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -24,6 +26,7 @@ const CustomTemplateEditor = () => {
   const { user } = useAuth();
   const [selectedElement, setSelectedElement] = useState(null);
   const [elements, setElements] = useState([]);
+  const [dimensions, setDimensions] = useState(null);
 
   const handleUpdateElement = (updatedElement) => {
     setElements(prev => prev.map(elem => 
@@ -63,7 +66,7 @@ const CustomTemplateEditor = () => {
       
       const storageRef = ref(
         storage, 
-        `users/${user.uid}/custom-templates/${templateId}/${cleanFileName}`
+        `users/${user.uid}/customTemplates/draft/template.pdf`
       );
       
       await uploadBytes(storageRef, file);
@@ -139,16 +142,51 @@ const CustomTemplateEditor = () => {
   const onDocumentLoadSuccess = ({ numPages }) => {
     setNumPages(numPages);
     setPdfError(null);
-  };
+    
+    // Get dimensions from the first page
+  const page = document.querySelector('.react-pdf__Page');
+  if (page) {
+    setDimensions({
+      width: page.clientWidth,
+      height: page.clientHeight
+    });
+  }
+};
 
   const onDocumentLoadError = (error) => {
     console.error('Error loading PDF:', error);
     setPdfError('Failed to load PDF document. Please try uploading again.');
   };
 
+  const handleSaveDraft = async () => {
+    if (!user || !pdfFile) return;
+  
+    setIsLoading(true);
+    try {
+      await saveCustomTemplateDraft(user.uid, {
+        pdfUrl: pdfFile,
+        elements,
+        dimensions,
+        name: 'Custom Template'
+      });
+      // Optional: Add success notification
+    } catch (err) {
+      console.error('Error saving draft:', err);
+      setError('Failed to save draft');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="App">
-      <CustomTemplateLeftPanel />
+      <CustomTemplateLeftPanel 
+      onSaveDraft={handleSaveDraft}
+      isLoading={isLoading}
+      elements={elements}  // Add this
+      pdfFile={pdfFile}   // Add this
+      dimensions={dimensions}  // Add this
+      />
       
       <div className="main-content">
         <div style={{

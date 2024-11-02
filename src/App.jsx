@@ -6,6 +6,7 @@ import EditorPage from './components/EditorPage';
 import StandaloneMagazine from './components/StandaloneMagazine';
 import CustomTemplateEditor from './components/CustomTemplateEditor';
 import MagazineDashboard from './components/MagazineDashboard';
+import CustomTemplateViewer from './components/CustomTemplateViewer';
 import './App.css';
 
 const AppRoutes = () => {
@@ -20,6 +21,7 @@ const AppRoutes = () => {
         <Route path="/magazine/:userId/:magazineId" element={<StandaloneMagazine />} />
         <Route path="/custom-template" element={<CustomTemplateEditor />} />
         <Route path="/dashboard" element={<MagazineDashboard />} />
+        <Route path="/custom-template/:userId/:templateId" element={<CustomTemplateViewer />} />
       </Routes>
     </div>
   );
