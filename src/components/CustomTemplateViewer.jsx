@@ -205,14 +205,9 @@ const CustomTemplateViewer = () => {
         </div>
       )}
 
-<div className="viewer-main-content">
-  <div style={{
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    minHeight: '100%',
-    width: '100%',
-    padding: '20px 0'
+<div className="viewer-main-content" style={{
+    overscrollBehavior: 'auto', // Helps with scroll chaining
+    WebkitOverflowScrolling: 'touch', // For iOS momentum scrolling
   }}>
     <div className="pdf-viewer">
       <Document
@@ -268,7 +263,6 @@ const CustomTemplateViewer = () => {
         ))}
       </Document>
     </div>
-  </div>
   </div>
 
   <ConfirmationModal
