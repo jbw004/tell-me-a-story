@@ -11,11 +11,12 @@ import './App.css';
 
 const AppRoutes = () => {
   const location = useLocation();
-  const isMagazineView = location.pathname.startsWith('/magazine/');
+  const isViewerRoute = location.pathname.startsWith('/magazine/') || 
+                       (location.pathname.startsWith('/custom-template/') && location.pathname.split('/').length > 3);
 
   return (
     <div className="App">
-      {!isMagazineView && <Header />}
+      {!isViewerRoute && <Header />}
       <Routes>
         <Route path="/" element={<EditorPage />} />
         <Route path="/magazine/:userId/:magazineId" element={<StandaloneMagazine />} />

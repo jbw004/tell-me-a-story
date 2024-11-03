@@ -205,7 +205,7 @@ const CustomTemplateViewer = () => {
         </div>
       )}
 
-<div className="main-content">
+<div className="viewer-main-content">
   <div style={{
     display: 'flex',
     justifyContent: 'center',
