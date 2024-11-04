@@ -1,19 +1,115 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';  // Add GoogleAuthProvider here
-import { getDatabase, ref, set, get, remove, push, runTransaction, serverTimestamp } from 'firebase/database';
+import { 
+  getDatabase, 
+  ref, 
+  set, 
+  get, 
+  remove, 
+  push, 
+  runTransaction, 
+  serverTimestamp,
+  update 
+} from 'firebase/database';
 import { getAnalytics } from "firebase/analytics";
-import { getStorage } from "firebase/storage";
-import { ref as storageRef, listAll, deleteObject, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { 
+  getStorage, 
+  ref as storageRef, 
+  uploadBytes, 
+  getDownloadURL, 
+  deleteObject 
+} from 'firebase/storage';
 
+export const publishMagazine = async (userId, magazineData) => {
+  const db = getDatabase();
+  const storage = getStorage();
+  const magazineId = Date.now().toString();
+  
+  try {
+    // Save magazine data
+    const magazineRef = ref(db, `users/${userId}/magazines/${magazineId}`);
+    
+    // Ensure we have a title that's not the default
+    if (!magazineData.title || magazineData.title.trim() === 'My Magazine') {
+      throw new Error('Please provide a custom title for your magazine');
+    }
+
+    // Save magazine preview image if provided
+    let previewImageUrl = null;
+    if (magazineData.previewImage) {
+      const imageRef = storageRef(storage, `users/${userId}/magazines/${magazineId}/preview.jpg`);
+      await uploadBytes(imageRef, magazineData.previewImage);
+      previewImageUrl = await getDownloadURL(imageRef);
+    }
+
+    const magazineMetadata = {
+      id: magazineId,
+      title: magazineData.title.trim(),
+      previewImageUrl,
+      templates: magazineData.templates,
+      publishedAt: serverTimestamp(),
+      lastUpdated: serverTimestamp(),
+      userId
+    };
+
+    await set(magazineRef, magazineMetadata);
+    await deleteDraft(userId); // Clear the draft after publishing
+    return magazineMetadata;
+  } catch (error) {
+    console.error('Error in publishMagazine:', error);
+    throw error;
+  }
+};
+
+// Add this function for updating magazine metadata
+export const updateMagazineMetadata = async (userId, magazineId, updates) => {
+  const db = getDatabase();
+  const storage = getStorage();
+  const magazineRef = ref(db, `users/${userId}/magazines/${magazineId}`);
+  
+  try {
+    // Handle preview image update if provided
+    if (updates.previewImage) {
+      const imageRef = storageRef(storage, `users/${userId}/magazines/${magazineId}/preview.jpg`);
+      await uploadBytes(imageRef, updates.previewImage);
+      updates.previewImageUrl = await getDownloadURL(imageRef);
+      delete updates.previewImage;
+    }
+
+    // Handle title update
+    if (updates.title && updates.title.trim() === 'My Magazine') {
+      throw new Error('Please provide a custom title for your magazine');
+    }
+
+    const updatedData = {
+      ...updates,
+      lastUpdated: serverTimestamp()
+    };
+
+    await update(magazineRef, updatedData);
+    return updatedData;
+  } catch (error) {
+    console.error('Error updating magazine metadata:', error);
+    throw error;
+  }
+};
+
+// Modify your existing deleteMagazine function to explicitly handle preview images
 export const deleteMagazine = async (userId, magazineId) => {
   const db = getDatabase();
   const storage = getStorage();
 
   // Delete from Realtime Database
   const magazineRef = ref(db, `users/${userId}/magazines/${magazineId}`);
+  
+  // Get the magazine data first to check for preview image
+  const snapshot = await get(magazineRef);
+  const magazineData = snapshot.val();
+  
+  // Delete the database entry
   await remove(magazineRef);
 
-  // Delete from Storage
+  // Delete from Storage (both magazine content and preview image)
   const magazineStorageRef = storageRef(storage, `users/${userId}/magazines/${magazineId}`);
   const listResults = await listAll(magazineStorageRef);
   const deletePromises = listResults.items.map(item => deleteObject(item));
@@ -23,7 +119,24 @@ export const deleteMagazine = async (userId, magazineId) => {
 export const saveDraft = async (userId, draftData) => {
   const db = getDatabase();
   const draftRef = ref(db, `users/${userId}/draft`);
-  await set(draftRef, draftData);
+  
+  // Ensure there's always a title
+  const enhancedDraftData = {
+    ...draftData,
+    title: draftData.title || 'My Magazine',
+    lastUpdated: serverTimestamp()
+  };
+  
+  await set(draftRef, enhancedDraftData);
+  return enhancedDraftData;
+};
+
+// Add this function to get magazine metadata
+export const getMagazineMetadata = async (userId, magazineId) => {
+  const db = getDatabase();
+  const magazineRef = ref(db, `users/${userId}/magazines/${magazineId}`);
+  const snapshot = await get(magazineRef);
+  return snapshot.val();
 };
 
 export const loadDraft = async (userId) => {

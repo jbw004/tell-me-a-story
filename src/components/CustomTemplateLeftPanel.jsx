@@ -7,6 +7,8 @@ import {
 import { useAuth } from '../AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Oval } from 'react-loader-spinner';
+import MagazineMetadataModal from './MagazineMetadataModal';  // Add this import
+
 
 const CustomTemplateLeftPanel = ({ 
   onSaveDraft, 
@@ -15,12 +17,18 @@ const CustomTemplateLeftPanel = ({
   const { user } = useAuth();
   const navigate = useNavigate();
   const [publishing, setPublishing] = useState(false);
+  const [showMetadataModal, setShowMetadataModal] = useState(false);  // Add this state
 
   const onDragStart = (e, type) => {
     e.dataTransfer.setData('elementType', type);
   };
 
-  const handlePublish = async () => {
+  const handlePublishClick = () => {
+    if (!user) return;
+    setShowMetadataModal(true);
+  };
+
+  const handleMetadataSave = async (metadata) => {
     if (!user) return;
   
     setPublishing(true);
@@ -40,9 +48,11 @@ const CustomTemplateLeftPanel = ({
         throw new Error('No PDF file found in draft');
       }
   
-      // Then publish the draft with validated elements
+      // Then publish the draft with metadata
       const publishedTemplate = await publishCustomTemplate(user.uid, {
         ...draftData,
+        name: metadata.title,
+        previewImage: metadata.previewImage,
         elements: draftData.elements || []
       });
       
@@ -63,6 +73,7 @@ const CustomTemplateLeftPanel = ({
       alert(errorMessage);
     } finally {
       setPublishing(false);
+      setShowMetadataModal(false);
     }
   };
 
@@ -132,7 +143,7 @@ const CustomTemplateLeftPanel = ({
           <div className="action-buttons">
             {/* Publish Button */}
             <button
-              onClick={handlePublish}
+              onClick={handlePublishClick}  // Change from handlePublish to handlePublishClick
               disabled={publishing || isLoading}
               className="action-button publish-button"
             >
@@ -172,6 +183,13 @@ const CustomTemplateLeftPanel = ({
           </div>
         </div>
       )}
+      <MagazineMetadataModal
+        isOpen={showMetadataModal}
+        onClose={() => setShowMetadataModal(false)}
+        onSave={handleMetadataSave}
+        initialTitle="My Template"
+        showPreviewImageOption={true}
+      />
     </div>
   );
 };

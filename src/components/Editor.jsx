@@ -44,7 +44,7 @@ function Editor({
   }, [templates, onReorderTemplates]);
 
   return (
-    <div className={`editor-container ${isExporting ? 'exporting' : ''}`}>
+    <div className="editor-container">
       {templates.length > 0 ? (
         templates.map((template) => (
           <Canvas
@@ -62,6 +62,7 @@ function Editor({
           backgroundStyles={backgroundStyles[template.uniqueId] || {}}
           onObjectDelete={(objectId) => onObjectDelete(template.uniqueId, objectId)}
           isExporting={isExporting}
+          className={isExporting ? 'exported-view' : ''} // Add this line
           onAddTocItem={() => onAddTocItem(template.uniqueId)}
           onRemoveTocItem={() => onRemoveTocItem(template.uniqueId)}
         />

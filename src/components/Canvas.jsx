@@ -16,6 +16,7 @@ function Canvas({
   textStyles,
   onObjectDelete,
   isExporting,  // New prop for export state
+  className,
   onAddTocItem,  // New prop
   onRemoveTocItem  // New prop
 }) {
@@ -223,39 +224,40 @@ function Canvas({
   };
 
   return (
-    <div className={`canvas-wrapper ${isExporting ? 'exporting' : ''}`} style={style} ref={canvasRef}>
+    <div className={`canvas-wrapper ${isExporting ? 'exported-view' : ''}`} style={style} ref={canvasRef}>
       {!isExporting && (
-      <div className="canvas-controls">
-        <button onClick={() => onReorder(template.uniqueId, 'up')}>↑</button>
-        <button onClick={() => onReorder(template.uniqueId, 'down')}>↓</button>
-        <button onClick={() => { setDeleteAction('template'); setIsDeleteModalOpen(true); }}>🗑️</button>
-        {template.id === 'contents-mobile' && (
+        <div className="canvas-controls">
+          <button onClick={() => onReorder(template.uniqueId, 'up')}>↑</button>
+          <button onClick={() => onReorder(template.uniqueId, 'down')}>↓</button>
+          <button onClick={() => { setDeleteAction('template'); setIsDeleteModalOpen(true); }}>🗑️</button>
+          {template.id === 'contents-mobile' && (
             <>
               <button onClick={handleAddTocItem}>+</button>
               <button onClick={handleRemoveTocItem}>-</button>
             </>
           )}
-      </div>
+        </div>
       )}
-      <div className="canvas-item">
-        <div 
+      <div className={`canvas-item ${isExporting ? 'exported-view' : ''}`}>
+      <div 
+          ref={contentRef}  // Add this line
           dangerouslySetInnerHTML={{ __html: template.content }} 
-          onMouseDown={handleObjectSelect}
-          onDoubleClick={handleTextEdit}
-          onBlur={handleTextEditEnd}
-          onInput={handleContentChange}
-          onClick={(e) => {
-            if (isExporting) return; // Disable image upload during export
-            const target = e.target.closest('[data-upload-target="true"]');
-            if (target) {
-              const input = document.createElement('input');
-              input.type = 'file';
-              input.accept = 'image/*';
-              input.onchange = (event) => handleImageUpload(event, target.id);
-              input.click();
-            }
+          onMouseDown={isExporting ? undefined : handleObjectSelect}
+          onDoubleClick={isExporting ? undefined : handleTextEdit}
+          onBlur={isExporting ? undefined : handleTextEditEnd}
+          onInput={isExporting ? undefined : handleContentChange}
+          onClick={isExporting ? undefined : (e) => {
+              const target = e.target.closest('[data-upload-target="true"]');
+              if (target) {
+                  const input = document.createElement('input');
+                  input.type = 'file';
+                  input.accept = 'image/*';
+                  input.onchange = (event) => handleImageUpload(event, target.id);
+                  input.click();
+              }
           }}
-        />
+          className={isExporting ? 'exported-view' : ''}
+      />
       </div>
       {!isExporting && (
         <ConfirmationModal
@@ -267,14 +269,6 @@ function Canvas({
             : "Are you sure you want to delete this object?"}
         />
       )}
-      <ConfirmationModal
-        isOpen={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
-        onConfirm={handleDeleteConfirm}
-        message={deleteAction === 'template' 
-          ? "Are you sure you want to delete this page?" 
-          : "Are you sure you want to delete this object?"}
-      />
     </div>
   );
 }

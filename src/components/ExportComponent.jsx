@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getDatabase, ref as dbRef, push, set } from 'firebase/database';
-import { getStorage, ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
+import { getStorage, ref as storageRef, uploadString, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { runTransaction, serverTimestamp } from 'firebase/database';
 import { onAuthStateChanged } from 'firebase/auth';
 import { useAuth } from '../AuthContext';
 import { Oval } from 'react-loader-spinner';
+import MagazineMetadataModal from './MagazineMetadataModal';
 import { auth } from '../firebase'; // Make sure this path is correct
 
 
@@ -15,6 +16,7 @@ const ExportComponent = ({ templates, templateRefs, isEditing, editedMagazineId 
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const { user, login, loading } = useAuth();
+  const [showMetadataModal, setShowMetadataModal] = useState(false);
 
   const saveMagazine = async (userId, magazineData) => {
     const db = getDatabase();
@@ -23,10 +25,16 @@ const ExportComponent = ({ templates, templateRefs, isEditing, editedMagazineId 
     try {
       await runTransaction(newMagazineRef, (currentData) => {
         if (currentData === null) {
-          return magazineData;
+          return {
+            ...magazineData,
+            title: magazineData.title || 'My Magazine',
+            previewImageUrl: magazineData.previewImageUrl,
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp(),
+          };
         } else {
           console.warn("Magazine already exists, not overwriting");
-          return; // Abort the transaction
+          return;
         }
       });
       return newMagazineRef.key;
@@ -36,7 +44,23 @@ const ExportComponent = ({ templates, templateRefs, isEditing, editedMagazineId 
     }
   };
 
-  const exportTemplates = async () => {
+  const handlePublishClick = async () => {
+    console.log('Publish clicked'); // Add this log
+    if (!user) {
+      try {
+        await login();
+      } catch (error) {
+        setError("Login failed. Please try again.");
+        console.error("Login failed", error);
+        return;
+      }
+    }
+    
+    console.log('Setting modal to true'); // Add this log
+    setShowMetadataModal(true);
+  };
+
+  const handleMetadataSave = async (metadata) => {
     if (!user) {
       try {
         await login();
@@ -119,104 +143,136 @@ const ExportComponent = ({ templates, templateRefs, isEditing, editedMagazineId 
     exportDoc.head.appendChild(reactDOMScript);
 
     // Process templates
-  const processedTemplates = templates.map((template) => {
-    const templateElement = templateRefs.current[template.uniqueId];
-    if (templateElement) {
-      const clonedTemplate = templateElement.cloneNode(true);
-      
-      // Remove the canvas controls
-      const canvasControls = clonedTemplate.querySelector('.canvas-controls');
-      if (canvasControls) {
-        canvasControls.remove();
+    const processedTemplates = templates.map((template) => {
+      const templateElement = templateRefs.current[template.uniqueId];
+      if (templateElement) {
+        const clonedTemplate = templateElement.cloneNode(true);
+        
+        // Remove all control elements
+        const controlsToRemove = [
+          '.canvas-controls',
+          '.reorder-controls',
+          '.add-toc-item-button',  // Add this
+          '.remove-toc-item-button', // Add this
+          '[data-toc-control]'  // Add this if you use this attribute
+        ];
+    
+        controlsToRemove.forEach(selector => {
+          const elements = clonedTemplate.querySelectorAll(selector);
+          elements.forEach(el => el.remove());
+        });
+    
+        // Special handling for table of contents
+        if (template.id === 'contents-mobile') {
+          // Remove any TOC-specific controls
+          const tocControls = clonedTemplate.querySelectorAll('.toc-controls, .toc-item button');
+          tocControls.forEach(el => el.remove());
+    
+          // Make TOC items static
+          const tocItems = clonedTemplate.querySelectorAll('.toc-item');
+          tocItems.forEach(item => {
+            item.removeAttribute('contenteditable');
+            item.removeAttribute('data-deletable');
+            item.style.cursor = 'default';
+          });
+        }
+    
+        // Make all content non-editable
+        clonedTemplate.querySelectorAll('*').forEach(element => {
+          element.contentEditable = 'false';
+          element.removeAttribute('data-text-id');
+          element.removeAttribute('data-deletable');
+          element.removeAttribute('data-object-id');
+          // Remove any interactive classes
+          element.classList.remove('editable', 'deletable', 'selected');
+        });
+    
+        return {
+          ...template,
+          content: clonedTemplate.innerHTML
+        };
       }
-
-      // Make all content non-editable
-      clonedTemplate.querySelectorAll('*').forEach(element => {
-        element.contentEditable = 'false';
-        element.removeAttribute('data-text-id');
-        element.removeAttribute('data-deletable');
-      });
-
-      return {
-        ...template,
-        content: clonedTemplate.innerHTML // Store only the inner HTML
-      };
-    }
-    return template;
-  });
+      return template;
+    });
   
 
     // Add a script to define and render our React component
-    const appScript = exportDoc.createElement('script');
-    appScript.textContent = `
-      const ExportedMagazineView = ({ templates }) => {
-        const [showFullMagazine, setShowFullMagazine] = React.useState(false);
-      
-        const coverTemplate = templates[0]; // Assuming the first template is always the cover
-      
-        const CoverCard = () => (
+    // Add a script to define and render our React component
+const appScript = exportDoc.createElement('script');
+appScript.textContent = `
+  const ExportedMagazineView = ({ templates }) => {
+    const [showFullMagazine, setShowFullMagazine] = React.useState(false);
+  
+    const coverTemplate = templates[0];
+  
+    const CoverCard = () => (
+      React.createElement('div', {
+        className: "cover-card",
+        onClick: () => setShowFullMagazine(true),
+        style: {
+          width: '375px',
+          height: '812px',
+          margin: '20px auto',
+          cursor: 'pointer',
+          boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+          overflow: 'hidden',
+          position: 'relative',
+        }
+      },
+        React.createElement('div', { 
+          className: 'exported-view',
+          dangerouslySetInnerHTML: { __html: coverTemplate.content.replace(/data-[^\\s>]+="[^"]*"/g, '') }
+        }),
+        React.createElement('div', {
+          style: {
+            position: 'absolute',
+            bottom: '20px',
+            right: '20px',
+            background: 'rgba(0,0,0,0.7)',
+            color: 'white',
+            padding: '10px',
+            borderRadius: '5px',
+          }
+        }, "Click to view full magazine")
+      )
+    );
+  
+    const FullMagazine = () => (
+      React.createElement('div', { className: "export-container" },
+        React.createElement('button', {
+          onClick: () => setShowFullMagazine(false),
+          style: {
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            zIndex: 1000,
+          }
+        }, "Close"),
+        templates.map((template, index) => (
           React.createElement('div', {
-            className: "cover-card",
-            onClick: () => setShowFullMagazine(true),
-            style: {
-              width: '375px',
-              height: '812px',
-              margin: '20px auto',
-              cursor: 'pointer',
-              boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-              overflow: 'hidden',
-              position: 'relative',
+            key: index,
+            className: "template exported-view",
+            dangerouslySetInnerHTML: { 
+              __html: template.content.replace(/data-[^\\s>]+="[^"]*"/g, '')
             }
-          },
-            React.createElement('div', { dangerouslySetInnerHTML: { __html: coverTemplate.content } }),
-            React.createElement('div', {
-              style: {
-                position: 'absolute',
-                bottom: '20px',
-                right: '20px',
-                background: 'rgba(0,0,0,0.7)',
-                color: 'white',
-                padding: '10px',
-                borderRadius: '5px',
-              }
-            }, "Click to view full magazine")
-          )
-        );
-      
-        const FullMagazine = () => (
-          React.createElement('div', { className: "export-container" },
-            React.createElement('button', {
-              onClick: () => setShowFullMagazine(false),
-              style: {
-                position: 'fixed',
-                top: '20px',
-                right: '20px',
-                zIndex: 1000,
-              }
-            }, "Close"),
-            templates.map((template, index) => (
-              React.createElement('div', {
-                key: index,
-                className: "template",
-                dangerouslySetInnerHTML: { __html: template.content }
-              })
-            ))
-          )
-        );
-      
-        return React.createElement('div', { className: "exported-magazine-view" },
-          showFullMagazine ? React.createElement(FullMagazine) : React.createElement(CoverCard)
-        );
-      };
+          })
+        ))
+      )
+    );
+  
+    return React.createElement('div', { className: "exported-magazine-view" },
+      showFullMagazine ? React.createElement(FullMagazine) : React.createElement(CoverCard)
+    );
+  };
 
-      const templates = ${JSON.stringify(processedTemplates)};
-      window.addEventListener('load', function() {
-        ReactDOM.render(
-          React.createElement(ExportedMagazineView, { templates: templates }),
-          document.getElementById('root')
-        );
-      });
-    `;
+  const templates = ${JSON.stringify(processedTemplates)};
+  window.addEventListener('load', function() {
+    ReactDOM.render(
+      React.createElement(ExportedMagazineView, { templates: templates }),
+      document.getElementById('root')
+    );
+  });
+`;
     exportDoc.body.appendChild(appScript);
 
     // Generate a unique ID for the magazine
@@ -226,20 +282,30 @@ const ExportComponent = ({ templates, templateRefs, isEditing, editedMagazineId 
 
     try {
       let magazineId;
+      let previewImageUrl = null;
+    
+      // Add this section to handle preview image
+      if (metadata.previewImage) {
+        const imageRef = storageRef(storage, `users/${user.uid}/magazines/${isEditing ? editedMagazineId : 'temp'}/preview.jpg`);
+        await uploadBytes(imageRef, metadata.previewImage); // Use uploadBytes instead of uploadString
+        previewImageUrl = await getDownloadURL(imageRef);
+      }
+    
       if (isEditing) {
         // If editing, use the existing magazine ID
         magazineId = editedMagazineId;
         // Update the existing magazine instead of creating a new one
         await set(dbRef(db, `users/${user.uid}/magazines/${magazineId}`), {
-          title: "My Magazine",
+          title: metadata.title, // Use metadata title instead of "My Magazine"
+          previewImageUrl, // Add the preview image URL
           updatedAt: serverTimestamp(),
           userId: user.uid
         });
       } else {
         // If creating a new magazine, generate a new ID
         magazineId = await saveMagazine(user.uid, {
-          title: "My Magazine",
-          createdAt: serverTimestamp(),
+          title: metadata.title, // Use metadata title instead of "My Magazine"
+          previewImageUrl, // Add the preview image URL
           userId: user.uid
         });
       }
@@ -284,7 +350,7 @@ const ExportComponent = ({ templates, templateRefs, isEditing, editedMagazineId 
     <div className="export-container">
       {error && <div style={{ color: 'red', marginBottom: '10px' }}>{error}</div>}
       <button
-        onClick={exportTemplates}
+        onClick={handlePublishClick} // Change this line
         disabled={exporting || !user}
         className={`export-button ${exporting ? 'exporting' : ''}`}
       >
@@ -305,6 +371,13 @@ const ExportComponent = ({ templates, templateRefs, isEditing, editedMagazineId 
           user ? 'Publish' : 'Login to Publish'
         )}
       </button>
+      <MagazineMetadataModal
+      isOpen={showMetadataModal}
+      onClose={() => setShowMetadataModal(false)}
+      onSave={handleMetadataSave}
+      initialTitle="My Magazine"
+      showPreviewImageOption={true}
+    />
     </div>
   );
 };
