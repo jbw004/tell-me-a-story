@@ -1,47 +1,98 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getDatabase, ref as dbRef, get } from 'firebase/database';
-import { Button } from '../components/ui/button';  // Updated import path
-import { PlusCircle, Clock, Folder, Trash2, Eye, ArrowLeft } from 'lucide-react';
-import { useAuth } from '../AuthContext';  // Add this import
+import { Button } from '../components/ui/button';
+import { 
+  PlusCircle, 
+  Clock, 
+  Folder, 
+  Pencil,  // Using Pencil for drafts
+  Eye, 
+  ArrowLeft 
+} from 'lucide-react';
+import { Oval } from 'react-loader-spinner';
+import { useAuth } from '../AuthContext';
+import MagazineCard from './MagazineCard';
 
+const MagazineDashboard = () => {
+  const { user } = useAuth();
+  const [magazines, setMagazines] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('all');
+  const navigate = useNavigate();
 
-const MagazineDashboard = () => {  // Remove userId prop
-    const { user } = useAuth();  // Add this line
-    const [magazines, setMagazines] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState('all');
-    const navigate = useNavigate();
+  useEffect(() => {
+    const fetchAllMagazines = async () => {
+      if (!user) {
+        setLoading(false);
+        return;
+      }
 
-    useEffect(() => {
-        const fetchMagazines = async () => {
-          if (!user) {  // Check for user instead of userId
-            setLoading(false);
-            return;
-          }
-    
-          try {
-            const db = getDatabase();
-            const magazinesRef = dbRef(db, `users/${user.uid}/magazines`);  // Use user.uid
-            const snapshot = await get(magazinesRef);
-            
-            if (snapshot.exists()) {
-              const magazinesData = Object.entries(snapshot.val()).map(([id, data]) => ({
-                id,
-                ...data,
-                createdAt: new Date(data.createdAt),
-              }));
-              setMagazines(magazinesData);
-            }
-            setLoading(false);
-          } catch (error) {
-            console.error('Error fetching magazines:', error);
-            setLoading(false);
-          }
-        };
-    
-        fetchMagazines();
-      }, [user]);  // Change dependency to user
+      try {
+        const db = getDatabase();
+        
+        // Fetch published magazines
+        const publishedMagazinesRef = dbRef(db, `users/${user.uid}/magazines`);
+        const publishedSnapshot = await get(publishedMagazinesRef);
+        
+        // Fetch current draft
+        const draftRef = dbRef(db, `users/${user.uid}/draft`);
+        const draftSnapshot = await get(draftRef);
+        
+        // Fetch custom template magazines
+        const customTemplatesRef = dbRef(db, `users/${user.uid}/customTemplates/published`);
+        const customTemplatesSnapshot = await get(customTemplatesRef);
+
+        let allMagazines = [];
+
+        if (publishedSnapshot.exists()) {
+          const publishedMagazines = Object.entries(publishedSnapshot.val()).map(([id, data]) => ({
+            id,
+            ...data,
+            createdAt: new Date(data.createdAt || Date.now()),
+            isDraft: false
+          }));
+          allMagazines = [...allMagazines, ...publishedMagazines];
+        }
+
+        if (draftSnapshot.exists()) {
+          const draftData = draftSnapshot.val();
+          allMagazines.push({
+            id: 'current-draft',
+            ...draftData,
+            createdAt: new Date(draftData.createdAt || Date.now()),
+            isDraft: true
+          });
+        }
+
+        if (customTemplatesSnapshot.exists()) {
+          const customMagazines = Object.entries(customTemplatesSnapshot.val()).map(([id, data]) => ({
+            id,
+            ...data,
+            createdAt: new Date(data.publishedAt || Date.now()),
+            isCustomTemplate: true,
+            isDraft: false
+          }));
+          allMagazines = [...allMagazines, ...customMagazines];
+        }
+
+        const sortedMagazines = allMagazines
+          .sort((a, b) => b.createdAt - a.createdAt)
+          .map(magazine => ({
+            ...magazine,
+            createdAt: getTimeAgo(magazine.createdAt)
+          }));
+
+        setMagazines(sortedMagazines);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching magazines:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchAllMagazines();
+  }, [user]);
 
   const getTimeAgo = (date) => {
     const diff = Math.floor((new Date() - date) / 1000);
@@ -50,45 +101,49 @@ const MagazineDashboard = () => {  // Remove userId prop
     const hours = Math.floor(diff / 3600);
     if (hours > 0) return `${hours} hours ago`;
     const minutes = Math.floor(diff / 60);
-    return `${minutes} minutes ago`;
+    return minutes <= 0 ? 'just now' : `${minutes} minutes ago`;
   };
 
-  const MagazineCard = ({ magazine }) => (
-    <div 
-      className="canvas-wrapper"
-      onClick={() => navigate(`/magazine/${user.uid}/${magazine.id}`)}
+  const handleEdit = (magazineId) => {
+    navigate(`/editor/${magazineId}`);
+  };
+
+  const handleView = (magazineId) => {
+    window.open(`/magazine/${user.uid}/${magazineId}`, '_blank');
+  };
+
+  const handleShare = (magazineId) => {
+    const shareUrl = `/magazine/${user.uid}/${magazineId}`;
+    if (navigator.share) {
+      navigator.share({
+        title: 'Check out my magazine',
+        url: window.location.origin + shareUrl
+      });
+    } else {
+      navigator.clipboard.writeText(window.location.origin + shareUrl);
+    }
+  };
+
+  const handleDelete = async (magazineId) => {
+    if (window.confirm('Are you sure you want to delete this magazine?')) {
+      // Add deletion logic here
+    }
+  };
+
+  const FilterButton = ({ value, icon: Icon, children }) => (
+    <button
+      onClick={() => setActiveTab(value)}
+      className={`filter-button ${activeTab === value ? 'active' : ''}`}
     >
-      <div className="canvas-item hover:shadow-lg transition-shadow duration-200 cursor-pointer">
-        <div className="p-4 w-full">
-          <h3 className="text-xl font-bold mb-2">{magazine.title}</h3>
-          <div className="text-sm text-gray-500">
-            Created {getTimeAgo(magazine.createdAt)}
-          </div>
-          <div className="mt-4 flex justify-between items-center">
-            <div className="text-sm text-gray-500">
-              {Object.keys(magazine.templates || {}).length} pages
-            </div>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={(e) => {
-                e.stopPropagation();
-                navigate(`/editor/${magazine.id}`);
-              }}
-              style={{ backgroundColor: '#6200ee', color: 'white' }}
-              className="hover:opacity-80"
-            >
-              Edit
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
+      <Icon className={`w-4 h-4 ${activeTab === value ? 'text-[#6200ee]' : 'text-gray-600'}`} />
+      <span className={activeTab === value ? 'text-[#6200ee] font-medium' : 'text-gray-600'}>
+        {children}
+      </span>
+    </button>
   );
 
   return (
     <div className="main-content">
-      {/* Header Section */}
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-4">
           <Button 
@@ -110,42 +165,33 @@ const MagazineDashboard = () => {  // Remove userId prop
         </Button>
       </div>
 
-      {/* Tabs Section */}
-      <div className="template-buttons mb-6">
-        <button
-          onClick={() => setActiveTab('all')}
-          className={`template-button ${activeTab === 'all' ? 'selected' : ''}`}
-        >
-          <Folder className="w-4 h-4 inline mr-2" />
+      <div className="flex gap-2 mb-6 p-1">
+        <FilterButton value="all" icon={Folder}>
           All Magazines
-        </button>
-        <button
-          onClick={() => setActiveTab('recent')}
-          className={`template-button ${activeTab === 'recent' ? 'selected' : ''}`}
-        >
-          <Clock className="w-4 h-4 inline mr-2" />
+        </FilterButton>
+        <FilterButton value="recent" icon={Clock}>
           Recent
-        </button>
-        <button
-          onClick={() => setActiveTab('published')}
-          className={`template-button ${activeTab === 'published' ? 'selected' : ''}`}
-        >
-          <Eye className="w-4 h-4 inline mr-2" />
+        </FilterButton>
+        <FilterButton value="published" icon={Eye}>
           Published
-        </button>
-        <button
-          onClick={() => setActiveTab('drafts')}
-          className={`template-button ${activeTab === 'drafts' ? 'selected' : ''}`}
-        >
-          <Trash2 className="w-4 h-4 inline mr-2" />
+        </FilterButton>
+        <FilterButton value="drafts" icon={Pencil}>
           Drafts
-        </button>
+        </FilterButton>
       </div>
 
-      {/* Magazine Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {loading ? (
-          <div>Loading...</div>
+          <div className="col-span-full flex justify-center items-center py-12">
+            <Oval
+              height={40}
+              width={40}
+              color="#6200ee"
+              secondaryColor="#d4b5ff"
+              strokeWidth={4}
+              strokeWidthSecondary={4}
+            />
+          </div>
         ) : magazines.length === 0 ? (
           <div className="col-span-full text-center text-gray-500 py-8">
             No magazines found. Click "Create New" to get started!
@@ -153,14 +199,26 @@ const MagazineDashboard = () => {  // Remove userId prop
         ) : (
           magazines
             .filter(magazine => {
-              if (activeTab === 'recent') return true;
-              if (activeTab === 'published') return !magazine.isDraft;
-              if (activeTab === 'drafts') return magazine.isDraft;
-              return true;
+              switch (activeTab) {
+                case 'recent':
+                  return true;
+                case 'published':
+                  return !magazine.isDraft;
+                case 'drafts':
+                  return magazine.isDraft;
+                default:
+                  return true;
+              }
             })
-            .sort((a, b) => b.createdAt - a.createdAt)
             .map(magazine => (
-              <MagazineCard key={magazine.id} magazine={magazine} />
+              <MagazineCard
+                key={magazine.id}
+                magazine={magazine}
+                onEdit={handleEdit}
+                onView={handleView}
+                onShare={handleShare}
+                onDelete={handleDelete}
+              />
             ))
         )}
       </div>

@@ -1198,3 +1198,29 @@ h2 {
   overflow: auto;  /* Changed to handle both directions */
   -webkit-overflow-scrolling: touch; /* For smoother scrolling on iOS */
 }
+
+.filter-button {
+  transition: all 0.2s ease;
+  position: relative;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 2px solid transparent;
+}
+
+.filter-button:hover {
+  background-color: rgba(98, 0, 238, 0.04);
+}
+
+.filter-button.active {
+  background-color: rgba(98, 0, 238, 0.08);
+  border-color: #6200ee;
+  color: #6200ee;
+}
+
+.filter-button.active svg {
+  color: #6200ee;
+}
