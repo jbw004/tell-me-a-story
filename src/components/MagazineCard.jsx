@@ -23,15 +23,23 @@ const MagazineCard = ({ magazine, onEdit, onView, onDelete, onShare }) => {
   return (
     <div className="bg-white rounded-lg overflow-visible shadow-sm hover:shadow-lg transition-all duration-200 border border-gray-200">
       <div className="relative w-full h-48 bg-gray-100">
-        {magazine.previewUrl ? (
+      {magazine.previewImageUrl ? (
           <img 
-            src={magazine.previewUrl} 
-            alt={`Preview of ${magazine.title}`}
+            src={magazine.previewImageUrl} 
+            alt={`Preview of ${magazine.title || 'Untitled Magazine'}`}
             className="w-full h-full object-cover"
+            onError={(e) => {
+              e.target.onerror = null; // Prevent infinite loop
+              e.target.src = "/api/placeholder/400/320"; // Fallback to placeholder
+            }}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-gray-400">
-            <img src="/api/placeholder/400/320" alt="Magazine preview placeholder" />
+            <img 
+              src="/api/placeholder/400/320" 
+              alt="Magazine preview placeholder" 
+              className="w-full h-full object-cover"
+            />
           </div>
         )}
         
@@ -56,7 +64,9 @@ const MagazineCard = ({ magazine, onEdit, onView, onDelete, onShare }) => {
 
       <div className="p-4">
         <div className="flex justify-between items-start">
-          <h3 className="text-lg font-semibold truncate flex-1">{magazine.title}</h3>
+          <h3 className="text-lg font-semibold truncate flex-1">
+            {magazine.title || (magazine.isDraft ? 'Draft Magazine' : 'Untitled Magazine')}
+          </h3>
           <div className="relative" ref={menuRef}>
             <button 
               onClick={(e) => {

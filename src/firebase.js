@@ -236,58 +236,71 @@ export const deleteCustomTemplateDraft = async (userId) => {
   }
 };
 
+// In firebase.js, update the publishCustomTemplate function:
 export const publishCustomTemplate = async (userId, templateData) => {
-  console.log('Publishing template with data:', templateData); // Debug log
+  console.log('Publishing template with data:', templateData);
 
   const db = getDatabase();
   const storage = getStorage();
   
   const templateId = templateData.id || Date.now().toString();
-  
-  // Move PDF to published location
-  const publishedPdfRef = storageRef(
-    storage, 
-    `users/${userId}/customTemplates/published/${templateId}/template.pdf`
-  );
-  
-  if (templateData.pdfUrl) {
-    const response = await fetch(templateData.pdfUrl);
-    const pdfBlob = await response.blob();
-    await uploadBytes(publishedPdfRef, pdfBlob);
-  }
-  
-  const publishedPdfUrl = await getDownloadURL(publishedPdfRef);
-  
-  // Clean and validate elements array
-  const cleanElements = (templateData.elements || []).map(element => ({
-    id: element.id,
-    type: element.type,
-    pageNumber: element.pageNumber,
-    x: element.x,
-    y: element.y,
-    url: element.url || ''
-  })).filter(element => 
-    element.type && 
-    typeof element.x === 'number' && 
-    typeof element.y === 'number' && 
-    typeof element.pageNumber === 'number'
-  );
-
-  // Save to Database
-  const publishedRef = ref(db, `users/${userId}/customTemplates/published/${templateId}`);
-  const publishedData = {
-    id: templateId,
-    name: templateData.name || 'Untitled Template',
-    pdfUrl: publishedPdfUrl,
-    dimensions: templateData.dimensions || null,
-    elements: cleanElements,
-    publishedAt: serverTimestamp(),
-    userId
-  };
-
-  console.log('Saving published data:', publishedData); // Debug log
+  let previewImageUrl = null;
   
   try {
+    // Handle preview image if provided
+    if (templateData.previewImage) {
+      const previewImageRef = storageRef(
+        storage, 
+        `users/${userId}/customTemplates/published/${templateId}/preview.jpg`
+      );
+      await uploadBytes(previewImageRef, templateData.previewImage);
+      previewImageUrl = await getDownloadURL(previewImageRef);
+    }
+
+    // Handle PDF upload
+    const publishedPdfRef = storageRef(
+      storage, 
+      `users/${userId}/customTemplates/published/${templateId}/template.pdf`
+    );
+    
+    if (templateData.pdfUrl) {
+      const response = await fetch(templateData.pdfUrl);
+      const pdfBlob = await response.blob();
+      await uploadBytes(publishedPdfRef, pdfBlob);
+    }
+    
+    const publishedPdfUrl = await getDownloadURL(publishedPdfRef);
+    
+    // Clean and validate elements array
+    const cleanElements = (templateData.elements || []).map(element => ({
+      id: element.id,
+      type: element.type,
+      pageNumber: element.pageNumber,
+      x: element.x,
+      y: element.y,
+      url: element.url || ''
+    })).filter(element => 
+      element.type && 
+      typeof element.x === 'number' && 
+      typeof element.y === 'number' && 
+      typeof element.pageNumber === 'number'
+    );
+
+    // Save to Database
+    const publishedRef = ref(db, `users/${userId}/customTemplates/published/${templateId}`);
+    const publishedData = {
+      id: templateId,
+      name: templateData.name || 'Untitled Template',
+      pdfUrl: publishedPdfUrl,
+      previewImageUrl, // Add this line
+      dimensions: templateData.dimensions || null,
+      elements: cleanElements,
+      publishedAt: serverTimestamp(),
+      userId
+    };
+
+    console.log('Saving published data:', publishedData);
+    
     await set(publishedRef, publishedData);
     await deleteCustomTemplateDraft(userId);
     return publishedData;

@@ -22,74 +22,86 @@ const MagazineDashboard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchAllMagazines = async () => {
-      if (!user) {
-        setLoading(false);
-        return;
-      }
+    // In MagazineDashboard.jsx, update the fetchAllMagazines function:
 
-      try {
-        const db = getDatabase();
-        
-        // Fetch published magazines
-        const publishedMagazinesRef = dbRef(db, `users/${user.uid}/magazines`);
-        const publishedSnapshot = await get(publishedMagazinesRef);
-        
-        // Fetch current draft
-        const draftRef = dbRef(db, `users/${user.uid}/draft`);
-        const draftSnapshot = await get(draftRef);
-        
-        // Fetch custom template magazines
-        const customTemplatesRef = dbRef(db, `users/${user.uid}/customTemplates/published`);
-        const customTemplatesSnapshot = await get(customTemplatesRef);
+const fetchAllMagazines = async () => {
+  if (!user) {
+    setLoading(false);
+    return;
+  }
 
-        let allMagazines = [];
+  try {
+    const db = getDatabase();
+    
+    // Fetch published magazines
+    const publishedMagazinesRef = dbRef(db, `users/${user.uid}/magazines`);
+    const publishedSnapshot = await get(publishedMagazinesRef);
+    
+    // Fetch current draft
+    const draftRef = dbRef(db, `users/${user.uid}/draft`);
+    const draftSnapshot = await get(draftRef);
+    
+    // Fetch custom template magazines
+    const customTemplatesRef = dbRef(db, `users/${user.uid}/customTemplates/published`);
+    const customTemplatesSnapshot = await get(customTemplatesRef);
 
-        if (publishedSnapshot.exists()) {
-          const publishedMagazines = Object.entries(publishedSnapshot.val()).map(([id, data]) => ({
-            id,
-            ...data,
-            createdAt: new Date(data.createdAt || Date.now()),
-            isDraft: false
-          }));
-          allMagazines = [...allMagazines, ...publishedMagazines];
-        }
+    let allMagazines = [];
 
-        if (draftSnapshot.exists()) {
-          const draftData = draftSnapshot.val();
-          allMagazines.push({
-            id: 'current-draft',
-            ...draftData,
-            createdAt: new Date(draftData.createdAt || Date.now()),
-            isDraft: true
-          });
-        }
+    if (publishedSnapshot.exists()) {
+      const publishedMagazines = Object.entries(publishedSnapshot.val()).map(([id, data]) => ({
+        id,
+        ...data,
+        title: data.title || 'My Magazine', // Ensure title exists
+        previewImageUrl: data.previewImageUrl || null, // Include preview image
+        createdAt: new Date(data.createdAt || Date.now()),
+        isDraft: false,
+        type: 'template' // Add type identifier
+      }));
+      allMagazines = [...allMagazines, ...publishedMagazines];
+    }
 
-        if (customTemplatesSnapshot.exists()) {
-          const customMagazines = Object.entries(customTemplatesSnapshot.val()).map(([id, data]) => ({
-            id,
-            ...data,
-            createdAt: new Date(data.publishedAt || Date.now()),
-            isCustomTemplate: true,
-            isDraft: false
-          }));
-          allMagazines = [...allMagazines, ...customMagazines];
-        }
+    if (draftSnapshot.exists()) {
+      const draftData = draftSnapshot.val();
+      allMagazines.push({
+        id: 'current-draft',
+        ...draftData,
+        title: draftData.title || 'Draft Magazine', // Ensure title exists
+        previewImageUrl: draftData.previewImageUrl || null, // Include preview image
+        createdAt: new Date(draftData.createdAt || Date.now()),
+        isDraft: true,
+        type: 'template' // Add type identifier
+      });
+    }
 
-        const sortedMagazines = allMagazines
-          .sort((a, b) => b.createdAt - a.createdAt)
-          .map(magazine => ({
-            ...magazine,
-            createdAt: getTimeAgo(magazine.createdAt)
-          }));
+    if (customTemplatesSnapshot.exists()) {
+      const customMagazines = Object.entries(customTemplatesSnapshot.val()).map(([id, data]) => ({
+        id,
+        ...data,
+        title: data.name || data.title || 'Custom Template', // Handle both name and title fields
+        previewImageUrl: data.previewImageUrl || null, // Include preview image
+        createdAt: new Date(data.publishedAt || Date.now()),
+        isCustomTemplate: true,
+        isDraft: false,
+        type: 'custom' // Add type identifier
+      }));
+      allMagazines = [...allMagazines, ...customMagazines];
+    }
 
-        setMagazines(sortedMagazines);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching magazines:', error);
-        setLoading(false);
-      }
-    };
+    const sortedMagazines = allMagazines
+      .sort((a, b) => b.createdAt - a.createdAt)
+      .map(magazine => ({
+        ...magazine,
+        createdAt: getTimeAgo(magazine.createdAt)
+      }));
+
+    console.log('Processed magazines:', sortedMagazines); // Add this for debugging
+    setMagazines(sortedMagazines);
+    setLoading(false);
+  } catch (error) {
+    console.error('Error fetching magazines:', error);
+    setLoading(false);
+  }
+};
 
     fetchAllMagazines();
   }, [user]);
