@@ -92,12 +92,7 @@ const CustomTemplateEditor = () => {
     setError(null);
 
     try {
-      const fileUrl = URL.createObjectURL(file);
-      setPdfFile(fileUrl);
-      
-      const templateId = Date.now().toString();
-      const cleanFileName = file.name.replace(/[^a-zA-Z0-9.]/g, '_');
-      
+      // Upload to Firebase Storage
       const storageRef = ref(
         storage, 
         `users/${user.uid}/customTemplates/draft/template.pdf`
@@ -105,7 +100,17 @@ const CustomTemplateEditor = () => {
       
       await uploadBytes(storageRef, file);
       const downloadUrl = await getDownloadURL(storageRef);
-      console.log('PDF uploaded:', downloadUrl);
+      
+      // Set the Firebase URL instead of blob URL
+      setPdfFile(downloadUrl);
+      
+      // Save draft immediately after upload
+      await saveCustomTemplateDraft(user.uid, {
+        pdfUrl: downloadUrl,
+        elements: elements,
+        dimensions: dimensions,
+        name: 'Custom Template'
+      });
       
     } catch (err) {
       console.error('Error uploading PDF:', err);
@@ -113,7 +118,7 @@ const CustomTemplateEditor = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [user]);
+  }, [user, elements, dimensions]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -198,7 +203,7 @@ const CustomTemplateEditor = () => {
     setIsLoading(true);
     try {
       await saveCustomTemplateDraft(user.uid, {
-        pdfUrl: pdfFile,
+        pdfUrl: pdfFile, // This will now be the Firebase Storage URL
         elements,
         dimensions,
         name: 'Custom Template'
@@ -211,6 +216,40 @@ const CustomTemplateEditor = () => {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    const loadDraft = async () => {
+      if (!user) return;
+
+      setIsLoading(true);
+      try {
+        const draftData = await loadCustomTemplateDraft(user.uid);
+        if (draftData) {
+          // Set PDF file from Firebase Storage URL
+          if (draftData.pdfUrl) {
+            setPdfFile(draftData.pdfUrl);
+          }
+          
+          // Set elements
+          if (draftData.elements) {
+            setElements(draftData.elements);
+          }
+          
+          // Set dimensions
+          if (draftData.dimensions) {
+            setDimensions(draftData.dimensions);
+          }
+        }
+      } catch (err) {
+        console.error('Error loading draft:', err);
+        setError('Failed to load saved draft');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadDraft();
+  }, [user]);
 
   return (
     <div className="App">
