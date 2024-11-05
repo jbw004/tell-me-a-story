@@ -1,14 +1,21 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Clock, Edit2, Eye, MoreVertical, Share2, Trash2 } from "lucide-react";
+import { Clock, Edit2, Eye, MoreVertical, Share2, Trash2, Type, Image } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import EditConfirmationModal from './EditConfirmationModal';
-import { moveMagazineToDraft } from '../firebase';
+import RenameModal from './RenameModal';
+import UpdatePreviewModal from './UpdatePreviewModal';
+import { moveMagazineToDraft, updateMagazineTitle, updateMagazinePreview } from '../firebase';
+import { useAuth } from '../AuthContext';  // You'll need this for userId
 
 const MagazineCard = ({ magazine, onDelete, onShare }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showRenameModal, setShowRenameModal] = useState(false);
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
   const menuRef = useRef(null);
   const navigate = useNavigate();
+  const { user } = useAuth();  // Get current user for userId
+
   
   const hasCustomTemplate = magazine.isCustomTemplate || 
                           (magazine.templates && Object.values(magazine.templates)
@@ -52,6 +59,27 @@ const MagazineCard = ({ magazine, onDelete, onShare }) => {
     }
     setShowEditModal(false);
   };
+
+  const handleRename = async (newTitle) => {
+    try {
+      await updateMagazineTitle(user.uid, magazine.id, newTitle);
+      // Optionally refresh the dashboard or update local state
+      // You might want to pass a refresh function from the parent component
+    } catch (error) {
+      alert(error.message || "Failed to rename magazine");
+    }
+  };
+
+  const handleUpdatePreview = async (imageFile) => {
+    try {
+      await updateMagazinePreview(user.uid, magazine.id, imageFile);
+      // Optionally refresh the dashboard or update local state
+      // You might want to pass a refresh function from the parent component
+    } catch (error) {
+      alert(error.message || "Failed to update preview image");
+    }
+  };
+
 
   return (
     <>
@@ -113,8 +141,34 @@ const MagazineCard = ({ magazine, onDelete, onShare }) => {
             </button>
             
             {menuOpen && (
-            <div className="absolute right-0 mt-2 w-36 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
-              <div className="py-1">
+              <div className="absolute right-0 mt-2 w-36 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+                <div className="py-1">
+                  {isPublished && (
+                    <>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShowRenameModal(true);
+                          setMenuOpen(false);
+                        }}
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                      >
+                        <Type className="w-4 h-4" />
+                        Rename
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShowPreviewModal(true);
+                          setMenuOpen(false);
+                        }}
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                      >
+                        <Image className="w-4 h-4" />
+                        Update Preview
+                      </button>
+                    </>
+                  )}
                 {/* Only show edit for published non-custom magazines */}
                 {canEdit && (
                   <button
@@ -179,6 +233,20 @@ const MagazineCard = ({ magazine, onDelete, onShare }) => {
       onClose={() => setShowEditModal(false)}
       onConfirm={handleEdit}
       />
+    
+    <RenameModal
+      isOpen={showRenameModal}
+      onClose={() => setShowRenameModal(false)}
+      onConfirm={handleRename}
+      currentTitle={magazine.title}
+    />
+
+    <UpdatePreviewModal
+      isOpen={showPreviewModal}
+      onClose={() => setShowPreviewModal(false)}
+      onConfirm={handleUpdatePreview}
+      currentPreview={magazine.previewImageUrl}
+    />
       </>
   );
 };

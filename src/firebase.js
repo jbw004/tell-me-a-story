@@ -218,6 +218,68 @@ export const moveMagazineToDraft = async (userId, magazineId) => {
     throw error;
   }
 };
+
+export const updateMagazineTitle = async (userId, magazineId, newTitle) => {
+  const db = getDatabase();
+  const magazineRef = ref(db, `users/${userId}/magazines/${magazineId}`);
+  
+  try {
+    // Validate the new title
+    if (!newTitle || newTitle.trim() === '') {
+      throw new Error('Magazine title is required');
+    }
+    if (newTitle.trim() === 'My Magazine') {
+      throw new Error('Please provide a custom magazine title');
+    }
+    if (newTitle.length > 100) {
+      throw new Error('Magazine title must be less than 100 characters');
+    }
+
+    // Update the title and lastUpdated timestamp
+    await update(magazineRef, {
+      title: newTitle.trim(),
+      lastUpdated: serverTimestamp()
+    });
+
+    return { title: newTitle.trim() };
+  } catch (error) {
+    console.error('Error updating magazine title:', error);
+    throw error;
+  }
+};
+
+export const updateMagazinePreview = async (userId, magazineId, imageFile) => {
+  const db = getDatabase();
+  const storage = getStorage();
+  const magazineRef = ref(db, `users/${userId}/magazines/${magazineId}`);
+  
+  try {
+    // Validate the image file
+    if (!imageFile) {
+      throw new Error('Image file is required');
+    }
+    if (imageFile.size > 5 * 1024 * 1024) { // 5MB limit
+      throw new Error('Image file must be less than 5MB');
+    }
+
+    // Upload new preview image
+    const imageRef = storageRef(storage, `users/${userId}/magazines/${magazineId}/preview.jpg`);
+    await uploadBytes(imageRef, imageFile);
+    const previewImageUrl = await getDownloadURL(imageRef);
+
+    // Update the preview URL and lastUpdated timestamp
+    await update(magazineRef, {
+      previewImageUrl,
+      lastUpdated: serverTimestamp()
+    });
+
+    return { previewImageUrl };
+  } catch (error) {
+    console.error('Error updating magazine preview:', error);
+    throw error;
+  }
+};
+
 // Custom Template Management Functions
 export const saveCustomTemplateDraft = async (userId, templateData) => {
   const db = getDatabase();
