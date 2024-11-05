@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Clock, Edit2, Eye, MoreVertical, Share2, Trash2 } from "lucide-react";
+import { useNavigate } from 'react-router-dom';  // Add this import
 
 const MagazineCard = ({ magazine, onEdit, onView, onDelete, onShare }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
+  const navigate = useNavigate();  // Add this hook
   const hasCustomTemplate = magazine.isCustomTemplate || 
                           (magazine.templates && Object.values(magazine.templates)
                             .some(template => template.isCustom));
@@ -19,6 +21,24 @@ const MagazineCard = ({ magazine, onEdit, onView, onDelete, onShare }) => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  const handleView = (e) => {
+    e.stopPropagation();
+    if (magazine.isDraft) {
+      // For drafts, navigate to the appropriate editor
+      if (magazine.type === 'custom') {
+        navigate('/custom-template');
+      } else {
+        navigate('/');  // This goes to EditorPage for regular template drafts
+      }
+    } else {
+      // For published magazines, open in new tab as before
+      const viewUrl = magazine.isCustomTemplate 
+        ? `/custom-template/${magazine.userId}/${magazine.id}`
+        : `/magazine/${magazine.userId}/${magazine.id}`;
+      window.open(viewUrl, '_blank');
+    }
+  };
 
   return (
     <div className="bg-white rounded-lg overflow-visible shadow-sm hover:shadow-lg transition-all duration-200 border border-gray-200">
@@ -132,17 +152,11 @@ const MagazineCard = ({ magazine, onEdit, onView, onDelete, onShare }) => {
 
         <div className="mt-4">
           <button 
-            onClick={(e) => {
-              e.stopPropagation();
-              const viewUrl = magazine.isCustomTemplate 
-                ? `/custom-template/${magazine.userId}/${magazine.id}`
-                : `/magazine/${magazine.userId}/${magazine.id}`;
-              window.open(viewUrl, '_blank');
-            }}
+            onClick={handleView}
             className="flex items-center justify-center gap-2 px-4 py-2 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 w-full"
           >
             <Eye className="w-4 h-4" />
-            View
+            {magazine.isDraft ? 'Continue Editing' : 'View'}
           </button>
         </div>
       </div>
