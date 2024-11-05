@@ -5,8 +5,6 @@ import { getStorage, ref as storageRef, getDownloadURL } from 'firebase/storage'
 import { Oval } from 'react-loader-spinner';
 import ExportedMagazineView from './ExportedMagazineView';
 import { useAuth } from '../AuthContext';
-import { deleteMagazine, moveMagazineToDraft } from '../firebase';
-import ConfirmationModal from './ConfirmationModal';
 
 const StandaloneMagazine = () => {
   const [magazine, setMagazine] = useState(null);
@@ -80,35 +78,6 @@ const StandaloneMagazine = () => {
     fetchMagazine();
   }, [userId, magazineId]);
 
-  const handleDelete = async () => {
-    if (!isOwner) return;
-
-    if (window.confirm('Are you sure you want to delete this magazine?')) {
-      try {
-        await deleteMagazine(userId, magazineId);
-        navigate('/dashboard');
-      } catch (error) {
-        console.error("Error deleting magazine:", error);
-        // You might want to show an error message to the user here
-      }
-    }
-  };
-
-  const handleEdit = () => {
-    setShowEditConfirmation(true);
-  };
-
-  const confirmEdit = async () => {
-    try {
-      await moveMagazineToDraft(userId, magazineId);
-      navigate('/', { state: { fromEdit: true, editedMagazineId: magazineId } });
-    } catch (error) {
-      console.error("Error moving magazine to draft:", error);
-      // Handle error (show error message to user)
-    }
-    setShowEditConfirmation(false);
-  };
-
   if (isLoading) {
     return (
       <div style={{ 
@@ -149,20 +118,32 @@ const StandaloneMagazine = () => {
 
   return (
     <div style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative', width: '100%' }}>
+      {isOwner && (
+      <button
+        onClick={() => navigate('/dashboard')}
+        style={{
+          position: 'fixed',
+          top: '20px',
+          right: '20px',
+          zIndex: 1000,
+          backgroundColor: '#4f46e5',
+          color: 'white',
+          border: 'none',
+          padding: '8px 16px',
+          borderRadius: '6px',
+          cursor: 'pointer',
+          fontSize: '14px',
+          fontWeight: '500'
+        }}
+      >
+        Dashboard
+      </button>
+    )}
       <div style={{ position: 'relative', width: '375px', height: '812px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <ExportedMagazineView
           templates={magazine.templates}
           showFull={true}
-          onDelete={isOwner ? handleDelete : null}
-          onEdit={isOwner ? handleEdit : null}
           isOwner={isOwner}
-        />
-        
-        <ConfirmationModal
-          isOpen={showEditConfirmation}
-          onClose={() => setShowEditConfirmation(false)}
-          onConfirm={confirmEdit}
-          message="Editing this magazine will move it to 'draft', overriding any existing draft that you may have saved and not yet published. Would you like to proceed?"
         />
       </div>
     </div>

@@ -134,7 +134,10 @@ const MagazineCard = ({ magazine, onEdit, onView, onDelete, onShare }) => {
           <button 
             onClick={(e) => {
               e.stopPropagation();
-              window.open(`/magazine/${magazine.userId}/${magazine.id}`, '_blank');
+              const viewUrl = magazine.isCustomTemplate 
+                ? `/custom-template/${magazine.userId}/${magazine.id}`
+                : `/magazine/${magazine.userId}/${magazine.id}`;
+              window.open(viewUrl, '_blank');
             }}
             className="flex items-center justify-center gap-2 px-4 py-2 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 w-full"
           >

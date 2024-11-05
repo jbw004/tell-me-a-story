@@ -8,41 +8,11 @@ import {
   deletePublishedCustomTemplate, 
   moveCustomTemplateToDraft 
 } from '../firebase';
-import ConfirmationModal from './ConfirmationModal';
-import logo from '/tellmeastory_clean_vector_logo.png';
-
-const Header = () => (
-  <header style={{
-    width: '100%',
-    height: '29px',
-    backgroundColor: 'rgba(250, 249, 246, 0.95)',
-    display: 'flex',
-    alignItems: 'center',
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    zIndex: 1000,
-  }}>
-    <a 
-      href="https://tellmeastory.press" 
-      target="_blank" 
-      rel="noopener noreferrer"
-      style={{ height: '100%', display: 'flex', alignItems: 'center' }}
-    >
-      <img 
-        src={logo} 
-        alt="Tellmeastory.press" 
-        style={{ height: '100%', width: 'auto' }} 
-      />
-    </a>
-  </header>
-);
 
 const CustomTemplateViewer = () => {
   const [template, setTemplate] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showEditConfirmation, setShowEditConfirmation] = useState(false);
   const [numPages, setNumPages] = useState(null);
   const navigate = useNavigate();
   const { userId, templateId } = useParams();
@@ -82,37 +52,6 @@ const CustomTemplateViewer = () => {
 
     fetchTemplate();
   }, [userId, templateId]);
-
-  const handleDelete = async () => {
-    if (!isOwner) return;
-
-    if (window.confirm('Are you sure you want to delete this template?')) {
-      try {
-        await deletePublishedCustomTemplate(userId, templateId);
-        navigate('/dashboard');
-      } catch (error) {
-        console.error("Error deleting template:", error);
-        setError("Failed to delete template");
-      }
-    }
-  };
-
-  const handleEdit = () => {
-    setShowEditConfirmation(true);
-  };
-
-  const confirmEdit = async () => {
-    try {
-      await moveCustomTemplateToDraft(userId, templateId);
-      navigate('/custom-template', { 
-        state: { fromEdit: true, editedTemplateId: templateId } 
-      });
-    } catch (error) {
-      console.error("Error moving template to draft:", error);
-      setError("Failed to edit template");
-    }
-    setShowEditConfirmation(false);
-  };
 
   if (isLoading) {
     return (
@@ -163,48 +102,27 @@ const CustomTemplateViewer = () => {
       margin: 0,
       backgroundColor: '#faf9f6'
     }}>
-      <Header />
-      
       {isOwner && (
-        <div style={{
-          position: 'fixed',
-          top: '49px',
-          right: '20px',
-          display: 'flex',
-          gap: '10px',
-          zIndex: 1000
-        }}>
-          <button 
-            onClick={handleEdit}
-            className="edit-button"
-            style={{
-              backgroundColor: '#4f46e5',
-              color: 'white',
-              border: 'none',
-              padding: '5px 10px',
-              borderRadius: '5px',
-              cursor: 'pointer'
-            }}
-          >
-            Edit
-          </button>
-          <button 
-            onClick={handleDelete}
-            className="delete-button"
-            style={{
-              backgroundColor: '#dc2626',
-              color: 'white',
-              border: 'none',
-              padding: '5px 10px',
-              borderRadius: '5px',
-              cursor: 'pointer'
-            }}
-          >
-            Delete
-          </button>
-        </div>
+        <button
+          onClick={() => navigate('/dashboard')}
+          style={{
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            zIndex: 1000,
+            backgroundColor: '#4f46e5',
+            color: 'white',
+            border: 'none',
+            padding: '8px 16px',
+            borderRadius: '6px',
+            cursor: 'pointer',
+            fontSize: '14px',
+            fontWeight: '500'
+          }}
+        >
+          Dashboard
+        </button>
       )}
-
 <div className="viewer-main-content" style={{
     overscrollBehavior: 'auto', // Helps with scroll chaining
     WebkitOverflowScrolling: 'touch', // For iOS momentum scrolling
@@ -264,14 +182,7 @@ const CustomTemplateViewer = () => {
       </Document>
     </div>
   </div>
-
-  <ConfirmationModal
-    isOpen={showEditConfirmation}
-    onClose={() => setShowEditConfirmation(false)}
-    onConfirm={confirmEdit}
-    message="Editing this template will move it to 'draft', overriding any existing draft. Would you like to proceed?"
-  />
-    </div>
+</div>
   );
 };
 

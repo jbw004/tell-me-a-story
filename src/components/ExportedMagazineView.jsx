@@ -1,35 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import logo from '/tellmeastory_clean_vector_logo.png';
 import { Oval } from 'react-loader-spinner';
+import { useNavigate } from 'react-router-dom'; // Add this import
 
-const Header = () => (
-  <header style={{
-    width: '100%',
-    height: '29px',
-    backgroundColor: 'rgba(250, 249, 246, 0.95)',
-    display: 'flex',
-    alignItems: 'center',
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    zIndex: 1000,
-  }}>
-    <a 
-      href="https://tellmeastory.press" 
-      target="_blank" 
-      rel="noopener noreferrer"
-      style={{ height: '100%', display: 'flex', alignItems: 'center' }}
-    >
-      <img 
-        src={logo} 
-        alt="Tellmeastory.press" 
-        style={{ height: '100%', width: 'auto' }} 
-      />
-    </a>
-  </header>
-);
 
 const ExportedMagazineView = ({ templates, onDelete, onEdit, isOwner }) => {
+  const navigate = useNavigate(); // Add this hook
   const [loadedTemplates, setLoadedTemplates] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -91,50 +66,6 @@ const ExportedMagazineView = ({ templates, onDelete, onEdit, isOwner }) => {
     return <div>No magazine content available.</div>;
   }
 
-  const DeleteButton = () => (
-    isOwner && (
-      <button 
-        onClick={onDelete}
-        style={{
-          position: 'fixed',
-          top: '49px',
-          right: '80px',
-          zIndex: 1000,
-          background: 'red',
-          color: 'white',
-          border: 'none',
-          padding: '5px 10px',
-          borderRadius: '5px',
-          cursor: 'pointer',
-        }}
-      >
-        Delete
-      </button>
-    )
-  );
-
-  const EditButton = () => (
-    isOwner && onEdit && (
-      <button 
-        onClick={onEdit}
-        style={{
-          position: 'fixed',
-          top: '49px',
-          right: '140px',
-          zIndex: 1000,
-          background: 'blue',
-          color: 'white',
-          border: 'none',
-          padding: '5px 10px',
-          borderRadius: '5px',
-          cursor: 'pointer',
-        }}
-      >
-        Edit
-      </button>
-    )
-  );
-
   return (
     <div className="exported-magazine-view" style={{ 
       height: '100%', 
@@ -145,6 +76,27 @@ const ExportedMagazineView = ({ templates, onDelete, onEdit, isOwner }) => {
       padding: 0, 
       margin: 0 
     }}>
+      {isOwner && (
+        <button
+          onClick={() => navigate('/dashboard')}
+          style={{
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            zIndex: 1000,
+            backgroundColor: '#4f46e5',
+            color: 'white',
+            border: 'none',
+            padding: '8px 16px',
+            borderRadius: '6px',
+            cursor: 'pointer',
+            fontSize: '14px',
+            fontWeight: '500'
+          }}
+        >
+          Dashboard
+        </button>
+      )}
       <div className="full-magazine" style={{ 
         padding: '0', 
         maxHeight: '100vh', 
@@ -154,9 +106,6 @@ const ExportedMagazineView = ({ templates, onDelete, onEdit, isOwner }) => {
         flexDirection: 'column',
         alignItems: 'center'
       }}>
-        <Header />
-        <DeleteButton />
-        <EditButton />
         {loadedTemplates.map((template, index) => (
           <div 
             key={index}

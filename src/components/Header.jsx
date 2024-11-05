@@ -3,17 +3,17 @@ import { useAuth } from '../AuthContext'; // Add this
 import { useNavigate } from 'react-router-dom'; // Add this
 import logo from '/tellmeastory_clean_vector_logo.png';
 
-const Header = () => {
-    const { user, login, logout } = useAuth();
-    const navigate = useNavigate();
+const Header = ({ isOwner }) => {
+  const { user, login, logout } = useAuth();
+  const navigate = useNavigate();
 
-    const handleAuthAction = () => {
-      if (user) {
-        logout();
-      } else {
-        login();
-      }
-    };
+  const handleAuthAction = () => {
+    if (user) {
+      logout();
+    } else {
+      login();
+    }
+  };
 
     return (
       <header className="app-header">
