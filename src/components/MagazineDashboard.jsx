@@ -37,9 +37,13 @@ const fetchAllMagazines = async () => {
     const publishedMagazinesRef = dbRef(db, `users/${user.uid}/magazines`);
     const publishedSnapshot = await get(publishedMagazinesRef);
     
-    // Fetch current draft
+    // Fetch regular template draft
     const draftRef = dbRef(db, `users/${user.uid}/draft`);
     const draftSnapshot = await get(draftRef);
+    
+    // Fetch custom template draft
+    const customDraftRef = dbRef(db, `users/${user.uid}/customTemplates/draft`);
+    const customDraftSnapshot = await get(customDraftRef);
     
     // Fetch custom template magazines
     const customTemplatesRef = dbRef(db, `users/${user.uid}/customTemplates/published`);
@@ -70,6 +74,20 @@ const fetchAllMagazines = async () => {
         createdAt: new Date(draftData.createdAt || Date.now()),
         isDraft: true,
         type: 'template' // Add type identifier
+      });
+    }
+
+    // Add custom template draft
+    if (customDraftSnapshot.exists()) {
+      const customDraftData = customDraftSnapshot.val();
+      allMagazines.push({
+        id: 'custom-template-draft',
+        ...customDraftData,
+        title: customDraftData.name || 'Custom Template Draft',
+        previewImageUrl: customDraftData.previewImageUrl || null,
+        createdAt: new Date(customDraftData.createdAt || Date.now()),
+        isDraft: true,
+        type: 'custom'
       });
     }
 

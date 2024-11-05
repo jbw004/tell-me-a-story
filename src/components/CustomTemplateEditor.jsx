@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import { React, useState, useCallback, useEffect } from 'react';  // Fixed import
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
@@ -27,6 +27,40 @@ const CustomTemplateEditor = () => {
   const [selectedElement, setSelectedElement] = useState(null);
   const [elements, setElements] = useState([]);
   const [dimensions, setDimensions] = useState(null);
+
+  useEffect(() => {
+    const loadDraft = async () => {
+      if (!user) return;
+
+      setIsLoading(true);
+      try {
+        const draftData = await loadCustomTemplateDraft(user.uid);
+        if (draftData) {
+          // Set PDF file
+          if (draftData.pdfUrl) {
+            setPdfFile(draftData.pdfUrl);
+          }
+          
+          // Set elements
+          if (draftData.elements) {
+            setElements(draftData.elements);
+          }
+          
+          // Set dimensions
+          if (draftData.dimensions) {
+            setDimensions(draftData.dimensions);
+          }
+        }
+      } catch (err) {
+        console.error('Error loading draft:', err);
+        setError('Failed to load saved draft');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadDraft();
+  }, [user]);
 
   const handleUpdateElement = (updatedElement) => {
     setElements(prev => prev.map(elem => 
