@@ -17,8 +17,10 @@ import {
   ref as storageRef, 
   uploadBytes, 
   getDownloadURL, 
-  deleteObject 
+  deleteObject,
+  listAll  // Add this import
 } from 'firebase/storage';
+
 
 export const publishMagazine = async (userId, magazineData) => {
   const db = getDatabase();
@@ -131,14 +133,6 @@ export const saveDraft = async (userId, draftData) => {
   return enhancedDraftData;
 };
 
-// Add this function to get magazine metadata
-export const getMagazineMetadata = async (userId, magazineId) => {
-  const db = getDatabase();
-  const magazineRef = ref(db, `users/${userId}/magazines/${magazineId}`);
-  const snapshot = await get(magazineRef);
-  return snapshot.val();
-};
-
 export const loadDraft = async (userId) => {
   const db = getDatabase();
   const draftRef = ref(db, `users/${userId}/draft`);
@@ -157,33 +151,73 @@ export const moveMagazineToDraft = async (userId, magazineId) => {
   const publishedMagazineRef = ref(db, `users/${userId}/magazines/${magazineId}`);
   const draftRef = ref(db, `users/${userId}/draft`);
 
-  // Read the published magazine
-  const snapshot = await get(publishedMagazineRef);
-  const magazineData = snapshot.val();
+  try {
+    const snapshot = await get(publishedMagazineRef);
+    const magazineData = snapshot.val();
 
-  if (!magazineData) {
-    throw new Error("Magazine not found");
+    if (!magazineData) {
+      throw new Error("Magazine not found");
+    }
+
+    if (magazineData.isCustomTemplate) {
+      throw new Error("Custom template magazines cannot be edited");
+    }
+
+    // Log the raw template data to debug
+    console.log('Published magazine templates:', magazineData.templates);
+
+    // Transform templates with null checks
+    const templatesArray = Object.entries(magazineData.templates || {})
+      .map(([index, template]) => {
+        // Log each template to debug
+        console.log(`Processing template ${index}:`, template);
+
+        const templateContent = template.htmlContent || template.content || '';
+        
+        if (!templateContent) {
+          console.warn(`No content found for template ${index}`);
+        }
+
+        return {
+          ...template,
+          uniqueId: template.uniqueId || template.id || Date.now().toString(),
+          content: templateContent,
+          // Remove fields we don't need in draft, but don't set to undefined
+          contentUrl: null,
+          htmlContent: null
+        };
+      })
+      .filter(template => template !== null); // Remove any null templates
+
+    console.log('Processed templates:', templatesArray);
+
+    const draftData = {
+      title: magazineData.title || 'Untitled Magazine',
+      templates: templatesArray,
+      uploadedImages: magazineData.uploadedImages || {},
+      textStyles: magazineData.textStyles || {},
+      backgroundStyles: magazineData.backgroundStyles || {},
+      lastUpdated: serverTimestamp()
+    };
+
+    // Log the final draft data
+    console.log('Final draft data:', draftData);
+
+    // Delete any existing draft first
+    await deleteDraft(userId);
+
+    // Save as new draft
+    await set(draftRef, draftData);
+
+    // Delete the published version
+    await remove(publishedMagazineRef);
+
+    return draftData;
+  } catch (error) {
+    console.error('Error moving magazine to draft:', error);
+    throw error;
   }
-
-  // Prepare the draft data
-  const draftData = {
-    title: magazineData.title,
-    userId: magazineData.userId,
-    templates: Object.values(magazineData.templates || {}).map(template => ({
-      ...template,
-      content: template.htmlContent || template.content // Use HTML content if available, fall back to URL content
-    }))
-  };
-
-  // Save as draft
-  await set(draftRef, draftData);
-
-  // Delete the published version
-  await remove(publishedMagazineRef);
-
-  return draftData;
 };
-
 // Custom Template Management Functions
 export const saveCustomTemplateDraft = async (userId, templateData) => {
   const db = getDatabase();

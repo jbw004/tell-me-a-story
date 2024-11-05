@@ -56,11 +56,23 @@ function EditorPage() {
           // First, try to load existing draft
           const draftData = await loadDraft(user.uid);
           if (draftData) {
+             // Ensure templates have the correct structure before setting them
+          const formattedTemplates = (draftData.templates || []).map(template => ({
+            ...template,
+            uniqueId: template.uniqueId || template.id || uuidv4(), // Ensure uniqueId exists
+            content: template.content || template.htmlContent, // Handle both content formats
+            id: template.id || template.templateId, // Ensure template id exists
+            isCustom: template.isCustom || false
+          }));
+            
             // Existing draft found, load it
             setSelectedTemplates(draftData.templates || []);
             setUploadedImages(draftData.uploadedImages || {});
             setTextStyles(draftData.textStyles || {});
             setBackgroundStyles(draftData.backgroundStyles || {});
+
+            // Log the formatted templates for debugging
+          console.log('Loaded templates:', formattedTemplates);
           } else {
             // No existing draft, check if there's unsaved work
             if (selectedTemplates.length > 0) {

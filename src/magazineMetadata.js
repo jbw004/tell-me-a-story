@@ -113,3 +113,44 @@ export const getMagazineMetadata = async (userId, magazineId) => {
     previewImageUrl: null
   };
 };
+
+export const updateDraftMetadata = async (userId, metadata) => {
+  if (!userId) {
+    throw new Error('User ID is required');
+  }
+
+  const db = getDatabase();
+  const draftRef = ref(db, `users/${userId}/draft/metadata`);
+  
+  const updates = {};
+  
+  if (metadata.title) {
+    const titleError = validateMagazineTitle(metadata.title);
+    if (titleError) {
+      throw new Error(titleError);
+    }
+    updates.title = metadata.title.trim();
+  }
+
+  updates.lastUpdated = Date.now();
+  if (metadata.convertedFromPublished) {
+    updates.convertedFromPublished = true;
+    updates.originalMagazineId = metadata.originalMagazineId;
+  }
+
+  await update(draftRef, updates);
+  return updates;
+};
+
+export const getDraftMetadata = async (userId) => {
+  const db = getDatabase();
+  const draftRef = ref(db, `users/${userId}/draft/metadata`);
+  const snapshot = await get(draftRef);
+  return snapshot.val() || {
+    title: 'My Magazine',
+    createdAt: Date.now(),
+    lastUpdated: Date.now(),
+    previewImageUrl: null,
+    convertedFromPublished: false
+  };
+};

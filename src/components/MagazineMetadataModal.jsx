@@ -28,15 +28,15 @@ const MagazineMetadataModal = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
-
+  
     if (!title.trim() || title.trim() === 'My Magazine') {
       setError('Please provide a custom title for your magazine');
       return;
     }
-
+  
     try {
-      await onSave({ title: title.trim(), previewImage });
-      onClose();
+      onClose(); // Close modal immediately
+      await onSave({ title: title.trim(), previewImage }); // Happens after modal is closed
     } catch (err) {
       setError(err.message);
     }

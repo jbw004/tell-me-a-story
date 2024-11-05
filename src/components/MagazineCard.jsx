@@ -1,15 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Clock, Edit2, Eye, MoreVertical, Share2, Trash2 } from "lucide-react";
-import { useNavigate } from 'react-router-dom';  // Add this import
+import { useNavigate } from 'react-router-dom';
+import EditConfirmationModal from './EditConfirmationModal';
+import { moveMagazineToDraft } from '../firebase';
 
-const MagazineCard = ({ magazine, onEdit, onView, onDelete, onShare }) => {
+const MagazineCard = ({ magazine, onDelete, onShare }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const menuRef = useRef(null);
-  const navigate = useNavigate();  // Add this hook
+  const navigate = useNavigate();
+  
   const hasCustomTemplate = magazine.isCustomTemplate || 
                           (magazine.templates && Object.values(magazine.templates)
                             .some(template => template.isCustom));
   const isPublished = !magazine.isDraft;
+  const canEdit = isPublished && !hasCustomTemplate;
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -25,14 +30,12 @@ const MagazineCard = ({ magazine, onEdit, onView, onDelete, onShare }) => {
   const handleView = (e) => {
     e.stopPropagation();
     if (magazine.isDraft) {
-      // For drafts, navigate to the appropriate editor
       if (magazine.type === 'custom') {
         navigate('/custom-template');
       } else {
-        navigate('/');  // This goes to EditorPage for regular template drafts
+        navigate('/');
       }
     } else {
-      // For published magazines, open in new tab as before
       const viewUrl = magazine.isCustomTemplate 
         ? `/custom-template/${magazine.userId}/${magazine.id}`
         : `/magazine/${magazine.userId}/${magazine.id}`;
@@ -40,7 +43,18 @@ const MagazineCard = ({ magazine, onEdit, onView, onDelete, onShare }) => {
     }
   };
 
+  const handleEdit = async () => {
+    try {
+      await moveMagazineToDraft(magazine.userId, magazine.id);
+      navigate('/'); // Redirect to editor
+    } catch (error) {
+      alert(error.message || "Failed to convert magazine to draft");
+    }
+    setShowEditModal(false);
+  };
+
   return (
+    <>
     <div className="bg-white rounded-lg overflow-visible shadow-sm hover:shadow-lg transition-all duration-200 border border-gray-200">
       <div className="relative w-full h-48 bg-gray-100">
       {magazine.previewImageUrl ? (
@@ -99,17 +113,14 @@ const MagazineCard = ({ magazine, onEdit, onView, onDelete, onShare }) => {
             </button>
             
             {menuOpen && (
-              <div 
-                className="absolute right-0 mt-2 w-36 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50"
-                style={{
-                  transform: 'translateX(-80%)'  // This will shift the menu to the left
-                }}
-              >
-                <div className="py-1">
+            <div className="absolute right-0 mt-2 w-36 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+              <div className="py-1">
+                {/* Only show edit for published non-custom magazines */}
+                {canEdit && (
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      onEdit(magazine.id);
+                      setShowEditModal(true);
                       setMenuOpen(false);
                     }}
                     className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
@@ -117,14 +128,15 @@ const MagazineCard = ({ magazine, onEdit, onView, onDelete, onShare }) => {
                     <Edit2 className="w-4 h-4" />
                     Edit
                   </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onShare?.(magazine.id);
-                      setMenuOpen(false);
-                    }}
-                    className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
-                  >
+                )}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onShare?.(magazine.id);
+                    setMenuOpen(false);
+                  }}
+                  className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                >
                     <Share2 className="w-4 h-4" />
                     Share
                   </button>
@@ -161,6 +173,13 @@ const MagazineCard = ({ magazine, onEdit, onView, onDelete, onShare }) => {
         </div>
       </div>
     </div>
+
+    <EditConfirmationModal
+      isOpen={showEditModal}
+      onClose={() => setShowEditModal(false)}
+      onConfirm={handleEdit}
+      />
+      </>
   );
 };
 
