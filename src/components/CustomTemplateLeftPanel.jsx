@@ -93,6 +93,16 @@ const CustomTemplateLeftPanel = ({
 
   return (
     <div className="LeftPanel">
+      {/* Navigation button to main editor */}
+      <div className="panel-section">
+        <button 
+          onClick={() => navigate('/editor')}
+          className="custom-template-button"
+        >
+          <span className="custom-template-icon">📖</span>
+          Zine Templates
+        </button>
+      </div>
       <h2 className="panel-header">Interactive Elements</h2>
       <div className="panel-section">
         <div className="templates-list">
@@ -138,51 +148,59 @@ const CustomTemplateLeftPanel = ({
       </div>
 
       {/* Action Buttons Section */}
-      {user && (
-        <div className="panel-section">
-          <div className="action-buttons">
-            {/* Publish Button */}
+      <div className="panel-section">
+        <div className="action-buttons">
+          {user ? (
+            <>
+              <button
+                onClick={handlePublishClick}
+                disabled={publishing || isLoading}
+                className="action-button publish-button"
+              >
+                {publishing ? (
+                  <Oval
+                    height={20}
+                    width={20}
+                    color="#ffffff"
+                    visible={true}
+                    ariaLabel='publishing'
+                    secondaryColor="#4fa94d"
+                    strokeWidth={2}
+                    strokeWidthSecondary={2}
+                  />
+                ) : (
+                  'Publish'
+                )}
+              </button>
+
+              <button 
+                onClick={onSaveDraft}
+                disabled={isLoading}
+                className="action-button save-draft-button"
+              >
+                {isLoading ? 'Saving...' : 'Save Draft'}
+              </button>
+
+              <button 
+                onClick={handleDiscardDraft}
+                disabled={isLoading || publishing}
+                className="action-button discard-draft-button"
+              >
+                Discard Draft
+              </button>
+            </>
+          ) : (
             <button
-              onClick={handlePublishClick}  // Change from handlePublish to handlePublishClick
-              disabled={publishing || isLoading}
-              className="action-button publish-button"
+              disabled={true}
+              className="action-button login-button"
+              style={{ opacity: 0.6, cursor: 'not-allowed' }}
             >
-              {publishing ? (
-                <Oval
-                  height={20}
-                  width={20}
-                  color="#ffffff"
-                  visible={true}
-                  ariaLabel='publishing'
-                  secondaryColor="#4fa94d"
-                  strokeWidth={2}
-                  strokeWidthSecondary={2}
-                />
-              ) : (
-                'Publish'
-              )}
+              Login to Save & Publish
             </button>
-
-            {/* Save Draft Button */}
-            <button 
-              onClick={onSaveDraft}
-              disabled={isLoading}
-              className="action-button save-draft-button"
-            >
-              {isLoading ? 'Saving...' : 'Save Draft'}
-            </button>
-
-            {/* Discard Draft Button */}
-            <button 
-              onClick={handleDiscardDraft}
-              disabled={isLoading || publishing}
-              className="action-button discard-draft-button"
-            >
-              Discard Draft
-            </button>
+          )}
           </div>
         </div>
-      )}
+
       <MagazineMetadataModal
         isOpen={showMetadataModal}
         onClose={() => setShowMetadataModal(false)}

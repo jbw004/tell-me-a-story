@@ -70,11 +70,6 @@ const CustomTemplateEditor = () => {
   };
 
   const onDrop = useCallback(async (acceptedFiles) => {
-    if (!user) {
-      setError('Please log in to upload PDFs');
-      return;
-    }
-
     const file = acceptedFiles[0];
     setPdfError(null);
     
@@ -82,36 +77,39 @@ const CustomTemplateEditor = () => {
       setError('Please upload a PDF file');
       return;
     }
-
+  
     if (file.size > 15 * 1024 * 1024) {
       setError('File size must be less than 15MB');
       return;
     }
-
+  
     setIsLoading(true);
     setError(null);
-
+  
     try {
-      // Upload to Firebase Storage
-      const storageRef = ref(
-        storage, 
-        `users/${user.uid}/customTemplates/draft/template.pdf`
-      );
-      
-      await uploadBytes(storageRef, file);
-      const downloadUrl = await getDownloadURL(storageRef);
-      
-      // Set the Firebase URL instead of blob URL
-      setPdfFile(downloadUrl);
-      
-      // Save draft immediately after upload
-      await saveCustomTemplateDraft(user.uid, {
-        pdfUrl: downloadUrl,
-        elements: elements,
-        dimensions: dimensions,
-        name: 'Custom Template'
-      });
-      
+      if (user) {
+        // If user is authenticated, save to Firebase
+        const storageRef = ref(
+          storage, 
+          `users/${user.uid}/customTemplates/draft/template.pdf`
+        );
+        
+        await uploadBytes(storageRef, file);
+        const downloadUrl = await getDownloadURL(storageRef);
+        setPdfFile(downloadUrl);
+        
+        // Save draft immediately after upload
+        await saveCustomTemplateDraft(user.uid, {
+          pdfUrl: downloadUrl,
+          elements,
+          dimensions,
+          name: 'Custom Template'
+        });
+      } else {
+        // If user is not authenticated, use local file URL
+        const fileUrl = URL.createObjectURL(file);
+        setPdfFile(fileUrl);
+      }
     } catch (err) {
       console.error('Error uploading PDF:', err);
       setError('Failed to upload PDF');

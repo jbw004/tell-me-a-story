@@ -38,9 +38,9 @@ const MagazineCard = ({ magazine, onDelete, onShare }) => {
     e.stopPropagation();
     if (magazine.isDraft) {
       if (magazine.type === 'custom') {
-        navigate('/custom-template');
-      } else {
         navigate('/');
+      } else {
+        navigate('/editor');
       }
     } else {
       const viewUrl = magazine.isCustomTemplate 
@@ -53,7 +53,7 @@ const MagazineCard = ({ magazine, onDelete, onShare }) => {
   const handleEdit = async () => {
     try {
       await moveMagazineToDraft(magazine.userId, magazine.id);
-      navigate('/'); // Redirect to editor
+      navigate('/editor'); // Redirect to editor
     } catch (error) {
       alert(error.message || "Failed to convert magazine to draft");
     }

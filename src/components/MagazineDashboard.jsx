@@ -177,7 +177,7 @@ const fetchAllMagazines = async () => {
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-4">
           <Button 
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/editor')}
             variant="ghost"
             className="p-2"
           >
@@ -186,7 +186,7 @@ const fetchAllMagazines = async () => {
           <h1 className="text-2xl font-bold">Your Magazines</h1>
         </div>
         <Button 
-          onClick={() => navigate('/')} 
+          onClick={() => navigate('/editor')} 
           style={{ backgroundColor: '#6200ee' }}
           className="flex items-center gap-2 hover:opacity-80"
         >

@@ -18,9 +18,9 @@ const AppRoutes = () => {
     <div className="App">
       {!isViewerRoute && <Header />}
       <Routes>
-        <Route path="/" element={<EditorPage />} />
+        <Route path="/" element={<CustomTemplateEditor />} />
+        <Route path="/editor" element={<EditorPage />} />
         <Route path="/magazine/:userId/:magazineId" element={<StandaloneMagazine />} />
-        <Route path="/custom-template" element={<CustomTemplateEditor />} />
         <Route path="/dashboard" element={<MagazineDashboard />} />
         <Route path="/custom-template/:userId/:templateId" element={<CustomTemplateViewer />} />
       </Routes>

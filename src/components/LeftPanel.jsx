@@ -23,18 +23,16 @@ function LeftPanel({ magazines, onMagazineSelect, selectedMagazine, onTemplateSe
 
   return (
     <div className="LeftPanel">
-      {/* Premium Feature Section */}
-      {user && (
-        <div className="panel-section">
-          <button 
-            onClick={() => navigate('/custom-template')}
-            className="custom-template-button"
-          >
-            <span className="custom-template-icon">✨</span>
-            Create Custom Template
-          </button>
-        </div>
-      )}
+      {/* Custom Template Section */}
+      <div className="panel-section">
+        <button 
+          onClick={() => navigate('/')}
+          className="custom-template-button"
+        >
+          <span className="custom-template-icon">✨</span>
+          Create Custom Template
+        </button>
+      </div>
       
       {/* Styles Section */}
       <div className="panel-section">
