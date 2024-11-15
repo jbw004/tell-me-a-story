@@ -9,6 +9,8 @@ import { useAuth } from '../AuthContext';
 import CustomTemplateLeftPanel from './CustomTemplateLeftPanel';
 import CustomTemplateRightPanel from './CustomTemplateRightPanel';
 import { saveCustomTemplateDraft, loadCustomTemplateDraft } from '../firebase';
+import useMobileDetect from '../useMobileDetect';  // Add this import
+import MobileWarningModal from './MobileWarningModal';  // Add this import
 
 
 
@@ -27,6 +29,14 @@ const CustomTemplateEditor = () => {
   const [selectedElement, setSelectedElement] = useState(null);
   const [elements, setElements] = useState([]);
   const [dimensions, setDimensions] = useState(null);
+  const isMobile = useMobileDetect();
+  const [showMobileWarning, setShowMobileWarning] = useState(false);
+
+  useEffect(() => {
+    if (isMobile) {
+      setShowMobileWarning(true);
+    }
+  }, [isMobile]);
 
   useEffect(() => {
     const loadDraft = async () => {
@@ -250,6 +260,11 @@ const CustomTemplateEditor = () => {
   }, [user]);
 
   return (
+    <>
+      <MobileWarningModal 
+        open={showMobileWarning} 
+        onClose={() => setShowMobileWarning(false)} 
+      />
     <div className="App">
       <CustomTemplateLeftPanel 
       onSaveDraft={handleSaveDraft}
@@ -352,6 +367,7 @@ const CustomTemplateEditor = () => {
         onUpdateElement={handleUpdateElement}
       />
     </div>
+  </>
   );
 };
 
