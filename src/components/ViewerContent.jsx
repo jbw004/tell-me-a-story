@@ -19,6 +19,8 @@ const ViewerContent = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [numPages, setNumPages] = useState(null);
+  const [isHighResLoaded, setIsHighResLoaded] = useState(false);
+  const [currentPdfUrl, setCurrentPdfUrl] = useState(null);
   const navigate = useNavigate();
   const { userId, templateId } = useParams();
   const { user } = useAuth();
@@ -56,6 +58,19 @@ const ViewerContent = () => {
           ...templateData,
           elements: templateData.elements || []
         });
+
+        // Start with low-res version if available
+        setCurrentPdfUrl(templateData.pdfLowResUrl || templateData.pdfUrl);
+
+        // Preload high-res version if low-res is being shown
+        if (templateData.pdfLowResUrl && templateData.pdfUrl) {
+          const preloadHighRes = new Image();
+          preloadHighRes.onload = () => {
+            setCurrentPdfUrl(templateData.pdfUrl);
+            setIsHighResLoaded(true);
+          };
+          preloadHighRes.src = templateData.pdfUrl;
+        }
       } catch (err) {
         console.error("Error fetching template:", err);
         setError("Failed to load template");
@@ -222,15 +237,15 @@ const handleStickerMove = async (stickerId, e, pageNumber) => {
         WebkitOverflowScrolling: 'touch',
       }}>
         <div className="pdf-viewer">
-          <Document
-            file={template.pdfUrl}
+        <Document
+            file={currentPdfUrl}  // Changed from template.pdfUrl to use currentPdfUrl
             onLoadSuccess={({ numPages }) => setNumPages(numPages)}
             loading={
-              <div style={{ padding: '20px', textAlign: 'center' }}>
+                <div style={{ padding: '20px', textAlign: 'center' }}>
                 <Oval height={40} width={40} color="#4fa94d" />
-              </div>
+                </div>
             }
-          >
+            >
             {Array.from(new Array(numPages), (el, index) => (
               <div 
                 key={`page_${index + 1}`} 

@@ -20,6 +20,29 @@ import {
   deleteObject,
   listAll  // Add this import
 } from 'firebase/storage';
+import { PDFDocument } from 'pdf-lib';
+
+async function createLowResVersion(pdfBlob) {
+  const arrayBuffer = await pdfBlob.arrayBuffer();
+  const pdfDoc = await PDFDocument.load(arrayBuffer);
+  
+  const lowResDoc = await PDFDocument.create();
+  
+  for (let i = 0; i < pdfDoc.getPageCount(); i++) {
+    const [page] = await lowResDoc.copyPages(pdfDoc, [i]);
+    lowResDoc.addPage(page);
+  }
+  
+  const lowResBytes = await lowResDoc.save({
+    useObjectStreams: false,
+    addDefaultPage: false,
+    compress: true,
+    objectsPerTick: 20,
+    updateFieldAppearances: false
+  });
+  
+  return new Blob([lowResBytes], { type: 'application/pdf' });
+}
 
 export const saveSticker = async (userId, templateId, stickerData) => {
   const db = getDatabase();
@@ -421,15 +444,41 @@ export const deleteCustomTemplateDraft = async (userId) => {
 // In firebase.js, update the publishCustomTemplate function:
 export const publishCustomTemplate = async (userId, templateData) => {
   console.log('Publishing template with data:', templateData);
-
   const db = getDatabase();
   const storage = getStorage();
-  
   const templateId = templateData.id || Date.now().toString();
-  let previewImageUrl = null;
   
   try {
+    // Get PDF data
+    let pdfBlob;
+    if (templateData.pdfUrl) {
+      const response = await fetch(templateData.pdfUrl);
+      pdfBlob = await response.blob();
+    } else if (templateData.pdfFile) {
+      pdfBlob = templateData.pdfFile;
+    } else {
+      throw new Error('No PDF file found');
+    }
+
+    // Create and upload low-res version
+    const lowResBlob = await createLowResVersion(pdfBlob);
+    const lowResRef = storageRef(
+      storage, 
+      `users/${userId}/customTemplates/published/${templateId}/template-lowres.pdf`
+    );
+    await uploadBytes(lowResRef, lowResBlob);
+    const lowResUrl = await getDownloadURL(lowResRef);
+
+    // Upload original high-res version
+    const publishedPdfRef = storageRef(
+      storage, 
+      `users/${userId}/customTemplates/published/${templateId}/template.pdf`
+    );
+    await uploadBytes(publishedPdfRef, pdfBlob);
+    const publishedPdfUrl = await getDownloadURL(publishedPdfRef);
+
     // Handle preview image if provided
+    let previewImageUrl = null;
     if (templateData.previewImage) {
       const previewImageRef = storageRef(
         storage, 
@@ -439,20 +488,6 @@ export const publishCustomTemplate = async (userId, templateData) => {
       previewImageUrl = await getDownloadURL(previewImageRef);
     }
 
-    // Handle PDF upload
-    const publishedPdfRef = storageRef(
-      storage, 
-      `users/${userId}/customTemplates/published/${templateId}/template.pdf`
-    );
-    
-    if (templateData.pdfUrl) {
-      const response = await fetch(templateData.pdfUrl);
-      const pdfBlob = await response.blob();
-      await uploadBytes(publishedPdfRef, pdfBlob);
-    }
-    
-    const publishedPdfUrl = await getDownloadURL(publishedPdfRef);
-    
     // Clean and validate elements array
     const cleanElements = (templateData.elements || []).map(element => ({
       id: element.id,
@@ -473,8 +508,9 @@ export const publishCustomTemplate = async (userId, templateData) => {
     const publishedData = {
       id: templateId,
       name: templateData.name || 'Untitled Template',
-      pdfUrl: publishedPdfUrl,
-      previewImageUrl, // Add this line
+      pdfUrl: publishedPdfUrl,        // High-res version
+      pdfLowResUrl: lowResUrl,        // Low-res version
+      previewImageUrl,
       dimensions: templateData.dimensions || null,
       elements: cleanElements,
       publishedAt: serverTimestamp(),
@@ -482,9 +518,9 @@ export const publishCustomTemplate = async (userId, templateData) => {
     };
 
     console.log('Saving published data:', publishedData);
-    
     await set(publishedRef, publishedData);
     await deleteCustomTemplateDraft(userId);
+    
     return publishedData;
   } catch (error) {
     console.error('Error in publishCustomTemplate:', error);
@@ -496,7 +532,14 @@ export const loadPublishedCustomTemplate = async (userId, templateId) => {
   const db = getDatabase();
   const publishedRef = ref(db, `users/${userId}/customTemplates/published/${templateId}`);
   const snapshot = await get(publishedRef);
-  return snapshot.val();
+  const data = snapshot.val();
+  
+  // Ensure both URLs are available in the returned data
+  return data ? {
+    ...data,
+    pdfUrl: data.pdfUrl || null,
+    pdfLowResUrl: data.pdfLowResUrl || data.pdfUrl || null  // Fallback to high-res if low-res not available
+  } : null;
 };
 
 export const deletePublishedCustomTemplate = async (userId, templateId) => {
@@ -509,10 +552,13 @@ export const deletePublishedCustomTemplate = async (userId, templateId) => {
   
   // Delete from Storage
   const pdfRef = storageRef(storage, `users/${userId}/customTemplates/published/${templateId}/template.pdf`);
+  const lowResPdfRef = storageRef(storage, `users/${userId}/customTemplates/published/${templateId}/template-lowres.pdf`);
+  
   try {
     await deleteObject(pdfRef);
+    await deleteObject(lowResPdfRef);
   } catch (error) {
-    console.log('PDF file may not exist:', error);
+    console.log('One or more PDF files may not exist:', error);
   }
 };
 
