@@ -21,6 +21,92 @@ import {
   listAll  // Add this import
 } from 'firebase/storage';
 
+export const saveSticker = async (userId, templateId, stickerData) => {
+  const db = getDatabase();
+  const stickerRef = ref(
+    db, 
+    `users/${userId}/customTemplates/published/${templateId}/stickers/${stickerData.id}`
+  );
+  
+  try {
+    await set(stickerRef, {
+      ...stickerData,
+      timestamp: serverTimestamp()
+    });
+    return stickerData.id;
+  } catch (error) {
+    console.error('Error saving sticker:', error);
+    throw error;
+  }
+};
+
+export const loadTemplateStickers = async (userId, templateId) => {
+  const db = getDatabase();
+  const stickersRef = ref(
+    db, 
+    `users/${userId}/customTemplates/published/${templateId}/stickers`
+  );
+  
+  try {
+    const snapshot = await get(stickersRef);
+    if (snapshot.exists()) {
+      return Object.values(snapshot.val());
+    }
+    return [];
+  } catch (error) {
+    console.error('Error loading stickers:', error);
+    throw error;
+  }
+};
+
+export const updateStickerPosition = async (userId, templateId, stickerId, position) => {
+  const db = getDatabase();
+  const stickerRef = ref(
+    db, 
+    `users/${userId}/customTemplates/published/${templateId}/stickers/${stickerId}`
+  );
+  
+  try {
+    await update(stickerRef, {
+      ...position,
+      timestamp: serverTimestamp()
+    });
+  } catch (error) {
+    console.error('Error updating sticker position:', error);
+    throw error;
+  }
+};
+
+export const toggleStickerSupport = async (userId, templateId, enabled) => {
+  const db = getDatabase();
+  const templateRef = ref(
+    db, 
+    `users/${userId}/customTemplates/published/${templateId}/stickerSupport`
+  );
+  
+  try {
+    await set(templateRef, enabled);
+  } catch (error) {
+    console.error('Error toggling sticker support:', error);
+    throw error;
+  }
+};
+
+export const isStickerSupportEnabled = async (userId, templateId) => {
+  const db = getDatabase();
+  const templateRef = ref(
+    db, 
+    `users/${userId}/customTemplates/published/${templateId}/stickerSupport`
+  );
+  
+  try {
+    const snapshot = await get(templateRef);
+    return snapshot.exists() ? snapshot.val() : false;
+  } catch (error) {
+    console.error('Error checking sticker support:', error);
+    throw error;
+  }
+};
 
 export const publishMagazine = async (userId, magazineData) => {
   const db = getDatabase();
