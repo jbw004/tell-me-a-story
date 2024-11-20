@@ -44,25 +44,35 @@ async function createLowResVersion(pdfBlob) {
   return new Blob([lowResBytes], { type: 'application/pdf' });
 }
 
-export const saveSticker = async (userId, templateId, stickerData) => {
+export const loadCreatorSubscription = async (userId) => {
   const db = getDatabase();
-  const stickerRef = ref(
-    db, 
-    `users/${userId}/customTemplates/published/${templateId}/stickers/${stickerData.id}`
-  );
+  const subscriptionRef = ref(db, `users/${userId}/subscription`);
   
   try {
-    await set(stickerRef, {
-      ...stickerData,
-      timestamp: serverTimestamp()
-    });
-    return stickerData.id;
+    const snapshot = await get(subscriptionRef);
+    return snapshot.exists() ? snapshot.val() : null;
   } catch (error) {
-    console.error('Error saving sticker:', error);
+    console.error('Error loading subscription:', error);
     throw error;
   }
 };
 
+export const updateCreatorSubscription = async (userId, subscriptionData) => {
+  const db = getDatabase();
+  const subscriptionRef = ref(db, `users/${userId}/subscription`);
+  
+  try {
+    await set(subscriptionRef, {
+      ...subscriptionData,
+      updatedAt: serverTimestamp()
+    });
+  } catch (error) {
+    console.error('Error updating subscription:', error);
+    throw error;
+  }
+};
+
+// In firebase.js, update this existing function
 export const loadTemplateStickers = async (userId, templateId) => {
   const db = getDatabase();
   const stickersRef = ref(
@@ -73,44 +83,16 @@ export const loadTemplateStickers = async (userId, templateId) => {
   try {
     const snapshot = await get(stickersRef);
     if (snapshot.exists()) {
-      return Object.values(snapshot.val());
+      const stickers = Object.entries(snapshot.val()).map(([key, sticker]) => ({
+        ...sticker,
+        id: key, // Use Firebase key as ID
+        paymentIntentId: sticker.paymentIntentId // Include payment ID
+      }));
+      return stickers;
     }
     return [];
   } catch (error) {
     console.error('Error loading stickers:', error);
-    throw error;
-  }
-};
-
-export const updateStickerPosition = async (userId, templateId, stickerId, position) => {
-  const db = getDatabase();
-  const stickerRef = ref(
-    db, 
-    `users/${userId}/customTemplates/published/${templateId}/stickers/${stickerId}`
-  );
-  
-  try {
-    await update(stickerRef, {
-      ...position,
-      timestamp: serverTimestamp()
-    });
-  } catch (error) {
-    console.error('Error updating sticker position:', error);
-    throw error;
-  }
-};
-
-export const toggleStickerSupport = async (userId, templateId, enabled) => {
-  const db = getDatabase();
-  const templateRef = ref(
-    db, 
-    `users/${userId}/customTemplates/published/${templateId}/stickerSupport`
-  );
-  
-  try {
-    await set(templateRef, enabled);
-  } catch (error) {
-    console.error('Error toggling sticker support:', error);
     throw error;
   }
 };
@@ -443,6 +425,8 @@ export const deleteCustomTemplateDraft = async (userId) => {
 
 // In firebase.js, update the publishCustomTemplate function:
 export const publishCustomTemplate = async (userId, templateData) => {
+  const subscription = await loadCreatorSubscription(userId);
+  const stickerSupportEnabled = subscription?.status === 'active';
   console.log('Publishing template with data:', templateData);
   const db = getDatabase();
   const storage = getStorage();
@@ -514,7 +498,8 @@ export const publishCustomTemplate = async (userId, templateData) => {
       dimensions: templateData.dimensions || null,
       elements: cleanElements,
       publishedAt: serverTimestamp(),
-      userId
+      userId,
+      stickerSupport: stickerSupportEnabled
     };
 
     console.log('Saving published data:', publishedData);

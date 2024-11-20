@@ -1,3 +1,4 @@
+import SubscriptionManager from './SubscriptionManager';
 import React, { useState } from 'react';
 import { 
   publishCustomTemplate, 
@@ -149,6 +150,7 @@ const CustomTemplateLeftPanel = ({
 
       {/* Action Buttons Section */}
       <div className="panel-section">
+        {user && <SubscriptionManager />}
         <div className="action-buttons">
           {user ? (
             <>

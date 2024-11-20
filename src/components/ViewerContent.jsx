@@ -4,15 +4,14 @@ import { Document, Page } from 'react-pdf';
 import { Oval } from 'react-loader-spinner';
 import { useAuth } from '../AuthContext';
 import { 
-    loadPublishedCustomTemplate,
-    loadTemplateStickers,
-    saveSticker,
-    updateStickerPosition,
-    isStickerSupportEnabled
-  } from '../firebase';
+  loadPublishedCustomTemplate,
+  loadTemplateStickers,
+  isStickerSupportEnabled
+} from '../firebase';
 import StickerStore from './StickerStore';
 import PlacedSticker from './PlacedSticker';
 import { useStickers } from './StickerContext';
+import { getFunctions, httpsCallable } from 'firebase/functions';
 
 const ViewerContent = () => {
   const [template, setTemplate] = useState(null);
@@ -32,6 +31,7 @@ const ViewerContent = () => {
     placedStickers,
     setPlacedStickers
   } = useStickers();
+  const [purchasedStickerInfo, setPurchasedStickerInfo] = useState(null);
   const [isStickerEnabled, setIsStickerEnabled] = useState(false);
 
 
@@ -106,14 +106,30 @@ const ViewerContent = () => {
 
 
 const handlePageClick = async (e, pageNumber) => {
-    if (!selectedSticker || !isStickerEnabled) return;
+  if (!selectedSticker || !isStickerEnabled || !purchasedStickerInfo) return;
 
-    const pageElement = e.currentTarget;
-    const rect = pageElement.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+  const pageElement = e.currentTarget;
+  const rect = pageElement.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
 
-    const newSticker = {
+  try {
+    const functions = getFunctions();
+    const placePurchasedSticker = httpsCallable(functions, 'placePurchasedSticker');
+    
+    const result = await placePurchasedSticker({
+      magazineId: templateId,
+      creatorId: userId,
+      stickerType: selectedSticker,
+      x,
+      y,
+      pageNumber,
+      paymentIntentId: purchasedStickerInfo.paymentIntentId
+    });
+
+    if (result.data.success) {
+      // Add to local state
+      const newSticker = {
         id: Date.now().toString(),
         type: selectedSticker,
         pageNumber,
@@ -121,19 +137,17 @@ const handlePageClick = async (e, pageNumber) => {
         y,
         placedBy: 'session',
         timestamp: new Date().toISOString()
-    };
+      };
 
-    try {
-        // Save to Firebase first
-        await saveSticker(userId, templateId, newSticker);
-        
-        // Then update local state
-        setPlacedStickers(prev => [...prev, newSticker]);
-        setSessionStickers(prev => [...prev, newSticker.id]);
-        setSelectedSticker(null);
-    } catch (err) {
-        console.error("Error saving sticker:", err);
+      setPlacedStickers(prev => [...prev, newSticker]);
+      setSessionStickers(prev => [...prev, newSticker.id]);
+      setSelectedSticker(null);
+      setPurchasedStickerInfo(null);
     }
+  } catch (err) {
+    console.error("Error placing sticker:", err);
+    // You might want to show an error message to the user
+  }
 };
 
 
@@ -232,6 +246,13 @@ const handleStickerMove = async (stickerId, e, pageNumber) => {
           Dashboard
         </button>
       )}
+
+        {selectedSticker && purchasedStickerInfo && (
+          <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-50 text-green-800 px-4 py-2 rounded-md shadow-lg z-50">
+            Click anywhere on the page to place your sticker
+          </div>
+        )}
+
       <div className="viewer-main-content" style={{
         overscrollBehavior: 'auto',
         WebkitOverflowScrolling: 'touch',
@@ -308,9 +329,15 @@ const handleStickerMove = async (stickerId, e, pageNumber) => {
 
       {isStickerEnabled && !isOwner && (
         <StickerStore
-            onStickerSelect={setSelectedSticker}
-            isEnabled={true}
-        />
+        onStickerSelect={({ stickerId, paymentIntentId }) => {
+          setPurchasedStickerInfo({ stickerId, paymentIntentId });
+          setSelectedSticker(stickerId);
+        }}
+        isEnabled={isStickerEnabled}
+        creatorId={userId}
+        magazineId={templateId}
+        requiresPayment={!isOwner}
+      />
         )}
     </div>
   );
