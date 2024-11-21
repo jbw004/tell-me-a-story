@@ -6,6 +6,7 @@ import { loadCreatorSubscription } from '../firebase';
 import { getDatabase, ref, get, onValue } from 'firebase/database';
 
 // Initialize Stripe outside component to avoid recreation
+console.log('Stripe Key:', import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 const functions = getFunctions();
 
