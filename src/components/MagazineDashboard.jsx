@@ -13,6 +13,7 @@ import {
 import { Oval } from 'react-loader-spinner';
 import { useAuth } from '../AuthContext';
 import MagazineCard from './MagazineCard';
+import EarningsPanel from './EarningsPanel';
 
 const MagazineDashboard = () => {
   const { user } = useAuth();
@@ -195,6 +196,15 @@ const fetchAllMagazines = async () => {
         </Button>
       </div>
 
+      {/* Add this grid layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        {/* Earnings Panel */}
+        <div className="lg:col-span-1">
+          <EarningsPanel />
+        </div>
+        
+        {/* Magazines section */}
+        <div className="lg:col-span-2"> 
       <div className="flex gap-2 mb-6 p-1">
         <FilterButton value="all" icon={Folder}>
           All Magazines
@@ -253,6 +263,8 @@ const fetchAllMagazines = async () => {
         )}
       </div>
     </div>
+  </div>
+</div>
   );
 };
 
