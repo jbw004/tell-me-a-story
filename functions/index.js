@@ -230,6 +230,8 @@ exports.placePurchasedSticker = functions.https.onCall(async (data, context) => 
 
 // Single webhook handler for all Stripe events
 exports.handleStripeWebhook = functions.https.onRequest(async (req, res) => {
+  console.log('Webhook received. Headers:', JSON.stringify(req.headers));  // Add this
+
   const signature = req.headers['stripe-signature'];
   let event;
 
@@ -239,6 +241,7 @@ exports.handleStripeWebhook = functions.https.onRequest(async (req, res) => {
       signature,
       functions.config().stripe.webhook_secret
     );
+    console.log('Webhook event constructed successfully:', event.type);  // Add this
   } catch (err) {
     console.error('Webhook signature verification failed:', err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
@@ -301,13 +304,10 @@ exports.handleStripeWebhook = functions.https.onRequest(async (req, res) => {
         const subscription = event.data.object;
         const customerId = subscription.customer;
         
-        // Add these detailed logs
-        console.log('Subscription created webhook received:', {
-          subscriptionId: subscription.id,
-          status: subscription.status,
-          customerId: subscription.customer,
-          priceId: subscription.items.data[0].price.id,
-          currentPeriodEnd: subscription.current_period_end
+        console.log('Processing subscription.created webhook:', {
+          eventId: event.id,
+          type: event.type,
+          subscriptionId: subscription.id
         });
         
         try {
@@ -315,13 +315,26 @@ exports.handleStripeWebhook = functions.https.onRequest(async (req, res) => {
           const customer = await stripe.customers.retrieve(customerId);
           const userId = customer.metadata.firebaseUID;
       
-          // Add log after customer retrieve
-          console.log('Retrieved customer data:', {
+          console.log('Preparing to write subscription data:', {
             userId,
-            customerEmail: customer.email
+            status: subscription.status,
+            priceId: subscription.items.data[0].price.id
           });
-          // Check if they already have a Connect account
+      
           const db = admin.database();
+          
+          // Write subscription data first
+          const subscriptionRef = db.ref(`users/${userId}/subscription`);
+          await subscriptionRef.set({
+            status: subscription.status,
+            priceId: subscription.items.data[0].price.id,
+            currentPeriodEnd: subscription.current_period_end,
+            updatedAt: admin.database.ServerValue.TIMESTAMP
+          });
+          
+          console.log('Successfully wrote subscription data to path:', `users/${userId}/subscription`);
+      
+          // Then handle Connect account setup
           const connectRef = db.ref(`users/${userId}/stripe_connect`);
           const connectSnapshot = await connectRef.once('value');
           
@@ -329,7 +342,7 @@ exports.handleStripeWebhook = functions.https.onRequest(async (req, res) => {
             // Create Connect Express account
             const account = await stripe.accounts.create({
               type: 'express',
-              country: 'US', // You might want to make this dynamic based on user data
+              country: 'US',
               capabilities: {
                 transfers: { requested: true },
               },
@@ -339,12 +352,12 @@ exports.handleStripeWebhook = functions.https.onRequest(async (req, res) => {
               settings: {
                 payouts: {
                   schedule: {
-                    interval: 'manual' // Start with manual payouts for safety
+                    interval: 'manual'
                   }
                 }
               }
             });
-
+      
             // Create account link for onboarding
             const accountLink = await stripe.accountLinks.create({
               account: account.id,
@@ -352,31 +365,23 @@ exports.handleStripeWebhook = functions.https.onRequest(async (req, res) => {
               return_url: `${functions.config().public.url}/dashboard/connect/return`,
               type: 'account_onboarding'
             });
-
+      
             // Store Connect account info
             await connectRef.set({
               accountId: account.id,
               onboardingComplete: false,
               payoutEnabled: false,
               createdAt: admin.database.ServerValue.TIMESTAMP,
-              onboardingUrl: accountLink.url // Store this temporarily
+              onboardingUrl: accountLink.url
             });
-
+      
             // Store this URL where the frontend can access it
             await db.ref(`users/${userId}/pendingActions/connectOnboarding`).set({
               url: accountLink.url,
-              expires: Date.now() + (24 * 60 * 60 * 1000) // 24 hours
+              expires: Date.now() + (24 * 60 * 60 * 1000)
             });
           }
-
-          // Update subscription status as before
-          await db.ref(`users/${userId}/subscription`).set({
-            status: subscription.status,
-            priceId: subscription.items.data[0].price.id,
-            currentPeriodEnd: subscription.current_period_end,
-            updatedAt: admin.database.ServerValue.TIMESTAMP
-          });
-
+      
         } catch (error) {
           console.error('Error in subscription creation:', error);
           // Don't throw - we still want to return 200 to Stripe
