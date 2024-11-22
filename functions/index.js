@@ -457,6 +457,14 @@ exports.handleStripeWebhook = functions.https.onRequest(async (req, res) => {
         const account = event.data.object;
         const userId = account.metadata.firebaseUID;
         
+        console.log('Received account.updated webhook:', {  // Add this logging
+          accountId: account.id,
+          userId: userId,
+          details_submitted: account.details_submitted,
+          payouts_enabled: account.payouts_enabled,
+          charges_enabled: account.charges_enabled
+        });
+        
         if (userId) {
           const db = admin.database();
           const connectRef = db.ref(`users/${userId}/stripe_connect`);
@@ -467,6 +475,16 @@ exports.handleStripeWebhook = functions.https.onRequest(async (req, res) => {
             lastUpdated: admin.database.ServerValue.TIMESTAMP,
             chargesEnabled: account.charges_enabled,
             requiresAction: !account.details_submitted || !account.payouts_enabled
+          });
+      
+          // Add confirmation log
+          console.log('Updated Connect account status in Firebase:', {
+            path: `users/${userId}/stripe_connect`,
+            status: {
+              onboardingComplete: account.details_submitted,
+              payoutEnabled: account.payouts_enabled,
+              chargesEnabled: account.charges_enabled
+            }
           });
 
           // Clean up pending action if onboarding is complete
