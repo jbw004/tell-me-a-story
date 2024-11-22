@@ -202,6 +202,45 @@ export const updateMagazineMetadata = async (userId, magazineId, updates) => {
   }
 };
 
+// Add this with your other exports
+export const loadStickerEarnings = async (userId) => {
+  const db = getDatabase();
+  const earningsRef = ref(db, `users/${userId}/sticker_earnings`);
+  
+  try {
+    const snapshot = await get(earningsRef);
+    if (snapshot.exists()) {
+      return Object.entries(snapshot.val()).map(([id, data]) => ({
+        id,
+        ...data,
+        amount: data.amount / 100, // Convert cents to dollars
+        date: new Date(data.purchasedAt)
+      }));
+    }
+    return [];
+  } catch (error) {
+    console.error('Error loading sticker earnings:', error);
+    throw error;
+  }
+};
+
+// Add function to track new sticker purchases
+export const recordStickerEarning = async (userId, earningData) => {
+  const db = getDatabase();
+  const earningsRef = ref(db, `users/${userId}/sticker_earnings`);
+  
+  try {
+    await push(earningsRef, {
+      ...earningData,
+      status: 'completed',
+      purchasedAt: serverTimestamp()
+    });
+  } catch (error) {
+    console.error('Error recording sticker earning:', error);
+    throw error;
+  }
+};
+
 // Modify your existing deleteMagazine function to explicitly handle preview images
 export const deleteMagazine = async (userId, magazineId) => {
   const db = getDatabase();
