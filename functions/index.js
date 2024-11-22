@@ -366,7 +366,10 @@ exports.handleStripeWebhook = functions.https.onRequest(async (req, res) => {
           const connectSnapshot = await connectRef.once('value');
           
           if (!connectSnapshot.exists()) {
-            // Create Connect Express account
+            console.log('Starting Connect account creation:', {
+              userId,
+              customerEmail: customer.email
+            });
             // Create Connect Express account
             const account = await stripe.accounts.create({
               type: 'express',
@@ -385,6 +388,12 @@ exports.handleStripeWebhook = functions.https.onRequest(async (req, res) => {
                   }
                 }
               }
+            });
+
+            console.log('Connect account created:', {
+              accountId: account.id,
+              userId: userId,
+              capabilities: account.capabilities
             });
       
             // Create account link for onboarding
@@ -462,7 +471,8 @@ exports.handleStripeWebhook = functions.https.onRequest(async (req, res) => {
           userId: userId,
           details_submitted: account.details_submitted,
           payouts_enabled: account.payouts_enabled,
-          charges_enabled: account.charges_enabled
+          charges_enabled: account.charges_enabled,
+          raw_account: account 
         });
         
         if (userId) {
