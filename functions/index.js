@@ -271,6 +271,33 @@ exports.handleStripeWebhook = functions.https.onRequest(async (req, res) => {
         break;
       }
 
+      // Add this case alongside your other webhook cases (right after 'payment_intent.succeeded' or any other case)
+      case 'checkout.session.completed': {
+        console.log('Checkout session completed:', event.data.object);
+        const session = event.data.object;
+        
+        if (session.mode === 'subscription') {
+          const subscription = await stripe.subscriptions.retrieve(session.subscription);
+          const customer = await stripe.customers.retrieve(session.customer);
+          const userId = customer.metadata.firebaseUID;
+
+          console.log('Writing subscription data after checkout:', {
+            userId,
+            subscriptionId: subscription.id,
+            status: subscription.status
+          });
+
+          const db = admin.database();
+          await db.ref(`users/${userId}/subscription`).set({
+            status: subscription.status,
+            priceId: subscription.items.data[0].price.id,
+            currentPeriodEnd: subscription.current_period_end,
+            updatedAt: admin.database.ServerValue.TIMESTAMP
+          });
+        }
+        break;
+      }
+
       case 'transfer.failed': {
         // Handle failed transfers to creator accounts
         const transfer = event.data.object;
