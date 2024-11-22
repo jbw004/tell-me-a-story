@@ -367,11 +367,13 @@ exports.handleStripeWebhook = functions.https.onRequest(async (req, res) => {
           
           if (!connectSnapshot.exists()) {
             // Create Connect Express account
+            // Create Connect Express account
             const account = await stripe.accounts.create({
               type: 'express',
               country: 'US',
               capabilities: {
                 transfers: { requested: true },
+                card_payments: { requested: true }  // Add this capability
               },
               metadata: {
                 firebaseUID: userId
