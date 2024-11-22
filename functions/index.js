@@ -389,6 +389,40 @@ exports.handleStripeWebhook = functions.https.onRequest(async (req, res) => {
         break;
       }
 
+      case 'customer.subscription.updated': {
+        const subscription = event.data.object;
+        const customerId = subscription.customer;
+        
+        console.log('Processing subscription.updated webhook:', {
+          eventId: event.id,
+          type: event.type,
+          subscriptionId: subscription.id,
+          status: subscription.status
+        });
+        
+        try {
+          const customer = await stripe.customers.retrieve(customerId);
+          const userId = customer.metadata.firebaseUID;
+      
+          console.log('Updating subscription status for user:', {
+            userId,
+            status: subscription.status
+          });
+      
+          const db = admin.database();
+          await db.ref(`users/${userId}/subscription`).update({
+            status: subscription.status,
+            currentPeriodEnd: subscription.current_period_end,
+            updatedAt: admin.database.ServerValue.TIMESTAMP
+          });
+      
+          console.log('Successfully updated subscription status');
+        } catch (error) {
+          console.error('Error updating subscription:', error);
+        }
+        break;
+      }
+
       // Add new case for Connect account updates
       case 'account.updated': {
         const account = event.data.object;
