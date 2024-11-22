@@ -6,7 +6,6 @@ import { loadCreatorSubscription } from '../firebase';
 import { getDatabase, ref, get, onValue } from 'firebase/database';
 
 // Initialize Stripe outside component to avoid recreation
-console.log('Stripe Key:', import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 const functions = getFunctions();
 
@@ -66,21 +65,19 @@ const SubscriptionManager = () => {
   const [pendingOnboardingUrl, setPendingOnboardingUrl] = useState(null);
 
   useEffect(() => {
-    const loadStatus = async () => {
-      if (!user) return;
-      
+    if (!user) return;
+    
+    // Load initial Connect account status and handle onboarding
+    const loadConnectStatus = async () => {
       try {
-        const subscriptionData = await loadCreatorSubscription(user.uid);
-        setSubscription(subscriptionData);
-        
         // Check Connect account status
         const db = getDatabase();
         const connectRef = ref(db, `users/${user.uid}/stripe_connect`);
         const connectSnap = await get(connectRef);
         setConnectAccount(connectSnap.val());
-
-        // Check for pending onboarding
-        if (subscriptionData?.status === 'active') {
+  
+        // Only check for pending onboarding if there's an active subscription
+        if (subscription?.status === 'active') {
           const pendingRef = ref(db, `users/${user.uid}/pendingActions/connectOnboarding`);
           const pendingSnap = await get(pendingRef);
           
@@ -101,15 +98,26 @@ const SubscriptionManager = () => {
         
         setError(null);
       } catch (error) {
-        console.error('Error loading status:', error);
-        setError('Failed to load subscription status');
+        console.error('Error loading connect status:', error);
+        setError('Failed to load account status');
       } finally {
         setIsLoading(false);
       }
     };
-
-    loadStatus();
-  }, [user]);
+  
+    // Subscribe to real-time subscription updates
+    const unsubscribe = subscribeToCreatorSubscription(user.uid, (subscriptionData) => {
+      console.log('Subscription data updated:', subscriptionData); // Debug log
+      setSubscription(subscriptionData);
+      loadConnectStatus(); // Reload Connect status when subscription changes
+    });
+  
+    // Load initial Connect status
+    loadConnectStatus();
+  
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, [user, subscription?.status]); // Added subscription status to dependencies
 
   const handleSubscribe = async () => {
     if (!user || isProcessing) return;

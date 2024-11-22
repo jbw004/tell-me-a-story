@@ -297,23 +297,29 @@ exports.handleStripeWebhook = functions.https.onRequest(async (req, res) => {
         break;
       }
 
-      // Keep existing subscription handling
-      case 'customer.subscription.updated':
-      case 'customer.subscription.created':
-      case 'customer.subscription.deleted': {
-        // Your existing subscription handling code
-        break;
-      }
-
       case 'customer.subscription.created': {
         const subscription = event.data.object;
         const customerId = subscription.customer;
+        
+        // Add these detailed logs
+        console.log('Subscription created webhook received:', {
+          subscriptionId: subscription.id,
+          status: subscription.status,
+          customerId: subscription.customer,
+          priceId: subscription.items.data[0].price.id,
+          currentPeriodEnd: subscription.current_period_end
+        });
         
         try {
           // Get Firebase user ID from Stripe customer
           const customer = await stripe.customers.retrieve(customerId);
           const userId = customer.metadata.firebaseUID;
-
+      
+          // Add log after customer retrieve
+          console.log('Retrieved customer data:', {
+            userId,
+            customerEmail: customer.email
+          });
           // Check if they already have a Connect account
           const db = admin.database();
           const connectRef = db.ref(`users/${userId}/stripe_connect`);

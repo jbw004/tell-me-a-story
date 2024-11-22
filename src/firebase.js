@@ -57,6 +57,20 @@ export const loadCreatorSubscription = async (userId) => {
   }
 };
 
+// Add the new function here
+export const subscribeToCreatorSubscription = (userId, callback) => {
+  const db = getDatabase();
+  const subscriptionRef = ref(db, `users/${userId}/subscription`);
+  
+  // Return the unsubscribe function
+  return onValue(subscriptionRef, (snapshot) => {
+    callback(snapshot.exists() ? snapshot.val() : null);
+  }, (error) => {
+    console.error('Error subscribing to subscription:', error);
+    callback(null);
+  });
+};
+
 export const updateCreatorSubscription = async (userId, subscriptionData) => {
   const db = getDatabase();
   const subscriptionRef = ref(db, `users/${userId}/subscription`);
