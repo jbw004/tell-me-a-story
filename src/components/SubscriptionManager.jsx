@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../AuthContext';
 import { loadStripe } from '@stripe/stripe-js';
 import { getFunctions, httpsCallable } from 'firebase/functions';
-import { loadCreatorSubscription } from '../firebase';
+import { 
+  loadCreatorSubscription, 
+  subscribeToCreatorSubscription  // Add this
+} from '../firebase';
 import { getDatabase, ref, get, onValue } from 'firebase/database';
 
 // Initialize Stripe outside component to avoid recreation
