@@ -257,9 +257,10 @@ exports.handleStripeWebhook = functions.https.onRequest(async (req, res) => {
           console.log('Processing sticker purchase payment:', {
             paymentIntentId: paymentIntent.id,
             metadata: paymentIntent.metadata,
-            amount: paymentIntent.amount
+            amount: paymentIntent.amount,
+            transferData: paymentIntent.transfer_data
           });
-
+      
           const db = admin.database();
           const { creatorId, magazineId, stickerType } = paymentIntent.metadata;
           
@@ -273,8 +274,8 @@ exports.handleStripeWebhook = functions.https.onRequest(async (req, res) => {
             });
             throw new Error('Missing required payment metadata');
           }
-
-          // Prepare earning data
+      
+          // Create base earning data object with only required fields
           const earningData = {
             amount: paymentIntent.amount,
             status: 'completed',
@@ -283,25 +284,34 @@ exports.handleStripeWebhook = functions.https.onRequest(async (req, res) => {
             paymentIntentId: paymentIntent.id,
             purchasedAt: admin.database.ServerValue.TIMESTAMP
           };
-
-          // Only add transferId if it exists
-          if (paymentIntent.transfer) {
-            earningData.transferId = paymentIntent.transfer;
+      
+          // Only add destination if it exists in transfer_data
+          if (paymentIntent.transfer_data?.destination) {
+            earningData.destinationAccount = paymentIntent.transfer_data.destination;
           }
-
+      
           console.log('Attempting to write earning data:', {
             path: `users/${creatorId}/sticker_earnings`,
             data: earningData
           });
-
-          // Write to Firebase
-          await db.ref(`users/${creatorId}/sticker_earnings`).push(earningData);
-          
-          console.log('Successfully recorded earning for creator:', {
-            creatorId,
-            paymentIntentId: paymentIntent.id,
-            amount: paymentIntent.amount
-          });
+      
+          try {
+            // Write to Firebase
+            await db.ref(`users/${creatorId}/sticker_earnings`).push(earningData);
+            
+            console.log('Successfully recorded earning for creator:', {
+              creatorId,
+              paymentIntentId: paymentIntent.id,
+              amount: paymentIntent.amount
+            });
+          } catch (error) {
+            console.error('Failed to write earning data:', {
+              error: error.message,
+              data: earningData,
+              creatorId
+            });
+            throw error; // Re-throw to trigger webhook retry
+          }
         }
         break;
       }
