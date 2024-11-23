@@ -366,7 +366,7 @@ const handleStickerMove = async (stickerId, e, pageNumber) => {
           isEnabled={isStickerEnabled}
           creatorId={userId}
           magazineId={templateId}
-          requiresPayment={!isOwner}  // Keep this as is to maintain free stickers for owner
+          requiresPayment={!isOwner}  // free stickers for owner
         />
       )}
     </div>

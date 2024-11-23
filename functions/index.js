@@ -549,50 +549,6 @@ exports.handleStripeWebhook = functions.https.onRequest(async (req, res) => {
         }
         break;
       }
-
-      // Add new case for Connect account updates
-      case 'account.updated': {
-        const account = event.data.object;
-        const userId = account.metadata.firebaseUID;
-        
-        console.log('Received account.updated webhook:', {  // Add this logging
-          accountId: account.id,
-          userId: userId,
-          details_submitted: account.details_submitted,
-          payouts_enabled: account.payouts_enabled,
-          charges_enabled: account.charges_enabled,
-          raw_account: account 
-        });
-        
-        if (userId) {
-          const db = admin.database();
-          const connectRef = db.ref(`users/${userId}/stripe_connect`);
-          
-          await connectRef.update({
-            onboardingComplete: account.details_submitted,
-            payoutEnabled: account.payouts_enabled,
-            lastUpdated: admin.database.ServerValue.TIMESTAMP,
-            chargesEnabled: account.charges_enabled,
-            requiresAction: !account.details_submitted || !account.payouts_enabled
-          });
-      
-          // Add confirmation log
-          console.log('Updated Connect account status in Firebase:', {
-            path: `users/${userId}/stripe_connect`,
-            status: {
-              onboardingComplete: account.details_submitted,
-              payoutEnabled: account.payouts_enabled,
-              chargesEnabled: account.charges_enabled
-            }
-          });
-
-          // Clean up pending action if onboarding is complete
-          if (account.details_submitted) {
-            await db.ref(`users/${userId}/pendingActions/connectOnboarding`).remove();
-          }
-        }
-        break;
-      }
     }
 
     res.json({received: true});
@@ -608,6 +564,79 @@ exports.handleStripeWebhook = functions.https.onRequest(async (req, res) => {
       error: error.message,
       details: 'Check Firebase Functions logs for more information'
     });
+  }
+});
+
+exports.handleConnectWebhook = functions.https.onRequest(async (req, res) => {
+  console.log('Connect webhook received. Headers:', JSON.stringify(req.headers));
+
+  let event;
+  try {
+    // Use a different webhook secret for Connect webhooks
+    event = stripe.webhooks.constructEvent(
+      req.rawBody,
+      req.headers['stripe-signature'],
+      functions.config().stripe.connect_webhook_secret // New config value
+    );
+    
+    console.log('Connect webhook verified:', {
+      type: event.type,
+      accountId: event.account // Connect webhooks include this
+    });
+
+    switch (event.type) {
+      case 'account.updated': {
+        const account = event.data.object;
+        const userId = account.metadata.firebaseUID;
+        
+        console.log('Processing account.updated webhook:', {
+          accountId: account.id,
+          userId: userId,
+          details_submitted: account.details_submitted,
+          payouts_enabled: account.payouts_enabled,
+          charges_enabled: account.charges_enabled
+        });
+        
+        if (userId) {
+          const db = admin.database();
+          const connectRef = db.ref(`users/${userId}/stripe_connect`);
+          
+          await connectRef.update({
+            onboardingComplete: account.details_submitted,
+            payoutEnabled: account.payouts_enabled,
+            lastUpdated: admin.database.ServerValue.TIMESTAMP,
+            chargesEnabled: account.charges_enabled,
+            requiresAction: !account.details_submitted || !account.payouts_enabled
+          });
+      
+          console.log('Updated Connect account status in Firebase:', {
+            path: `users/${userId}/stripe_connect`,
+            status: {
+              onboardingComplete: account.details_submitted,
+              payoutEnabled: account.payouts_enabled,
+              chargesEnabled: account.charges_enabled
+            }
+          });
+
+          // Clean up pending action if onboarding is complete
+          if (account.details_submitted) {
+            await db.ref(`users/${userId}/pendingActions/connectOnboarding`).remove();
+          }
+        } else {
+          console.error('No Firebase UID found in account metadata:', account.id);
+        }
+        break;
+      }
+
+      // Add other Connect-specific webhook events if needed
+      default:
+        console.log(`Unhandled Connect webhook type: ${event.type}`);
+    }
+
+    res.json({ received: true });
+  } catch (error) {
+    console.error('Connect webhook error:', error);
+    return res.status(400).send(`Webhook Error: ${error.message}`);
   }
 });
 
