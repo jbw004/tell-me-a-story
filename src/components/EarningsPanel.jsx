@@ -10,6 +10,7 @@ const EarningsPanel = () => {
   const [totalEarnings, setTotalEarnings] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingDashboard, setIsLoadingDashboard] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const loadEarnings = async () => {
@@ -36,9 +37,13 @@ const EarningsPanel = () => {
 
           setEarnings(earningsData);
           setTotalEarnings(total);
+        } else {
+          setEarnings([]);
+          setTotalEarnings(0);
         }
       } catch (error) {
         console.error('Error loading earnings:', error);
+        setError('Failed to load earnings data');
       } finally {
         setIsLoading(false);
       }
@@ -48,21 +53,41 @@ const EarningsPanel = () => {
   }, [user]);
 
   const handleManagePayouts = async () => {
+    setError(null);
     setIsLoadingDashboard(true);
+    
     try {
+      console.log('Starting dashboard link creation...');
       const functions = getFunctions();
       const createLoginLink = httpsCallable(functions, 'createStripeLoginLink');
-      const { data } = await createLoginLink();
       
-      // Open Stripe dashboard in new tab
-      window.open(data.url, '_blank');
+      console.log('Calling createLoginLink function...');
+      const result = await createLoginLink();
+      
+      console.log('Login link created:', result);
+      
+      if (result.data?.url) {
+        window.open(result.data.url, '_blank');
+      } else {
+        throw new Error('No dashboard URL received');
+      }
     } catch (error) {
       console.error('Error opening Stripe dashboard:', error);
-      alert('Unable to open dashboard at this time. Please try again later.');
+      setError(error.message || 'Unable to open dashboard. Please try again later.');
     } finally {
       setIsLoadingDashboard(false);
     }
   };
+
+  if (error) {
+    return (
+      <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="text-red-600 text-center py-4">
+          {error}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-6">
@@ -108,12 +133,15 @@ const EarningsPanel = () => {
       </div>
 
       <button 
-        className="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 disabled:opacity-50 flex items-center justify-center"
+        className="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 disabled:opacity-50 flex items-center justify-center gap-2"
         disabled={totalEarnings === 0 || isLoadingDashboard}
         onClick={handleManagePayouts}
       >
         {isLoadingDashboard ? (
-          <Oval height={20} width={20} color="white" />
+          <>
+            <Oval height={20} width={20} color="white" />
+            <span>Loading Dashboard...</span>
+          </>
         ) : (
           'Manage Payouts'
         )}
