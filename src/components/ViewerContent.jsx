@@ -357,7 +357,7 @@ const handleStickerMove = async (stickerId, e, pageNumber) => {
         </div>
       </div>
 
-      {isStickerEnabled && (  // Removed !isOwner condition
+      {isStickerEnabled && (  
         <StickerStore
           onStickerSelect={({ stickerId, paymentIntentId }) => {
             setPurchasedStickerInfo({ stickerId, paymentIntentId });
