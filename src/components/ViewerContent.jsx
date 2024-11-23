@@ -357,18 +357,18 @@ const handleStickerMove = async (stickerId, e, pageNumber) => {
         </div>
       </div>
 
-      {isStickerEnabled && !isOwner && (
+      {isStickerEnabled && (  // Removed !isOwner condition
         <StickerStore
-        onStickerSelect={({ stickerId, paymentIntentId }) => {
-          setPurchasedStickerInfo({ stickerId, paymentIntentId });
-          setSelectedSticker(stickerId);
-        }}
-        isEnabled={isStickerEnabled}
-        creatorId={userId}
-        magazineId={templateId}
-        requiresPayment={!isOwner}
-      />
-        )}
+          onStickerSelect={({ stickerId, paymentIntentId }) => {
+            setPurchasedStickerInfo({ stickerId, paymentIntentId });
+            setSelectedSticker(stickerId);
+          }}
+          isEnabled={isStickerEnabled}
+          creatorId={userId}
+          magazineId={templateId}
+          requiresPayment={!isOwner}  // Keep this as is to maintain free stickers for owner
+        />
+      )}
     </div>
   );
 };
