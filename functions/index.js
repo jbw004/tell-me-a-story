@@ -230,8 +230,8 @@ exports.placePurchasedSticker = functions.https.onCall(async (data, context) => 
 
 // Single webhook handler for all Stripe events
 exports.handleStripeWebhook = functions.https.onRequest(async (req, res) => {
-  console.log('Webhook received. Headers:', JSON.stringify(req.headers));  // Add this
-
+  console.log('Webhook received. Headers:', JSON.stringify(req.headers));
+  
   const signature = req.headers['stripe-signature'];
   let event;
 
@@ -241,7 +241,7 @@ exports.handleStripeWebhook = functions.https.onRequest(async (req, res) => {
       signature,
       functions.config().stripe.webhook_secret
     );
-    console.log('Webhook event constructed successfully:', event.type);  // Add this
+    console.log('Webhook event constructed successfully:', event.type);
   } catch (err) {
     console.error('Webhook signature verification failed:', err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
@@ -254,19 +254,98 @@ exports.handleStripeWebhook = functions.https.onRequest(async (req, res) => {
         
         // Only handle sticker purchases
         if (paymentIntent.metadata.type === 'sticker_purchase') {
+          console.log('Processing sticker purchase payment:', {
+            paymentIntentId: paymentIntent.id,
+            metadata: paymentIntent.metadata,
+            amount: paymentIntent.amount
+          });
+
           const db = admin.database();
           const { creatorId, magazineId, stickerType } = paymentIntent.metadata;
           
-          // Record the successful payment and transfer
-          await db.ref(`users/${creatorId}/sticker_earnings`).push({
+          // Validate required metadata
+          if (!creatorId || !magazineId || !stickerType) {
+            console.error('Missing required metadata:', {
+              creatorId,
+              magazineId,
+              stickerType,
+              paymentIntentId: paymentIntent.id
+            });
+            throw new Error('Missing required payment metadata');
+          }
+
+          // Prepare earning data
+          const earningData = {
             amount: paymentIntent.amount,
             status: 'completed',
             magazineId,
             stickerType,
             paymentIntentId: paymentIntent.id,
-            transferId: paymentIntent.transfer, // Stripe provides this
             purchasedAt: admin.database.ServerValue.TIMESTAMP
+          };
+
+          // Only add transferId if it exists
+          if (paymentIntent.transfer) {
+            earningData.transferId = paymentIntent.transfer;
+          }
+
+          console.log('Attempting to write earning data:', {
+            path: `users/${creatorId}/sticker_earnings`,
+            data: earningData
           });
+
+          // Write to Firebase
+          await db.ref(`users/${creatorId}/sticker_earnings`).push(earningData);
+          
+          console.log('Successfully recorded earning for creator:', {
+            creatorId,
+            paymentIntentId: paymentIntent.id,
+            amount: paymentIntent.amount
+          });
+        }
+        break;
+      }
+
+      case 'transfer.failed': {
+        const transfer = event.data.object;
+        const paymentIntent = await stripe.paymentIntents.retrieve(
+          transfer.metadata.payment_intent
+        );
+        
+        if (paymentIntent.metadata.type === 'sticker_purchase') {
+          console.log('Processing failed transfer:', {
+            transferId: transfer.id,
+            paymentIntentId: transfer.metadata.payment_intent
+          });
+
+          const db = admin.database();
+          const { creatorId } = paymentIntent.metadata;
+          
+          // Update the earnings record
+          const earningsRef = db.ref(`users/${creatorId}/sticker_earnings`);
+          const snapshot = await earningsRef
+            .orderByChild('paymentIntentId')
+            .equalTo(paymentIntent.id)
+            .once('value');
+          
+          if (snapshot.exists()) {
+            const earningKey = Object.keys(snapshot.val())[0];
+            await earningsRef.child(earningKey).update({
+              status: 'transfer_failed',
+              error: transfer.failure_message
+            });
+            
+            console.log('Updated earning record with failed status:', {
+              creatorId,
+              earningId: earningKey,
+              paymentIntentId: paymentIntent.id
+            });
+          } else {
+            console.error('No earning record found for failed transfer:', {
+              creatorId,
+              paymentIntentId: paymentIntent.id
+            });
+          }
         }
         break;
       }
@@ -506,10 +585,19 @@ exports.handleStripeWebhook = functions.https.onRequest(async (req, res) => {
       }
     }
 
-    res.json({ received: true });
+    res.json({received: true});
   } catch (error) {
-    console.error('Error handling webhook:', error);
-    res.status(500).end();
+    console.error('Error processing webhook:', {
+      error: error.message,
+      eventType: event.type,
+      stack: error.stack
+    });
+    
+    // Send 500 to trigger a retry
+    res.status(500).json({
+      error: error.message,
+      details: 'Check Firebase Functions logs for more information'
+    });
   }
 });
 
