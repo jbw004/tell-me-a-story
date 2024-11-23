@@ -645,3 +645,36 @@ exports.refreshConnectOnboarding = functions.https.onCall(async (data, context) 
     throw new functions.https.HttpsError('internal', error.message);
   }
 });
+
+// Add this with your other functions in index.js
+exports.createStripeLoginLink = functions.https.onCall(async (data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'Must be logged in');
+  }
+
+  try {
+    const db = admin.database();
+    const connectRef = ref(db, `users/${context.auth.uid}/stripe_connect`);
+    const connectData = (await connectRef.once('value')).val();
+
+    if (!connectData?.accountId) {
+      throw new functions.https.HttpsError(
+        'failed-precondition',
+        'No Stripe Connect account found'
+      );
+    }
+
+    // Create login link for the Connect Express dashboard
+    const loginLink = await stripe.accounts.createLoginLink(
+      connectData.accountId,
+      {
+        redirect_url: `${functions.config().public.url}/dashboard`
+      }
+    );
+
+    return { url: loginLink.url };
+  } catch (error) {
+    console.error('Error creating login link:', error);
+    throw new functions.https.HttpsError('internal', error.message);
+  }
+});
