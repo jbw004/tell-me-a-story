@@ -12,6 +12,8 @@ import StickerStore from './StickerStore';
 import PlacedSticker from './PlacedSticker';
 import { useStickers } from './StickerContext';
 import { getFunctions, httpsCallable } from 'firebase/functions';
+import CursorSticker from './CursorSticker';
+
 
 const ViewerContent = () => {
   const [template, setTemplate] = useState(null);
@@ -33,6 +35,8 @@ const ViewerContent = () => {
   } = useStickers();
   const [purchasedStickerInfo, setPurchasedStickerInfo] = useState(null);
   const [isStickerEnabled, setIsStickerEnabled] = useState(false);
+  const [instructionPosition, setInstructionPosition] = useState({ x: 0, y: 0 });
+
 
 
   const isOwner = user && user.uid === userId;
@@ -103,6 +107,20 @@ const ViewerContent = () => {
 
     loadExistingStickers();
 }, [userId, templateId]);
+
+// Add this new useEffect right here, after the existing ones
+useEffect(() => {
+  if (selectedSticker && purchasedStickerInfo) {
+    const stickerStore = document.querySelector('.sticker-store');
+    if (stickerStore) {
+      const rect = stickerStore.getBoundingClientRect();
+      setInstructionPosition({
+        x: rect.left,
+        y: rect.top - 60 // Position above the sticker store
+      });
+    }
+  }
+}, [selectedSticker, purchasedStickerInfo]);
 
 
 const handlePageClick = async (e, pageNumber) => {
@@ -247,8 +265,20 @@ const handleStickerMove = async (stickerId, e, pageNumber) => {
         </button>
       )}
 
+      {selectedSticker && purchasedStickerInfo && (
+          <CursorSticker stickerType={selectedSticker} />
+        )}
+
         {selectedSticker && purchasedStickerInfo && (
-          <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-50 text-green-800 px-4 py-2 rounded-md shadow-lg z-50">
+          <div 
+            className="fixed bg-green-50 text-green-800 px-4 py-2 rounded-md shadow-lg z-50"
+            style={{
+              left: `${instructionPosition.x}px`,
+              top: `${instructionPosition.y}px`,
+              transform: 'translateX(-50%)',
+              whiteSpace: 'nowrap'
+            }}
+          >
             Click anywhere on the page to place your sticker
           </div>
         )}

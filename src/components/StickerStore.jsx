@@ -184,7 +184,7 @@ const StickerStore = ({ onStickerSelect, isEnabled = true, creatorId, magazineId
   };
 
   return (
-    <div className="fixed bottom-6 right-6 bg-white rounded-lg shadow-lg overflow-hidden">
+    <div className="fixed bottom-6 right-6 bg-white rounded-lg shadow-lg overflow-hidden sticker-store">
       <div className="p-3 border-b border-gray-100">
         <h3 className="text-sm font-medium text-gray-700">Support with Stickers</h3>
         {requiresPayment && (
