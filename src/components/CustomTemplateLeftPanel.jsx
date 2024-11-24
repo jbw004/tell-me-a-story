@@ -132,6 +132,19 @@ const CustomTemplateLeftPanel = ({
             />
             <span>Spotify Link</span>
           </div>
+
+          <div 
+            className="draggable-item"
+            draggable
+            onDragStart={(e) => onDragStart(e, 'tumblr')}
+          >
+            <img 
+              src="/images/tumblr_logo.png" 
+              alt="Tumblr" 
+              className="element-icon"
+            />
+            <span>Tumblr Link</span>
+          </div>
           
           <div 
             className="draggable-item"
