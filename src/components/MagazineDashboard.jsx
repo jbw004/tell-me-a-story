@@ -187,7 +187,7 @@ const fetchAllMagazines = async () => {
           <h1 className="text-2xl font-bold">Your Magazines</h1>
         </div>
         <Button 
-          onClick={() => navigate('/editor')} 
+          onClick={() => navigate('/')} 
           style={{ backgroundColor: '#6200ee' }}
           className="flex items-center gap-2 hover:opacity-80"
         >

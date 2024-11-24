@@ -175,7 +175,7 @@ const StickerStore = ({ onStickerSelect, isEnabled = true, creatorId, magazineId
     ]));
   
     setShowPayment(false);
-    onStickerSelect?.({ stickerId, paymentIntentId }); // Pass both to parent component
+    onStickerSelect?.({ stickerId, paymentIntentId }); // Pass to parent component
   };
 
   const handlePaymentCancel = () => {
