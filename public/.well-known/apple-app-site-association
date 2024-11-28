@@ -1,0 +1,11 @@
+{
+    "applinks": {
+        "apps": [],
+        "details": [
+            {
+                "appID": "522480569564.com.jbw004.tellmeastory",
+                "paths": ["/zine/*"]
+            }
+        ]
+    }
+}

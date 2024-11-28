@@ -1,6 +1,20 @@
 {
-    "routes": [
+  "routes": [
       { "handle": "filesystem" },
       { "src": "/.*", "dest": "/index.html" }
-    ]
-  }
+  ],
+  "redirects": [
+      {
+          "source": "/zine/:id",
+          "has": [
+              {
+                  "type": "header",
+                  "key": "User-Agent",
+                  "value": "^((?!iPhone|iPad|iPod).)*$"
+              }
+          ],
+          "destination": "https://tellmeastory.press",
+          "permanent": false
+      }
+  ]
+}
