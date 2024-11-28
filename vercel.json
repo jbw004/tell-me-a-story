@@ -1,20 +1,19 @@
 {
-  "routes": [
-      { "handle": "filesystem" },
-      { "src": "/.*", "dest": "/index.html" }
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
   ],
   "redirects": [
-      {
-          "source": "/zine/:id",
-          "has": [
-              {
-                  "type": "header",
-                  "key": "User-Agent",
-                  "value": "^((?!iPhone|iPad|iPod).)*$"
-              }
-          ],
-          "destination": "https://tellmeastory.press",
-          "permanent": false
-      }
+    {
+      "source": "/zine/:id",
+      "has": [
+        {
+          "type": "header",
+          "key": "User-Agent",
+          "value": "^((?!iPhone|iPad|iPod).)*$"
+        }
+      ],
+      "destination": "https://tellmeastory.press",
+      "permanent": false
+    }
   ]
 }
