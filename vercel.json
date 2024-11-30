@@ -1,18 +1,21 @@
 {
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    { 
+      "source": "/((?!zine/).*)", 
+      "destination": "/index.html" 
+    }
   ],
   "redirects": [
     {
       "source": "/zine/:id",
+      "destination": "https://tellmeastory.press",
       "has": [
         {
           "type": "header",
-          "key": "User-Agent",
-          "value": "^((?!iPhone|iPad|iPod).)*$"
+          "key": "Sec-Fetch-Mode",
+          "value": "navigate"
         }
       ],
-      "destination": "https://tellmeastory.press",
       "permanent": false
     }
   ],
