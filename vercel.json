@@ -8,6 +8,11 @@
   "redirects": [
     {
       "source": "/zine/:id",
+      "destination": "/api/zine/:id",
+      "permanent": false
+    },
+    {
+      "source": "/zine/:id",
       "destination": "https://tellmeastory.press",
       "has": [
         {
