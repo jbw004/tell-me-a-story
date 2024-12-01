@@ -8,7 +8,6 @@
   "redirects": [
     {
       "source": "/zine/:id",
-      "destination": "https://tellmeastory.press",
       "has": [
         {
           "type": "header",
@@ -16,10 +15,18 @@
           "value": "navigate"
         }
       ],
+      "destination": "https://tellmeastory.press",
       "permanent": false
     },
     {
       "source": "/zine/:id",
+      "missing": [
+        {
+          "type": "header",
+          "key": "Sec-Fetch-Mode",
+          "value": "navigate"
+        }
+      ],
       "destination": "/api/zine/:id",
       "permanent": false
     }
